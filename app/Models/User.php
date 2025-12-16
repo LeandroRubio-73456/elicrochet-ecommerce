@@ -45,4 +45,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    //Relations
+    
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function getDefaultAddressAttribute()
+    {
+        return $this->addresses()->first();
+    }
 }
