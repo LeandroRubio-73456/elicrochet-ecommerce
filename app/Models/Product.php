@@ -16,13 +16,15 @@ class Product extends Model
         'price',
         'stock',
         'status',
-        'is_featured'
+        'is_featured',
+        'specs' // JSON of concrete values
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'stock' => 'integer',
         'is_featured' => 'boolean',
+        'specs' => 'array',
     ];
 
     protected function shortDescription(): Attribute
@@ -41,14 +43,14 @@ class Product extends Model
             'draft' => ['warning', 'Borrador', 'ti-edit'],
             'active' => ['success', 'Activo', 'ti-eye'],
             'out_of_stock' => ['danger', 'Agotado', 'ti-box'],
-            'discontinued' => ['secondary', 'Descontinuado', 'ti-ban'],
+            'discontinued' => ['secondary', 'Descontinuado', 'ti-na'],
             'archived' => ['dark', 'Archivado', 'ti-archive']
         ];
 
         [$color, $text, $icon] = $badges[$this->status] ?? ['secondary', 'Desconocido', 'fa-question'];
 
         return sprintf(
-            '<span class="f-12 badge bg-light-%s"><i class="ti %s me-1"></i> %s</span>',
+            '<span class="f-12 badge bg-light-%s"><i class="%s me-1"></i> %s</span>',
             $color,
             $icon,
             $text

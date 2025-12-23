@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Providers\CartService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -32,7 +33,17 @@ class HomeController extends Controller
 
     public function shop()
     {
-        return view('front.shop');
+        // 1. Obtener categorías con contador de productos y solo las activas si aplica
+        $categories = Category::withCount('products')
+            ->where('status', 'active') // Asumiendo que hay status
+            ->get();
+
+        // 2. Obtener productos con paginación
+        $products = Product::where('status', 'active') // Asumiendo status
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('front.shop', compact('categories', 'products'));
     }
 
     public function notfound()
@@ -50,9 +61,12 @@ class HomeController extends Controller
         return view('front.cart');
     }
 
-    public function cheackout()
+    public function checkout(CartService $cartService)
     {
-        return view('front.cheackout');
+        $cartItems = $cartService->getCart();
+        $total = $cartService->getTotal();
+
+        return view('front.checkout', compact('cartItems', 'total'));
     }
 
     public function contact()
@@ -79,18 +93,29 @@ class HomeController extends Controller
 
     public function categoryShow(string $slug)
     {
-        // 1. Buscar la categoría por su slug (y forzar 404 si no existe)
-        $category = Category::where('slug', $slug)
-                            ->firstOrFail();
+        // 1. Buscar la categoría por su slug
+        $category = Category::where('slug', $slug)->firstOrFail();
 
-        // 2. Obtener los productos de esa categoría
-        // Opcional: paginar, filtrar por stock, etc.
+        // 2. Obtener TODAS las categorías para el sidebar
+        $categories = Category::withCount('products')
+            ->where('status', 'active')
+            ->get();
+
+        // 3. Obtener los productos de esa categoría
         $products = Product::where('category_id', $category->id)
-                           ->with('images') // Cargar imágenes
-                           ->active()       // Solo mostrar activos (si el scope está disponible)
-                           ->paginate(12);
+            ->with('images')
+            ->where('status', 'active')
+            ->paginate(12);
         
-        // 3. Devolver la vista de la tienda/categoría con los datos
-        return view('front.shop', compact('category', 'products'));
+        // 4. Devolver la vista de la tienda pasando todo
+        return view('front.shop', compact('category', 'categories', 'products'));
+    }
+
+    public function addToCart(Request $request, $id)
+    {
+        // Lógica del carrito pendiente de implementar
+        // o usar una librería de carrito
+        
+        return redirect()->back()->with('success', 'Producto añadido al carrito (Simulación)');
     }
 }

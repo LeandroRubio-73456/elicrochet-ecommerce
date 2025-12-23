@@ -1,29 +1,29 @@
 <li class="pc-item">
   <a href="../dashboard/index.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+    <span class="pc-micon"><i class="ti-dashboard"></i></span>
     <span class="pc-mtext">Dashboard</span>
   </a>
 </li>
 
 <li class="pc-item pc-caption">
   <label>Gestion</label>
-  <i class="ti ti-dashboard"></i>
+  <i class="ti-dashboard"></i>
 </li>
 <li class="pc-item">
   <a href="../elements/bc_typography.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-typography"></i></span>
+    <span class="pc-micon"><i class="ti-typography"></i></span>
     <span class="pc-mtext">Typography</span>
   </a>
 </li>
 <li class="pc-item">
   <a href="../elements/bc_color.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
+    <span class="pc-micon"><i class="ti-color-swatch"></i></span>
     <span class="pc-mtext">Color</span>
   </a>
 </li>
 <li class="pc-item">
   <a href="../elements/icon-tabler.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-plant-2"></i></span>
+    <span class="pc-micon"><i class="ti-plant-2"></i></span>
     <span class="pc-mtext">Icons</span>
   </a>
 </li>
@@ -34,13 +34,13 @@
 </li>
 <li class="pc-item">
   <a href="../pages/login.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-lock"></i></span>
+    <span class="pc-micon"><i class="ti-lock"></i></span>
     <span class="pc-mtext">Login</span>
   </a>
 </li>
 <li class="pc-item">
   <a href="../pages/register.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
+    <span class="pc-micon"><i class="ti-user-plus"></i></span>
     <span class="pc-mtext">Register</span>
   </a>
 </li>
@@ -50,7 +50,7 @@
   <i class="ti ti-brand-chrome"></i>
 </li>
 <li class="pc-item pc-hasmenu">
-  <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Menu
+  <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti-menu"></i></span><span class="pc-mtext">Menu
       levels</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
   <ul class="pc-submenu">
     <li class="pc-item"><a class="pc-link" href="#!">Level 2.1</a></li>
@@ -86,7 +86,7 @@
 </li>
 <li class="pc-item">
   <a href="../other/sample-page.html" class="pc-link">
-    <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
+    <span class="pc-micon"><i class="ti-brand-chrome"></i></span>
     <span class="pc-mtext">Sample page</span>
   </a>
 </li>

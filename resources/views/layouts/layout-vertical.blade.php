@@ -9,16 +9,15 @@
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="../dashboard/index.html" class="b-brand text-primary">
-                <!-- ========   Change your logo from here   ============ -->
-                <img src="../assets/images/logo-dark.svg" class="img-fluid logo-lg" alt="logo">
+            <a href="{{ route('admin.dashboard') }}" class="b-brand">
+                <img src="{{ asset('Logo.png') }}" class="img-fluid " alt="EliCrochet" style="height: 50px;">
             </a>
         </div>
         <div class="navbar-content">
             <ul class="pc-navbar">
                 <li class="pc-item">
-                    <a href="{{ route('dashboard') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+                    <a href="{{ route('admin.dashboard') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti-dashboard"></i></span>
                         <span class="pc-mtext">Dashboard</span>
                     </a>
                 </li>
@@ -28,95 +27,36 @@
                     <i class="ti ti-dashboard"></i>
                 </li>
                 <li class="pc-item">
-                    <a href="{{ route('back.products.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-box"></i></span>
+                    <a href="{{ route('admin.products.index') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti-package"></i></span>
                         <span class="pc-mtext">Productos</span>
                     </a>
                 </li>
                 <li class="pc-item">
-                    <a href="{{ route('back.categories.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-tag"></i></span>
+                    <a href="{{ route('admin.categories.index') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti-tag"></i></span>
                         <span class="pc-mtext">Categorias</span>
                     </a>
                 </li>
-
-                <li class="pc-item pc-caption">
-                    <label>Pages</label>
-                    <i class="ti ti-news"></i>
-                </li>
                 <li class="pc-item">
-                    <a href="../pages/login.html" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-lock"></i></span>
-                        <span class="pc-mtext">Login</span>
+                    <a href="{{ route('admin.users.index') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti-user"></i></span>
+                        <span class="pc-mtext">Usuarios</span>
                     </a>
                 </li>
                 <li class="pc-item">
-                    <a href="../pages/register.html" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-user-plus"></i></span>
-                        <span class="pc-mtext">Register</span>
+                    <a href="{{ route('admin.orders.index') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti-clipboard"></i></span>
+                        <span class="pc-mtext">Órdenes</span>
                     </a>
                 </li>
-
-                <li class="pc-item pc-caption">
-                    <label>Other</label>
-                    <i class="ti ti-brand-chrome"></i>
-                </li>
-                <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span
-                            class="pc-mtext">Menu
-                            levels</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                    <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="#!">Level 2.1</a></li>
-                        <li class="pc-item pc-hasmenu">
-                            <a href="#!" class="pc-link">Level 2.2<span class="pc-arrow"><i
-                                        data-feather="chevron-right"></i></span></a>
-                            <ul class="pc-submenu">
-                                <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
-                                <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
-                                <li class="pc-item pc-hasmenu">
-                                    <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i
-                                                data-feather="chevron-right"></i></span></a>
-                                    <ul class="pc-submenu">
-                                        <li class="pc-item"><a class="pc-link" href="#!">Level 4.1</a></li>
-                                        <li class="pc-item"><a class="pc-link" href="#!">Level 4.2</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="pc-item pc-hasmenu">
-                            <a href="#!" class="pc-link">Level 2.3<span class="pc-arrow"><i
-                                        data-feather="chevron-right"></i></span></a>
-                            <ul class="pc-submenu">
-                                <li class="pc-item"><a class="pc-link" href="#!">Level 3.1</a></li>
-                                <li class="pc-item"><a class="pc-link" href="#!">Level 3.2</a></li>
-                                <li class="pc-item pc-hasmenu">
-                                    <a href="#!" class="pc-link">Level 3.3<span class="pc-arrow"><i
-                                                data-feather="chevron-right"></i></span></a>
-                                    <ul class="pc-submenu">
-                                        <li class="pc-item"><a class="pc-link" href="#!">Level 4.1</a></li>
-                                        <li class="pc-item"><a class="pc-link" href="#!">Level 4.2</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
                 <li class="pc-item">
-                    <a href="../other/sample-page.html" class="pc-link">
-                        <span class="pc-micon"><i class="ti ti-brand-chrome"></i></span>
-                        <span class="pc-mtext">Sample page</span>
+                    <a href="{{ route('admin.finance.index') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti-bar-chart"></i></span>
+                        <span class="pc-mtext">Finanzas</span>
                     </a>
                 </li>
             </ul>
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="../assets/images/img-navbar-card.png" alt="images" class="img-fluid mb-2">
-                    <h5>Upgrade To Pro</h5>
-                    <p>To get more features and components</p>
-                    <a href="https://codedthemes.com/item/berry-bootstrap-5-admin-template/" target="_blank"
-                        class="btn btn-success">Buy Now</a>
-                </div>
-            </div>
         </div>
     </div>
 </nav>
@@ -241,19 +181,19 @@
                 <li class="dropdown pc-h-item header-user-profile">
                     <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-                        <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
-                        <span>Stebin Ben</span>
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff" alt="user-image" class="user-avtar">
+                        <span>{{ Auth::user()->name }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                         <div class="dropdown-header">
                             <div class="d-flex mb-1">
                                 <div class="flex-shrink-0">
-                                    <img src="../assets/images/user/avatar-2.jpg" alt="user-image"
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random&color=fff" alt="user-image"
                                         class="user-avtar wid-35">
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">Stebin Ben</h6>
-                                    <span>UI/UX Designer</span>
+                                    <h6 class="mb-1">{{ Auth::user()->name }}</h6>
+                                    <span>{{ Auth::user()->email }}</span>
                                 </div>
                                 <a href="#!" class="pc-head-link bg-transparent"><i
                                         class="ti ti-power text-danger"></i></a>

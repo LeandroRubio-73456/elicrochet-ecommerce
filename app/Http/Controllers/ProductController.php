@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
-use Illuminate\Container\Attributes\Storage;
-use Illuminate\Foundation\Console\StorageLinkCommand;
-use Illuminate\Support\Facades\Storage as FacadesStorage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -17,40 +15,128 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Inicializar la consulta con eager loading (relación Category)
-        $query = Product::with('category');
+        if ($request->ajax()) {
+            $query = Product::with(['category', 'images']);
 
-        // --- FILTROS CONDICIONALES ---
+            // 1. Filtrado Global (Search)
+            if ($request->has('search') && !empty($request->input('search.value'))) {
+                $searchValue = $request->input('search.value');
+                $query->where(function ($q) use ($searchValue) {
+                    $q->where('name', 'like', "%{$searchValue}%")
+                        ->orWhere('description', 'like', "%{$searchValue}%")
+                        ->orWhereHas('category', function ($catQ) use ($searchValue) {
+                            $catQ->where('name', 'like', "%{$searchValue}%");
+                        });
+                });
+            }
 
-        // 2. Filtrar por Estado (si está presente Y es un valor válido)
-        $allowedStatuses = ['draft', 'active', 'out_of_stock', 'discontinued', 'archived'];
+            // 2. Filtro por Columna (Status y Category)
+            if ($request->has('columns')) {
+                // Filtro Estado (Columna 6)
+                $statusSearch = $request->input("columns.6.search.value");
+                if (!empty($statusSearch)) {
+                    $query->where('status', $statusSearch);
+                }
 
-        if ($request->filled('status') && in_array($request->status, $allowedStatuses)) {
-            $query->where('status', $request->status);
-        }
+                // Filtro Categoría (Columna 3 - Nombre de categoría)
+                $categorySearch = $request->input("columns.3.search.value");
+                if (!empty($categorySearch)) {
+                    $query->whereHas('category', function($q) use ($categorySearch) {
+                        $q->where('name', $categorySearch);
+                    });
+                }
+            }
 
-        // 3. Filtrar por Categoría (si está presente y tiene un valor)
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
+            // 3. Ordenamiento
+            if ($request->has('order')) {
+                $orderColumnIndex = $request->input('order.0.column');
+                $orderDirection = $request->input('order.0.dir');
+                $columns = ['id', 'images', 'name', 'category_id', 'price', 'stock', 'status', 'actions']; // Mapeo de columnas
+                
+                if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'images') {
+                    $columnName = $columns[$orderColumnIndex];
+                    if ($columnName === 'category_id') { // Ordenar por nombre de categoría
+                         $query->join('categories', 'products.category_id', '=', 'categories.id')
+                               ->orderBy('categories.name', $orderDirection)
+                               ->select('products.*'); // Evitar columnas duplicadas
+                    } else {
+                        $query->orderBy($columnName, $orderDirection);
+                    }
+                }
+            } else {
+                $query->latest('id');
+            }
+            
+            // 4. Paginación
+            $totalRecords = Product::count();
+            $filteredRecords = $query->count();
+            
+            $start = $request->input('start', 0);
+            $length = $request->input('length', 10);
+            
+            $products = $query->skip($start)->take($length)->get();
 
-        // 4. Buscar por Nombre Y Descripción (si está presente y tiene un valor)
-        if ($request->filled('search')) { //  CORRECCIÓN 1: Usar filled()
-            $searchTerm = $request->search;
-            //  CORRECCIÓN 2: Buscar en Name O Description
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
+            // 5. Transformación de datos para DataTables
+            $data = $products->map(function ($product) {
+                // Imagen
+                $imageHtml = '<div class="d-flex align-items-center"><div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="ti ti-photo text-muted"></i></div></div>';
+                if ($product->images->count() > 0) {
+                    $imageHtml = '<div class="d-flex align-items-center"><img src="' . asset('storage/' . $product->images->first()->image_path) . '" alt="" class="rounded me-2" width="40" height="40" style="object-fit: cover;"></div>';
+                }
+
+                // Estado (Badge)
+                $statusBadge = match ($product->status) {
+                    'draft' => '<span class="badge bg-light-secondary f-12">Borrador</span>',
+                    'active' => '<span class="badge bg-light-success f-12">Activo</span>',
+                    'out_of_stock' => '<span class="badge bg-light-danger f-12">Sin Stock</span>',
+                    'discontinued' => '<span class="badge bg-light-dark f-12">Descontinuado</span>',
+                    'archived' => '<span class="badge bg-light-warning f-12">Archivado</span>',
+                    default => '<span class="badge bg-light-secondary f-12">' . $product->status . '</span>',
+                };
+                
+                if ($product->status === 'active' && $product->stock <= 0) {
+                    $statusBadge .= '<span class="badge bg-danger mt-1 f-12"><i class="ti-exclamation-triangle me-1"></i> Sin Stock</span>';
+                }
+
+                // Acciones
+                $editUrl = route('back.products.edit', $product);
+                $showUrl = route('back.products.show', $product);
+                $deleteUrl = route('back.products.destroy', $product);
+                $csrfToken = csrf_token();
+
+                $actions = '
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="' . $editUrl . '" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
+                        <a href="' . $showUrl . '" class="btn btn-outline-info"><i class="ti-eye"></i></a>
+                        <button type="button" class="btn btn-outline-danger delete-product-btn" 
+                            data-product-id="' . $product->id . '" 
+                            data-action-url="' . $deleteUrl . '">
+                            <i class="ti-trash"></i>
+                        </button>
+                    </div>';
+
+                return [
+                    'id' => $product->id,
+                    'image' => $imageHtml,
+                    'name' => '<h6 class="mb-0">' . $product->name . '</h6>',
+                    'category' => $product->category ? $product->category->name : 'N/A',
+                    'price' => '$' . number_format($product->price, 2),
+                    'stock' => $product->stock,
+                    'status' => $statusBadge,
+                    'actions' => $actions
+                ];
             });
+
+            return response()->json([
+                "draw" => intval($request->input('draw')),
+                "recordsTotal" => $totalRecords,
+                "recordsFiltered" => $filteredRecords,
+                "data" => $data
+            ]);
         }
 
-        // 5. Ordenar y Ejecutar la consulta
-        $products = $query->latest('id')->paginate(15);
-
-        // 6. Obtener categorías para rellenar el select del filtro
         $categories = Category::all();
-
-        return view('back.products.index', compact('products', 'categories'));
+        return view('back.products.index', compact('categories'));
     }
 
     /**

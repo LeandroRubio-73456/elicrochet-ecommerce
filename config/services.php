@@ -34,5 +34,12 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'payphone' => [
+        'client_id' => env('PAYPHONE_CLIENT_ID'),
+        'client_secret' => env('PAYPHONE_CLIENT_SECRET'),
+        'mode' => env('PAYPHONE_MODE', 'sandbox'),
+        'base_url' => env('PAYPHONE_MODE') == 'live'
+            ? 'https://api.payphone.app/prod' // URL de producción
+            : 'https://api.payphone.app/dev', // URL de pruebas
+    ],
 ];

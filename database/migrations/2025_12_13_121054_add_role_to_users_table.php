@@ -9,10 +9,11 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            // Agregar columna 'role' después de 'email'
-            $table->enum('role', ['admin', 'customer'])
-                  ->default('customer')
-                  ->after('email');
+            if (!Schema::hasColumn('users', 'role')) {
+                $table->enum('role', ['admin', 'customer'])
+                      ->default('customer')
+                      ->after('email');
+            }
         });
     }
 

@@ -4,12 +4,12 @@
     <div class="row align-items-center">
       <div class="col-md-12">
         <div class="page-header-title">
-          <h5 class="m-b-10">@@breadcrumb-item-active</h5>
+          <h4 class="m-0">{{ $active }}</h4>
         </div>
         <ul class="breadcrumb">
-          <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
-          <li class="breadcrumb-item"><a href="javascript: void(0)">@@breadcrumb-item</a></li>
-          <li class="breadcrumb-item" aria-current="page">@@breadcrumb-item-active</li>
+          <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item"><a href="javascript: void(0)">{{ $item }}</a></li>
+          <li class="breadcrumb-item" aria-current="page">{{ $active }}</li>
         </ul>
       </div>
     </div>

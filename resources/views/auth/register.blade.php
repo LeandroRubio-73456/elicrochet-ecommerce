@@ -4,18 +4,18 @@
 
 <head>
   @include('layouts.head-page-meta', ['title' => 'Registro'])
-  @include('layouts.head-css')
+  @include('layouts.front-head-css')
 </head>
 <!-- [Body] Start -->
 
-<body>
+<body class="landing-page">
   @include('layouts.loader')
   
   <div class="auth-main">
     <div class="auth-wrapper v3">
       <div class="auth-form">
         <div class="auth-header">
-          <a href="{{ route('home') }}"><img src="{{ asset('assets/images/logo-dark.svg') }}" alt="logo"></a>
+          <a href="{{ route('home') }}"><img src="{{ asset('Logo.png') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;"></a>
         </div>
         
         <div class="card my-5">

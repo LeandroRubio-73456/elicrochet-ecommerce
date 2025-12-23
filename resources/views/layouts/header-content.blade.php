@@ -15,7 +15,7 @@
         <li class="dropdown pc-h-item d-inline-flex d-md-none">
             <a class="pc-head-link dropdown-toggle arrow-none m-0" data-bs-toggle="dropdown" href="#"
                 role="button" aria-haspopup="false" aria-expanded="false">
-                <i class="ti ti-search"></i>
+                <i class="ti-search"></i>
             </a>
             <div class="dropdown-menu pc-h-dropdown drp-search">
                 <form class="px-3">
@@ -40,12 +40,12 @@
         <li class="dropdown pc-h-item">
             <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                 role="button" aria-haspopup="false" aria-expanded="false">
-                <i class="ti ti-mail"></i>
+                <i class="ti-mail"></i>
             </a>
             <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
                 <div class="dropdown-header d-flex align-items-center justify-content-between">
                     <h5 class="m-0">Message</h5>
-                    <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-x text-danger"></i></a>
+                    <a href="#!" class="pc-head-link bg-transparent"><i class="ti-x text-danger"></i></a>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
@@ -125,7 +125,7 @@
                             <span>UI/UX Designer</span>
                         </div>
                         <a href="#!" class="pc-head-link bg-transparent"><i
-                                class="ti ti-power text-danger"></i></a>
+                                class="ti-power text-danger"></i></a>
                     </div>
                 </div>
                 <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
@@ -137,7 +137,7 @@
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="drp-t2" data-bs-toggle="tab" data-bs-target="#drp-tab-2"
                             type="button" role="tab" aria-controls="drp-tab-2" aria-selected="false"><i
-                                class="ti ti-settings"></i> Setting</button>
+                                class="ti-settings"></i> Setting</button>
                     </li>
                 </ul>
                 <div class="tab-content" id="mysrpTabContent">
@@ -162,7 +162,7 @@
                         <a href="#"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                             class="dropdown-item">
-                            <i class="ti ti-power"></i>
+                            <i class="ti-power"></i>
                             <span>Logout</span>
                         </a>
 
@@ -181,15 +181,15 @@
                             <span>Account Settings</span>
                         </a>
                         <a href="#!" class="dropdown-item">
-                            <i class="ti ti-lock"></i>
+                            <i class="ti-lock"></i>
                             <span>Privacy Center</span>
                         </a>
                         <a href="#!" class="dropdown-item">
-                            <i class="ti ti-messages"></i>
+                            <i class="ti-messages"></i>
                             <span>Feedback</span>
                         </a>
                         <a href="#!" class="dropdown-item">
-                            <i class="ti ti-list"></i>
+                            <i class="ti-list"></i>
                             <span>History</span>
                         </a>
                     </div>

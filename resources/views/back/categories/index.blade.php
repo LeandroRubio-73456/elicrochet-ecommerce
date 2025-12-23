@@ -1,247 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.back-layout')
 
-<head>
-    @include('layouts.head-page-meta', ['title' => 'Gestión de Categorías'])
-    @include('layouts.head-css')
-</head>
+@section('title', 'Gestión de Categorías')
 
-<body @bodySetup>
-    @include('layouts.layout-vertical')
+@section('content')
+    @include('layouts.breadcrumb', [
+        'item' => 'Dashboard',
+        'active' => 'Categorías',
+    ])
 
-    <div class="pc-container">
-        <div class="pc-content">
-            @include('layouts.breadcrumb', [
-                'breadcrumb-item' => 'Dashboard',
-                'breadcrumb-item-active' => 'Categorías',
-            ])
-            <div>
-                {{-- 1. CABECERA Y BOTÓN DE CREAR (CORREGIDO) --}}
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h4 class="m-0">Lista de Categorías</h4>
-                    <a href="{{ route('back.categories.create') }}">
-                        <button type="button" class="btn btn-primary d-flex align-items-center gap-2">
-                            <i class="ti ti-plus"></i>
-                            Agregar Categoría
-                        </button>
-                    </a>
+    <div>
+        {{-- 1. CABECERA Y BOTÓN DE CREAR --}}
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="m-0">Lista de Categorías</h4>
+            <a href="{{ route('admin.categories.create') }}">
+                <button type="button" class="btn btn-primary d-flex align-items-center gap-2">
+                    <i class="ti-plus"></i>
+                    Agregar Categoría
+                </button>
+            </a>
+        </div>
+
+        <div class="card tbl-card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="categories-table" class="table table-hover table-striped w-100">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Icono</th>
+                                <th>Categoría</th>
+                                <th>Slug</th>
+                                <th class="text-center"># Productos</th>
+                                <th class="text-center">
+                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                        <span>Estado</span>
+                                        <div class="dropdown" onclick="event.stopPropagation()">
+                                            <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="">Todos</a></li>
+                                                <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="active">Activo</a></li>
+                                                <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="inactive">Inactivo</a></li>
+                                                <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="archived">Archivado</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <!-- DataTables -->
+                        </tbody>
+                    </table>
                 </div>
-
-                {{-- 2. BLOQUE DE FILTROS (DISEÑO LIMPIO) --}}
-                {{-- Nota: Ajustado para usar lógica de categorías si existiera. --}}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        {{-- Asumo que la ruta es back.categories.index para filtrar --}}
-                        <form action="{{ route('back.categories.index') }}" method="GET"
-                            class="row g-3 align-items-end">
-
-                            {{-- Columna de Búsqueda --}}
-                            <div class="col-md-4 col-sm-6">
-                                <label for="search" class="form-label fw-bold">Buscar</label>
-                                <input type="text" class="form-control" id="search" name="search"
-                                    placeholder="Nombre de categoría..." value="{{ request('search') }}">
-                            </div>
-
-                            {{-- Columna de Estado (Asumiendo que tienes un filtro de estado) --}}
-                            <div class="col-md-4 col-sm-6">
-                                <label for="status" class="form-label fw-bold">Estado</label>
-                                <select class="form-select" id="status" name="status">
-                                    <option value="">Todos los estados</option>
-                                    @foreach (['active', 'inactive', 'archived'] as $status)
-                                        <option value="{{ $status }}"
-                                            {{ request('status') == $status ? 'selected' : '' }}>
-                                            {{ ucfirst($status) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-md-2 d-flex align-items-end">
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="ti ti-filter me-1"></i> Filtrar
-                                    </button>
-                                    <a href="{{ route('back.categories.index') }}" class="btn btn-secondary">
-                                        <i class="ti ti-brush me-1"></i> Limpiar
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="card tbl-card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Categoría</th>
-                                        <th class="text-center"># Productos</th>
-                                        <th class="text-center">Estado</th>
-                                        <th class="text-center">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($categories as $category)
-                                        <tr>
-                                            <td class="text-end">{{ $category->id }}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="col-auto pe-0 me-2">
-                                                        @if ($category->image_path)
-                                                            <img src="{{ asset('storage/' . $category->image_path) }}"
-                                                                alt="{{ $category->name }}"
-                                                                class="wid-40 rounded-circle">
-                                                        @else
-                                                            <div
-                                                                class="wid-40 rounded-circle bg-light d-flex align-items-center justify-content-center">
-                                                                <i class="ti ti-category f-18 text-muted"></i>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    <div>
-                                                        <h6 class="mb-0">{{ $category->name }}</h6>
-                                                        @if ($category->parent)
-                                                            <small class="text-muted f-12">
-                                                                <i class="ti ti-arrow-up-right me-1"></i>
-                                                                Subcategoría de: {{ $category->parent->name }}
-                                                            </small>
-                                                        @endif
-                                                        <p class="text-muted f-12 mb-0">
-                                                            {{ Str::limit($category->description, 80) }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge bg-light-primary f-12">
-                                                    {{ $category->products_count ?? 0 }} productos
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                {!! $category->status_badge !!}
-
-                                            </td>
-
-                                            {{-- ACCIONES: Solo Editar y Eliminar (Botones más visuales) --}}
-                                            <td class="text-center">
-                                                <div class="d-flex gap-2 justify-content-center">
-                                                    {{-- Botón de Editar --}}
-                                                    <a href="{{ route('back.categories.edit', $category) }}"
-                                                        class="btn btn-outline-primary">
-                                                        <i class="ti ti-edit"></i>
-                                                    </a>
-
-                                                    {{-- Botón de Eliminar (SweetAlert2) --}}
-                                                    <button type="button"
-                                                        class="btn btn-outline-danger delete-category-btn"
-                                                        data-category-id="{{ $category->id }}"
-                                                        data-category-name="{{ $category->name }}"
-                                                        data-action-url="{{ route('back.categories.destroy', $category) }}">
-                                                        <i class="ti ti-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                {{-- ... (Paginación si la tienes, etc.) ... --}}
             </div>
         </div>
     </div>
-    @include('layouts.footer-block')
+@endsection
 
+@push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('assets/js/back/plugins/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('assets/js/back/pages/dashboard-default.js') }}"></script>
+    <script type="module">
+        $(document).ready(function() {
+            var table = $('#categories-table').DataTable({
+                processing: true,
+                serverSide: true,
+                orderCellsTop: false,
+                fixedHeader: true,
+                ajax: {
+                    url: "{{ route('admin.categories.index') }}"
+                },
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'icon', name: 'icon', orderable: false, searchable: false },
+                    { data: 'name', name: 'name' },
+                    { data: 'slug', name: 'slug' },
+                    { data: 'products_count', name: 'products_count', searchable: false, className: "text-center" },
+                    { data: 'status', name: 'status', className: "text-center" },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false, className: "text-center" }
+                ],
+                // Updated DOM to include 'l' (length) as requested, adapting the Products layout
+                dom: '<"row mb-3"<"col-md-4"l><"col-md-4"f><"col-md-4 text-end"B>>' +
+                     '<"row"<"col-sm-12"tr>>' +
+                     '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: '<i class="ti-download me-1"></i> Exportar',
+                        className: 'btn btn-primary btn-sm',
+                        buttons: [
+                            {
+                                extend: 'excelHtml5',
+                                text: '<i class="ti-file-spreadsheet me-1"></i> Excel',
+                                exportOptions: {
+                                    columns: [0, 2, 3, 4, 5]
+                                }
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                text: '<i class="ti-file-text me-1"></i> PDF',
+                                exportOptions: {
+                                    columns: [0, 2, 3, 4, 5]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+            // Lógica para filtrar al hacer click en el dropdown item
+            $('.filter-option').on('click', function(e) {
+                e.preventDefault();
+                var colIndex = $(this).data('column');
+                var val = $(this).data('value');
+                table.column(colIndex).search(val).draw();
+            });
 
-            // Eliminar categoría con SweetAlert
-            document.querySelectorAll('.delete-category-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const actionUrl = this.getAttribute('data-action-url');
-                    const categoryName = this.getAttribute('data-category-name');
-                    const row = this.closest('tr'); // Obtenemos la fila de la tabla
-
-                    Swal.fire({
-                        title: '¿Estás seguro?',
-                        html: `¿Eliminar la categoría <strong>"${categoryName}"</strong>?<br><br>
-                               <small class="text-danger">
-                                   <i class="ti ti-alert-circle me-1"></i>
-                                   Esta acción eliminará la categoría PERMANENTEMENTE.
-                               </small>`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Sí, eliminar categoría',
-                        cancelButtonText: 'Cancelar',
-                        showLoaderOnConfirm: true,
-                        preConfirm: () => {
-                            return fetch(actionUrl, {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        _method: 'DELETE'
-                                    })
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        // Si el código de estado es 4xx o 5xx
-                                        return response.json().then(data => {
-                                            throw new Error(data.message ||
-                                                'Error al eliminar la categoría'
-                                                );
-                                        }).catch(() => {
-                                            // Fallback si no devuelve JSON
-                                            throw new Error(
-                                                'Error de servidor o conexión.'
-                                                );
-                                        });
-                                    }
-                                    return response.json();
-                                })
-                                .catch(error => {
-                                    Swal.showValidationMessage(
-                                        `Error: ${error.message}`
-                                    );
-                                    // Detenemos el proceso para que el usuario vea el error
-                                    return false;
-                                });
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed && result.value) {
-                            // Si la eliminación fue exitosa
-                            row.remove();
-
+            // Delegación de eventos delete
+            $('#categories-table').on('click', '.delete-category-btn', function() {
+                const actionUrl = $(this).data('action-url');
+                const categoryName = $(this).data('category-name');
+                
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    html: `¿Eliminar la categoría <strong>${categoryName}</strong>?<br><br>
+                           <small class="text-danger">
+                               <i class="ti-alert-circle me-1"></i>
+                               Esta acción eliminará la categoría PERMANENTEMENTE.
+                           </small>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar categoría',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(actionUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ _method: 'DELETE' })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(data => { throw new Error(data.message); });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            table.ajax.reload();
                             Swal.fire({
                                 icon: 'success',
                                 title: '¡Categoría Eliminada!',
-                                text: result.value.message ||
-                                    `La categoría "${categoryName}" ha sido eliminada.`,
+                                text: data.message,
                                 timer: 2000,
                                 showConfirmButton: false,
                                 toast: true,
                                 position: 'top-end'
                             });
-                        }
-                    });
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', error.message || 'Error al eliminar.', 'error');
+                        });
+                    }
                 });
             });
+
+            // Filtro click en badge removed
         });
     </script>
-    @include('layouts.footer-js')
-</body>
-
-</html>
+@endpush
