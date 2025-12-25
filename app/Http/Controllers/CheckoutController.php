@@ -338,9 +338,23 @@ class CheckoutController extends Controller
 
             if ($response->successful() && isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
                 
-                $order = Order::with('items')->find($orderId); // Load items to check for custom orders
-                
-                if ($order) {
+                try {
+                    DB::beginTransaction();
+
+                    // Reload order with items AND lock it for update to prevent other processes from modifying it simultaneously
+                    // Note: Ideally we want to lock the PRODUCTS.
+                    $order = Order::with('items')->lockForUpdate()->find($orderId); 
+                    
+                    if (!$order) {
+                        throw new \Exception("Orden no encontrada durante el procesamiento (Race Condition check).");
+                    }
+
+                    // Check if already paid to avoid double processing
+                    if ($order->status === Order::STATUS_PAID) {
+                        DB::rollBack();
+                        return redirect()->route('cart')->with('info', 'Esta orden ya fue procesada anteriormente.');
+                    }
+
                     $order->update([
                         'status' => 'in_review',
                         'payphone_transaction_id' => $payphoneId,
@@ -363,21 +377,30 @@ class CheckoutController extends Controller
                         }
                     }
 
-                    if ($order->type === Order::TYPE_STOCK && !$hasCustomOrder) {
-                        // Check stock logic (simplified)
-                         $newStatus = Order::STATUS_PAID;
-                    }
-                    
-                    // DECREMENT STOCK
+                    // DECREMENT STOCK WITH LOCKING
                     foreach ($order->items as $item) {
-                        if ($item->product_id && $item->product) {
-                            $item->product->decrement('stock', $item->quantity);
+                        if ($item->product_id) {
+                            // LOCK the product row to ensure we are reading the absolute latest stock
+                            // and preventing others from buying it until we are done
+                            $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+
+                            if ($product) {
+                                if ($product->stock < $item->quantity) {
+                                    throw new \Exception("Stock insuficiente para el producto '{$product->name}'. Stock actual: {$product->stock}, Solicitado: {$item->quantity}. La compra ha sido revertida.");
+                                }
+                                $product->decrement('stock', $item->quantity);
+                            }
                         }
                     }
                     
                     $order->update(['status' => $newStatus]);
                     
-                    // Send Email
+                    // Vaciamos el carrito (This is safe to do here)
+                    $order->user->cartItems()->delete();
+
+                    DB::commit();
+
+                    // MAIL NOTIFICATIONS (Send AFTER commit to ensure emails are only sent if DB transaction succeeds)
                     try {
                         \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidNotification($order));
                     } catch (\Exception $e) {
@@ -387,20 +410,22 @@ class CheckoutController extends Controller
                     try {
                         $admin = \App\Models\User::where('role', 'admin')->first();
                         if ($admin) {
-                            sleep(11); // Increased to 11s based on user plan
+                            // Removed sleep() or reduced it significantly as we are now safer or use Queue usually
+                            // But keeping it effectively small or relying on Sync
                             \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
                         }
                     } catch (\Exception $e) {
                         Log::error("Error sending NewOrderAdminNotification (Paid): " . $e->getMessage());
                     }
 
-                    // Vaciamos el carrito
-                    $order->user->cartItems()->delete();
-
                     return view('front.checkout-success', compact('order'));
-                } else {
-                    Log::error("Order ID {$orderId} not found in database during callback.");
+
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    Log::error("Transaction Error processing Order {$orderId}: " . $e->getMessage());
+                    return redirect()->route('cart')->with('error', 'Error procesando el pedido: ' . $e->getMessage());
                 }
+
             } else {
                 Log::warning("Transaction not approved. Status: " . ($result['transactionStatus'] ?? 'Unknown'));
             }

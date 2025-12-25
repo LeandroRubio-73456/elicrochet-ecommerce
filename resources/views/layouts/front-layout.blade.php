@@ -6,6 +6,7 @@
     @include('layouts.head-page-meta')
     @include('layouts.front-head-css')
     @stack('css')
+    <link rel="stylesheet" href="{{ asset('css/main-modern.css') }}">
 </head>
 <body class="landing-page d-flex flex-column min-vh-100">
 
@@ -19,5 +20,6 @@
 
     @stack('scripts')
     @include('layouts.footer-js')
+    <script src="{{ asset('js/main-modern.js') }}"></script>
 </body>
 </html>

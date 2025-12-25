@@ -31,17 +31,46 @@ class HomeController extends Controller
         ]);
     }
 
-    public function shop()
+    public function shop(Request $request)
     {
-        // 1. Obtener categorías con contador de productos y solo las activas si aplica
+        // 1. Obtener categorías
         $categories = Category::withCount('products')
-            ->where('status', 'active') // Asumiendo que hay status
+            ->where('status', 'active')
             ->get();
 
-        // 2. Obtener productos con paginación
-        $products = Product::where('status', 'active') // Asumiendo status
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        // 2. Query base de productos
+        $query = Product::where('status', 'active');
+
+        // 2.1 Filtro de Precios
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // 2.2 Ordenamiento
+        $sort = $request->input('sort', 'newest'); // Por defecto 'newest'
+        switch ($sort) {
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'popular':
+                // Si tienes un campo de views o sales_count, úsalo. Si no, por ahora id.
+                // $query->orderBy('sales_count', 'desc');
+                $query->orderBy('id', 'desc'); 
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // 3. Paginar
+        $products = $query->paginate(12)->withQueryString();
 
         return view('front.shop', compact('categories', 'products'));
     }
@@ -91,7 +120,7 @@ class HomeController extends Controller
         return view('front.single', compact('product', 'relatedProducts'));
     }
 
-    public function categoryShow(string $slug)
+    public function categoryShow(Request $request, string $slug)
     {
         // 1. Buscar la categoría por su slug
         $category = Category::where('slug', $slug)->firstOrFail();
@@ -101,13 +130,41 @@ class HomeController extends Controller
             ->where('status', 'active')
             ->get();
 
-        // 3. Obtener los productos de esa categoría
-        $products = Product::where('category_id', $category->id)
+        // 3. Query base
+        $query = Product::where('category_id', $category->id)
             ->with('images')
-            ->where('status', 'active')
-            ->paginate(12);
+            ->where('status', 'active');
+
+        // 3.1 Filtro de Precios
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // 3.2 Ordenamiento
+        $sort = $request->input('sort', 'newest');
+        switch ($sort) {
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'popular':
+                $query->orderBy('id', 'desc'); // Placeholder
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        // 4. Paginar
+        $products = $query->paginate(12)->withQueryString();
         
-        // 4. Devolver la vista de la tienda pasando todo
+        // 5. Devolver la vista de la tienda pasando todo
         return view('front.shop', compact('category', 'categories', 'products'));
     }
 

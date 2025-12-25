@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Order;
 
 class OrderController extends Controller
@@ -168,30 +169,30 @@ class OrderController extends Controller
              \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderShippedNotification($order));
         }
 
-        // Check for cancellation and restore stock
-        if ($request->status === 'cancelled' && $order->status !== 'cancelled') {
-             // Only restore if it was previously deducted (paid, working, or ready_to_ship, shipped, completed)
-             // Essentially, anything that IS NOT 'quotation' or 'pending_payment'.
-             // However, strictly following user instruction: "paid, working or pending_payment".
-             // WAIT. User said: "Solo devolver stock si la orden estaba en estado paid, working o pending_payment".
-             // BUT pending_payment hasn't deducted stock yet in our logic.
-             // We will stick to: Paid, Working, Ready_to_ship, Shipped, Completed.
-             
-             $deductedStatuses = ['paid', 'working', 'ready_to_ship', 'shipped', 'completed'];
-             
-             if (in_array($order->status, $deductedStatuses)) {
-                 foreach ($order->items as $item) {
-                     if ($item->product_id && $item->product) {
-                         $item->product->increment('stock', $item->quantity);
+        return DB::transaction(function () use ($request, $order) {
+            
+            // Check for cancellation and restore stock
+            if ($request->status === 'cancelled' && $order->status !== 'cancelled') {
+                 // Only restore if it was previously deducted
+                 $deductedStatuses = ['paid', 'working', 'ready_to_ship', 'shipped', 'completed'];
+                 
+                 if (in_array($order->status, $deductedStatuses)) {
+                     foreach ($order->items as $item) {
+                         if ($item->product_id) {
+                             $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                             if ($product) {
+                                 $product->increment('stock', $item->quantity);
+                             }
+                         }
                      }
                  }
-             }
-        }
+            }
 
-        $order->status = $request->status;
-        $order->save();
+            $order->status = $request->status;
+            $order->save();
 
-        return redirect()->route('admin.orders.show', $order)
-            ->with('success', 'Orden actualizada correctamente.');
+            return redirect()->route('admin.orders.show', $order)
+                ->with('success', 'Orden actualizada correctamente.');
+        });
     }
 }
