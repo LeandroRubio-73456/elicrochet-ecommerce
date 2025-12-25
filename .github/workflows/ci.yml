@@ -11,13 +11,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress
+      - name: Generate key
+        run: php artisan key:generate
       - name: Run Tests
         run: php artisan test --coverage-text --min=60 # Falla si la cobertura es < 60%
       - name: Static Analysis
         run: php artisan insights --min-quality=80 --no-interaction # Falla si la calidad es < 80
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Generate key
-        run: php artisan key:generate 
