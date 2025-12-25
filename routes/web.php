@@ -24,6 +24,10 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Rutas del carrito (PROTEGIDAS por auth) - Se mantienen igual por ahora
 Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add'); 
     Route::any('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
