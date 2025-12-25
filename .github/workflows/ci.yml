@@ -11,10 +11,19 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          coverage: pcov
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
         run: composer install --prefer-dist --no-progress
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install NPM dependencies
+        run: npm ci
+      - name: Build assets
+        run: npm run build
       - name: Generate key
         run: php artisan key:generate
       - name: Run Tests
