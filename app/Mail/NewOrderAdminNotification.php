@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -30,11 +29,11 @@ class NewOrderAdminNotification extends Mailable
     public function envelope(): Envelope
     {
         if ($this->order->status === 'quotation') {
-            $subject = 'Nueva Solicitud de Cotización #' . $this->order->id;
+            $subject = 'Nueva Solicitud de Cotización #'.$this->order->id;
         } elseif ($this->order->status === 'paid' || $this->order->status === 'in_review') {
-            $subject = 'Pago Recibido - Pedido #' . $this->order->id;
+            $subject = 'Pago Recibido - Pedido #'.$this->order->id;
         } else {
-            $subject = 'Nuevo Pedido Recibido #' . $this->order->id;
+            $subject = 'Nuevo Pedido Recibido #'.$this->order->id;
         }
 
         return new Envelope(

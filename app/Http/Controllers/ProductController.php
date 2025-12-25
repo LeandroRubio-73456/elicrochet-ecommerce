@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\Category;
-use Illuminate\Support\Str;
+use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -19,7 +19,7 @@ class ProductController extends Controller
             $query = Product::with(['category', 'images']);
 
             // 1. Filtrado Global (Search)
-            if ($request->has('search') && !empty($request->input('search.value'))) {
+            if ($request->has('search') && ! empty($request->input('search.value'))) {
                 $searchValue = $request->input('search.value');
                 $query->where(function ($q) use ($searchValue) {
                     $q->where('name', 'like', "%{$searchValue}%")
@@ -33,15 +33,15 @@ class ProductController extends Controller
             // 2. Filtro por Columna (Status y Category)
             if ($request->has('columns')) {
                 // Filtro Estado (Columna 6)
-                $statusSearch = $request->input("columns.6.search.value");
-                if (!empty($statusSearch)) {
+                $statusSearch = $request->input('columns.6.search.value');
+                if (! empty($statusSearch)) {
                     $query->where('status', $statusSearch);
                 }
 
                 // Filtro Categoría (Columna 3 - Nombre de categoría)
-                $categorySearch = $request->input("columns.3.search.value");
-                if (!empty($categorySearch)) {
-                    $query->whereHas('category', function($q) use ($categorySearch) {
+                $categorySearch = $request->input('columns.3.search.value');
+                if (! empty($categorySearch)) {
+                    $query->whereHas('category', function ($q) use ($categorySearch) {
                         $q->where('name', $categorySearch);
                     });
                 }
@@ -52,13 +52,13 @@ class ProductController extends Controller
                 $orderColumnIndex = $request->input('order.0.column');
                 $orderDirection = $request->input('order.0.dir');
                 $columns = ['id', 'images', 'name', 'category_id', 'price', 'stock', 'status', 'actions']; // Mapeo de columnas
-                
+
                 if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'images') {
                     $columnName = $columns[$orderColumnIndex];
                     if ($columnName === 'category_id') { // Ordenar por nombre de categoría
-                         $query->join('categories', 'products.category_id', '=', 'categories.id')
-                               ->orderBy('categories.name', $orderDirection)
-                               ->select('products.*'); // Evitar columnas duplicadas
+                        $query->join('categories', 'products.category_id', '=', 'categories.id')
+                            ->orderBy('categories.name', $orderDirection)
+                            ->select('products.*'); // Evitar columnas duplicadas
                     } else {
                         $query->orderBy($columnName, $orderDirection);
                     }
@@ -66,14 +66,14 @@ class ProductController extends Controller
             } else {
                 $query->latest('id');
             }
-            
+
             // 4. Paginación
             $totalRecords = Product::count();
             $filteredRecords = $query->count();
-            
+
             $start = $request->input('start', 0);
             $length = $request->input('length', 10);
-            
+
             $products = $query->skip($start)->take($length)->get();
 
             // 5. Transformación de datos para DataTables
@@ -81,7 +81,7 @@ class ProductController extends Controller
                 // Imagen
                 $imageHtml = '<div class="d-flex align-items-center"><div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="ti ti-photo text-muted"></i></div></div>';
                 if ($product->images->count() > 0) {
-                    $imageHtml = '<div class="d-flex align-items-center"><img src="' . asset('storage/' . $product->images->first()->image_path) . '" alt="" class="rounded me-2" width="40" height="40" style="object-fit: cover;"></div>';
+                    $imageHtml = '<div class="d-flex align-items-center"><img src="'.asset('storage/'.$product->images->first()->image_path).'" alt="" class="rounded me-2" width="40" height="40" style="object-fit: cover;"></div>';
                 }
 
                 // Estado (Badge)
@@ -91,9 +91,9 @@ class ProductController extends Controller
                     'out_of_stock' => '<span class="badge bg-light-danger f-12">Sin Stock</span>',
                     'discontinued' => '<span class="badge bg-light-dark f-12">Descontinuado</span>',
                     'archived' => '<span class="badge bg-light-warning f-12">Archivado</span>',
-                    default => '<span class="badge bg-light-secondary f-12">' . $product->status . '</span>',
+                    default => '<span class="badge bg-light-secondary f-12">'.$product->status.'</span>',
                 };
-                
+
                 if ($product->status === 'active' && $product->stock <= 0) {
                     $statusBadge .= '<span class="badge bg-danger mt-1 f-12"><i class="ti-exclamation-triangle me-1"></i> Sin Stock</span>';
                 }
@@ -106,11 +106,11 @@ class ProductController extends Controller
 
                 $actions = '
                     <div class="d-flex gap-2 justify-content-center">
-                        <a href="' . $editUrl . '" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
-                        <a href="' . $showUrl . '" class="btn btn-outline-info"><i class="ti-eye"></i></a>
+                        <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
+                        <a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>
                         <button type="button" class="btn btn-outline-danger delete-product-btn" 
-                            data-product-id="' . $product->id . '" 
-                            data-action-url="' . $deleteUrl . '">
+                            data-product-id="'.$product->id.'" 
+                            data-action-url="'.$deleteUrl.'">
                             <i class="ti-trash"></i>
                         </button>
                     </div>';
@@ -118,24 +118,25 @@ class ProductController extends Controller
                 return [
                     'id' => $product->id,
                     'image' => $imageHtml,
-                    'name' => '<h6 class="mb-0">' . $product->name . '</h6>',
+                    'name' => '<h6 class="mb-0">'.$product->name.'</h6>',
                     'category' => $product->category ? $product->category->name : 'N/A',
-                    'price' => '$' . number_format($product->price, 2),
+                    'price' => '$'.number_format($product->price, 2),
                     'stock' => $product->stock,
                     'status' => $statusBadge,
-                    'actions' => $actions
+                    'actions' => $actions,
                 ];
             });
 
             return response()->json([
-                "draw" => intval($request->input('draw')),
-                "recordsTotal" => $totalRecords,
-                "recordsFiltered" => $filteredRecords,
-                "data" => $data
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $data,
             ]);
         }
 
         $categories = Category::all();
+
         return view('back.products.index', compact('categories'));
     }
 
@@ -145,6 +146,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::orderBy('name')->get();
+
         return view('back.products.create', compact('categories'));
     }
 
@@ -178,7 +180,7 @@ class ProductController extends Controller
             $count = 1;
             $originalSlug = $validated['slug'];
             while (Product::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug . '-' . $count++;
+                $validated['slug'] = $originalSlug.'-'.$count++;
             }
         }
 
@@ -197,7 +199,7 @@ class ProductController extends Controller
         }
 
         return redirect()->route('back.products.index')
-            ->with('success', 'Producto "' . $product->name . '" creado exitosamente.');
+            ->with('success', 'Producto "'.$product->name.'" creado exitosamente.');
     }
 
     /**
@@ -214,6 +216,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::orderBy('name')->get();
+
         return view('back.products.edit', compact('product', 'categories'));
     }
 
@@ -226,7 +229,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             // Asegúrate de que el slug es único, excepto para el producto actual
-            'slug' => 'nullable|string|max:255|unique:products,slug,' . $product->id,
+            'slug' => 'nullable|string|max:255|unique:products,slug,'.$product->id,
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
@@ -248,7 +251,6 @@ class ProductController extends Controller
             // Opcional: Manejar la unicidad del slug
         }
 
-
         // 3. Actualizar los campos del producto
         // Usamos $validated directamente, ya que contiene todos los campos necesarios.
         $product->update($validated);
@@ -269,6 +271,7 @@ class ProductController extends Controller
         return redirect()->route('back.products.index')
             ->with('success', 'Producto actualizado correctamente.');
     }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -279,7 +282,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Producto eliminado correctamente.'
+            'message' => 'Producto eliminado correctamente.',
         ]);
     }
 }

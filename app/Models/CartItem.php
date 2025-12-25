@@ -15,11 +15,11 @@ class CartItem extends Model
         'custom_order_id', // Added
         'quantity',
         'price',
-        'attributes'
+        'attributes',
     ];
 
     protected $casts = [
-        'attributes' => 'array'
+        'attributes' => 'array',
     ];
 
     public function user()

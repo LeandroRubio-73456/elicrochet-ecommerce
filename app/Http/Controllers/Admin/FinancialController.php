@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class FinancialController extends Controller
 {
@@ -17,39 +16,39 @@ class FinancialController extends Controller
     {
         // 1. Total Income (Paid or Completed)
         $totalIncome = Order::whereIn('status', ['paid', 'completed', 'shipped', 'ready_to_ship'])
-                            ->sum('total_amount');
+            ->sum('total_amount');
 
         // 2. Orders last 30 days
         $ordersLast30Days = Order::where('created_at', '>=', Carbon::now()->subDays(30))->count();
 
         // 3. Status Balance (KPI)
         $statusCounts = Order::select('status', DB::raw('count(*) as total'))
-                             ->groupBy('status')
-                             ->pluck('total', 'status');
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
         $pendingCount = $statusCounts['pending_payment'] ?? 0;
         $workingCount = ($statusCounts['working'] ?? 0) + ($statusCounts['ready_to_ship'] ?? 0);
-        $paidCount    = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0);
+        $paidCount = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0);
 
         // 4. Chart Data (Sales per Month - Last 6 Months)
         $salesData = Order::select(
-            DB::raw('sum(total_amount) as sum'), 
+            DB::raw('sum(total_amount) as sum'),
             DB::raw("DATE_FORMAT(created_at,'%Y-%m') as months")
         )
-        ->whereIn('status', ['paid', 'completed', 'shipped', 'working'])
-        ->where('created_at', '>=', Carbon::now()->subMonths(6))
-        ->groupBy('months')
-        ->orderBy('months', 'ASC')
-        ->get();
-        
+            ->whereIn('status', ['paid', 'completed', 'shipped', 'working'])
+            ->where('created_at', '>=', Carbon::now()->subMonths(6))
+            ->groupBy('months')
+            ->orderBy('months', 'ASC')
+            ->get();
+
         $chartLabels = $salesData->pluck('months');
         $chartValues = $salesData->pluck('sum');
 
         return view('back.finance.index', compact(
-            'totalIncome', 
-            'ordersLast30Days', 
-            'pendingCount', 
-            'workingCount', 
+            'totalIncome',
+            'ordersLast30Days',
+            'pendingCount',
+            'workingCount',
             'paidCount',
             'chartLabels',
             'chartValues'
@@ -61,33 +60,33 @@ class FinancialController extends Controller
      */
     public function export()
     {
-        $fileName = 'financial_report_' . date('Y-m-d_H-i') . '.csv';
+        $fileName = 'financial_report_'.date('Y-m-d_H-i').'.csv';
         $orders = Order::orderBy('id', 'desc')->get();
 
-        $headers = array(
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        );
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
 
         $columns = ['ID', 'Cliente', 'Email', 'Fecha', 'Estado', 'Total', 'Tipo'];
 
-        $callback = function() use($orders, $columns) {
+        $callback = function () use ($orders, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($orders as $order) {
-                $row['ID']      = $order->id;
+                $row['ID'] = $order->id;
                 $row['Cliente'] = $order->customer_name;
-                $row['Email']   = $order->customer_email;
-                $row['Fecha']   = $order->created_at->format('Y-m-d H:i');
-                $row['Estado']  = ucfirst($order->status);
-                $row['Total']   = $order->total_amount;
-                $row['Tipo']    = ucfirst($order->type ?? 'Stock');
+                $row['Email'] = $order->customer_email;
+                $row['Fecha'] = $order->created_at->format('Y-m-d H:i');
+                $row['Estado'] = ucfirst($order->status);
+                $row['Total'] = $order->total_amount;
+                $row['Tipo'] = ucfirst($order->type ?? 'Stock');
 
-                fputcsv($file, array($row['ID'], $row['Cliente'], $row['Email'], $row['Fecha'], $row['Estado'], $row['Total'], $row['Tipo']));
+                fputcsv($file, [$row['ID'], $row['Cliente'], $row['Email'], $row['Fecha'], $row['Estado'], $row['Total'], $row['Tipo']]);
             }
 
             fclose($file);

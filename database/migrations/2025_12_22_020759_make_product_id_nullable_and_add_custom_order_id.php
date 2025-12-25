@@ -14,7 +14,7 @@ return new class extends Migration
         // Update cart_items table
         Schema::table('cart_items', function (Blueprint $table) {
             $table->foreignId('product_id')->nullable()->change();
-            if (!Schema::hasColumn('cart_items', 'custom_order_id')) {
+            if (! Schema::hasColumn('cart_items', 'custom_order_id')) {
                 $table->foreignId('custom_order_id')->nullable()->after('product_id')->constrained('orders')->onDelete('cascade');
             }
         });
@@ -22,9 +22,9 @@ return new class extends Migration
         // Update order_items table
         Schema::table('order_items', function (Blueprint $table) {
             $table->foreignId('product_id')->nullable()->change();
-             if (!Schema::hasColumn('order_items', 'custom_order_id')) {
+            if (! Schema::hasColumn('order_items', 'custom_order_id')) {
                 $table->foreignId('custom_order_id')->nullable()->after('product_id')->constrained('orders')->onDelete('set null');
-             }
+            }
         });
     }
 
@@ -36,17 +36,17 @@ return new class extends Migration
         Schema::table('cart_items', function (Blueprint $table) {
             $table->foreignId('product_id')->nullable(false)->change();
             if (Schema::hasColumn('cart_items', 'custom_order_id')) {
-                 $table->dropForeign(['custom_order_id']);
-                 $table->dropColumn('custom_order_id');
+                $table->dropForeign(['custom_order_id']);
+                $table->dropColumn('custom_order_id');
             }
         });
 
         Schema::table('order_items', function (Blueprint $table) {
             $table->foreignId('product_id')->nullable(false)->change();
-             if (Schema::hasColumn('order_items', 'custom_order_id')) {
-                 $table->dropForeign(['custom_order_id']);
-                 $table->dropColumn('custom_order_id');
-             }
+            if (Schema::hasColumn('order_items', 'custom_order_id')) {
+                $table->dropForeign(['custom_order_id']);
+                $table->dropColumn('custom_order_id');
+            }
         });
     }
 };

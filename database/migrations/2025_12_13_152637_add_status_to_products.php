@@ -14,7 +14,7 @@ return new class extends Migration
                 'active',     // Activo (visible en tienda)
                 'out_of_stock', // Agotado
                 'discontinued', // Descontinuado
-                'archived'    // Archivado
+                'archived',    // Archivado
             ])->default('draft')->after('stock');
         });
     }

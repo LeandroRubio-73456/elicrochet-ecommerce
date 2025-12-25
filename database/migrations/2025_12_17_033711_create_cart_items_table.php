@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2); // Precio en el momento de agregar
             $table->json('attributes')->nullable(); // Color, imagen, etc.
             $table->timestamps();
-            
+
             // Un usuario no puede tener el mismo producto duplicado
             $table->unique(['user_id', 'product_id']);
         });

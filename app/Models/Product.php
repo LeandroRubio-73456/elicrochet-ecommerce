@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Product extends Model
@@ -17,7 +17,7 @@ class Product extends Model
         'stock',
         'status',
         'is_featured',
-        'specs' // JSON of concrete values
+        'specs', // JSON of concrete values
     ];
 
     protected $casts = [
@@ -30,7 +30,7 @@ class Product extends Model
     protected function shortDescription(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) =>
+            get: fn ($value, $attributes) =>
             // Limita la descripción a 25 palabras
             Str::words(strip_tags($attributes['description']), 10, '...'),
         );
@@ -44,7 +44,7 @@ class Product extends Model
             'active' => ['success', 'Activo', 'ti-eye'],
             'out_of_stock' => ['danger', 'Agotado', 'ti-box'],
             'discontinued' => ['secondary', 'Descontinuado', 'ti-na'],
-            'archived' => ['dark', 'Archivado', 'ti-archive']
+            'archived' => ['dark', 'Archivado', 'ti-archive'],
         ];
 
         [$color, $text, $icon] = $badges[$this->status] ?? ['secondary', 'Desconocido', 'fa-question'];

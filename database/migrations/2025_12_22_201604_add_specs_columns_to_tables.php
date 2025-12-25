@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->json('required_specs')->nullable()->after('description'); 
+            $table->json('required_specs')->nullable()->after('description');
         });
 
         Schema::table('products', function (Blueprint $table) {
-            $table->json('specs')->nullable()->after('description'); 
+            $table->json('specs')->nullable()->after('description');
         });
 
         Schema::table('order_items', function (Blueprint $table) {
-            $table->json('custom_specs')->nullable()->after('custom_description'); 
+            $table->json('custom_specs')->nullable()->after('custom_description');
         });
     }
 

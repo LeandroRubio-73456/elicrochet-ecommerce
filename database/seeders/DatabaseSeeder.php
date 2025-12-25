@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Schema::disableForeignKeyConstraints();
-        
+
         $this->call([
             CategoriesSeeder::class,
             ProductsSeeder::class,
         ]);
-        
+
         Schema::enableForeignKeyConstraints();
 
         // User::factory(10)->create();

@@ -105,11 +105,11 @@ return [
     */
 
     'requirements' => [
-//        'min-quality' => 0,
-//        'min-complexity' => 0,
-//        'min-architecture' => 0,
-//        'min-style' => 0,
-//        'disable-security-check' => false,
+        //        'min-quality' => 0,
+        //        'min-complexity' => 0,
+        //        'min-architecture' => 0,
+        //        'min-style' => 0,
+        //        'disable-security-check' => false,
     ],
 
     /*
@@ -123,7 +123,7 @@ return [
     |
     */
 
-    'threads' => null,
+    'threads' => 1,
 
     /*
     |--------------------------------------------------------------------------
@@ -136,5 +136,5 @@ return [
     |
     */
 
-    'timeout' => 60,
+    'timeout' => 300,
 ];

@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     protected $fillable = [
-        'name', 
+        'name',
         'description',
-        'status', 
+        'status',
         'slug',
         'icon',
-        'required_specs' // array of field definitions
+        'required_specs', // array of field definitions
     ];
 
     protected $casts = [
@@ -34,12 +34,13 @@ class Category extends Model
 
             if ($fieldRequired && empty($input[$fieldName])) {
                 $errors[] = "El campo '{$fieldName}' es obligatorio.";
+
                 continue;
             }
 
             // Type validation (basic)
-            if (!empty($input[$fieldName])) {
-                if ($fieldType === 'number' && !is_numeric($input[$fieldName])) {
+            if (! empty($input[$fieldName])) {
+                if ($fieldType === 'number' && ! is_numeric($input[$fieldName])) {
                     $errors[] = "El campo '{$fieldName}' debe ser numérico.";
                 }
                 // Add more type checks as needed
@@ -54,11 +55,11 @@ class Category extends Model
         $badges = [
             'active' => ['success', 'Activo', 'ti-eye'],
             'inactive' => ['warning', 'Inactivo', 'ti-na'],
-            'archived' => ['dark', 'Archivado', 'ti-archive']
+            'archived' => ['dark', 'Archivado', 'ti-archive'],
         ];
-        
+
         [$color, $text, $icon] = $badges[$this->status] ?? ['secondary', 'Desconocido', 'fa-question'];
-        
+
         return sprintf(
             '<span class="f-12 badge bg-light-%s"><i class="%s me-1"></i> %s</span>',
             $color,

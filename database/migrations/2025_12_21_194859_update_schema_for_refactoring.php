@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'shipping_address')) {
+            if (! Schema::hasColumn('users', 'shipping_address')) {
                 $table->string('shipping_address')->nullable();
                 $table->string('shipping_city')->nullable();
                 $table->string('shipping_zip')->nullable();
@@ -20,16 +20,16 @@ return new class extends Migration
         });
 
         Schema::table('orders', function (Blueprint $table) {
-            if (!Schema::hasColumn('orders', 'type')) {
+            if (! Schema::hasColumn('orders', 'type')) {
                 $table->string('type', 20)->default('standard')->after('status'); // standard, catalog, custom
             }
         });
 
         Schema::table('order_items', function (Blueprint $table) {
-            if (!Schema::hasColumn('order_items', 'custom_description')) {
+            if (! Schema::hasColumn('order_items', 'custom_description')) {
                 $table->text('custom_description')->nullable()->after('price');
             }
-            if (!Schema::hasColumn('order_items', 'images')) {
+            if (! Schema::hasColumn('order_items', 'images')) {
                 $table->json('images')->nullable()->after('custom_description');
             }
             if (Schema::hasColumn('order_items', 'product_id')) {

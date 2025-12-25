@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,12 +23,12 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
 
         view()->composer('*', function ($view) {
-        if (request()->user()) {
-            $cartCount = \App\Models\CartItem::where('user_id', request()->user()->id)->sum('quantity');
-            $view->with('cartCount', $cartCount);
-        } else {
-            $view->with('cartCount', 0);
-        }
-    });
+            if (request()->user()) {
+                $cartCount = \App\Models\CartItem::where('user_id', request()->user()->id)->sum('quantity');
+                $view->with('cartCount', $cartCount);
+            } else {
+                $view->with('cartCount', 0);
+            }
+        });
     }
 }

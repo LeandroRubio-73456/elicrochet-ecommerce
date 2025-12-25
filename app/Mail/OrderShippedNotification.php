@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -30,7 +29,7 @@ class OrderShippedNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'EliCrochet - ¡Tu pedido ha sido enviado! #' . $this->order->id,
+            subject: 'EliCrochet - ¡Tu pedido ha sido enviado! #'.$this->order->id,
         );
     }
 

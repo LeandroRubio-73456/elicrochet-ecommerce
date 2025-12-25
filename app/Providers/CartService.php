@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Product;
 use App\Models\CartItem;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class CartService
@@ -11,10 +11,10 @@ class CartService
     // Obtener todos los items del carrito del usuario actual
     public function getCart()
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return collect();
         }
-        
+
         return CartItem::where('user_id', Auth::id())
             ->with(['product.images', 'customOrder']) // Eager load custom order
             ->get();
@@ -23,7 +23,7 @@ class CartService
     // Agregar producto al carrito
     public function addToCart(Product $product, $quantity = 1, $attributes = [])
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
@@ -37,7 +37,7 @@ class CartService
 
         // Verificar stock con el total acumulado
         if ($totalQuantity > $product->stock) {
-            throw new \Exception('Stock insuficiente. Ya tienes ' . $currentQuantityInCart . ' en el carrito y solo quedan ' . $product->stock . ' unidades disponibles en total.');
+            throw new \Exception('Stock insuficiente. Ya tienes '.$currentQuantityInCart.' en el carrito y solo quedan '.$product->stock.' unidades disponibles en total.');
         }
 
         if ($existingItem) {
@@ -54,8 +54,8 @@ class CartService
                 'attributes' => array_merge($attributes, [
                     'image' => $product->images->first()?->image_path,
                     'slug' => $product->slug,
-                    'name' => $product->name
-                ])
+                    'name' => $product->name,
+                ]),
             ]);
         }
 
@@ -65,7 +65,7 @@ class CartService
     // Agregar pedido personalizado al carrito
     public function addCustomOrder(\App\Models\Order $order)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
@@ -82,7 +82,7 @@ class CartService
         if ($order->status === \App\Models\Order::STATUS_PENDING_PAYMENT) {
             $order->update(['status' => \App\Models\Order::STATUS_IN_CART]);
         }
-        
+
         // Crear nuevo item
         CartItem::create([
             'user_id' => Auth::id(),
@@ -92,9 +92,9 @@ class CartService
             'price' => $order->total_amount,
             'attributes' => [
                 'image' => $order->custom_image_path ?? null, // Usar imagen del pedido si tiene
-                'name' => 'Pedido Personalizado #' . $order->id,
-                'is_custom' => true
-            ]
+                'name' => 'Pedido Personalizado #'.$order->id,
+                'is_custom' => true,
+            ],
         ]);
 
         return true;
@@ -103,7 +103,7 @@ class CartService
     // Actualizar cantidad
     public function updateQuantity($productId, $quantity)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
@@ -114,6 +114,7 @@ class CartService
         if ($item) {
             $item->quantity = $quantity;
             $item->save();
+
             return true;
         }
 
@@ -123,14 +124,14 @@ class CartService
     // Eliminar del carrito
     public function removeFromCart($id)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
         $item = CartItem::where('user_id', Auth::id())
-            ->where(function($query) use ($id) {
+            ->where(function ($query) use ($id) {
                 $query->where('product_id', $id)
-                      ->orWhere('custom_order_id', $id);
+                    ->orWhere('custom_order_id', $id);
             })
             ->first();
 
@@ -143,15 +144,17 @@ class CartService
                 }
             }
             $item->delete();
+
             return true;
         }
+
         return false;
     }
 
     // Vaciar carrito
     public function clearCart()
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return false;
         }
 
@@ -159,7 +162,7 @@ class CartService
         $cartItems = CartItem::where('user_id', Auth::id())->whereNotNull('custom_order_id')->get();
         foreach ($cartItems as $item) {
             $order = \App\Models\Order::find($item->custom_order_id);
-             if ($order && $order->status === \App\Models\Order::STATUS_IN_CART) {
+            if ($order && $order->status === \App\Models\Order::STATUS_IN_CART) {
                 $order->update(['status' => \App\Models\Order::STATUS_PENDING_PAYMENT]);
             }
         }

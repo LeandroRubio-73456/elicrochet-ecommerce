@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id', 
-        'address_id', 
-        'total_amount', 
-        'status', 
-        'payphone_transaction_id', 
+        'user_id',
+        'address_id',
+        'total_amount',
+        'status',
+        'payphone_transaction_id',
         'payphone_status',
         'customer_name',
         'customer_email',
@@ -19,23 +19,33 @@ class Order extends Model
         'type', // standard (stock), catalog (no stock), custom
         'shipping_address', // If storing snapshot directly
         'shipping_city',
-        'shipping_zip'
+        'shipping_zip',
     ];
 
     // Types
     const TYPE_STOCK = 'standard';
+
     const TYPE_CATALOG = 'catalog';
+
     const TYPE_CUSTOM = 'custom';
 
     // Statuses
     const STATUS_QUOTATION = 'quotation'; // Cotización (Solo Custom)
+
     const STATUS_IN_CART = 'in_cart'; // Temporary status while in checkout
+
     const STATUS_PENDING_PAYMENT = 'pending_payment';
+
     const STATUS_PAID = 'paid';
+
     const STATUS_WORKING = 'working'; // En fabricación
+
     const STATUS_READY_TO_SHIP = 'ready_to_ship';
+
     const STATUS_SHIPPED = 'shipped';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_CANCELLED = 'cancelled';
 
     protected $casts = [
@@ -62,7 +72,7 @@ class Order extends Model
      */
     public function getOrderNumberAttribute()
     {
-        return 'PED-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+        return 'PED-'.str_pad($this->id, 5, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -70,27 +80,27 @@ class Order extends Model
      */
     public function recalculateTotal()
     {
-        $itemsTotal = $this->items->sum(function($item) {
+        $itemsTotal = $this->items->sum(function ($item) {
             return $item->price * $item->quantity;
         });
-        
-        // If it's a custom order, we might want to respect the original negotiated price 
+
+        // If it's a custom order, we might want to respect the original negotiated price
         // OR assuming the custom order item IS the custom price.
         // In the new logic, the custom order ITSELF is the container.
-        // But do we represent the "custom part" as an item? 
+        // But do we represent the "custom part" as an item?
         // No, in the current DB schema, custom orders might not have an "item" representing the service yet if they were created via the form.
         // Wait, Custom Orders usually don't have OrderItems for the custom part itself initially?
-        // Let's check how they are created. 
+        // Let's check how they are created.
         // If they don't have an item, the total_amount is just set.
         // But if we add stock items, we need to ADD their value to the original custom price.
-        
-        // Strategy: 
+
+        // Strategy:
         // We will assume the current total_amount INCLUDES the custom price.
         // BUT if we recalculate from scratch, we might lose the custom price if it's not in an item.
         // FIX: The fusion logic in CheckoutController will handle the initial addition.
         // This method will be used to SUM items.
         // Let's make it safe: calculate sum of items.
-        
+
         return $itemsTotal;
     }
 
@@ -115,10 +125,10 @@ class Order extends Model
             // Can cancel if pending payment or paid (but not yet working/shipping)
             // Also allow cancelling if in_cart
             return in_array($current, [
-                self::STATUS_QUOTATION, 
-                self::STATUS_PENDING_PAYMENT, 
+                self::STATUS_QUOTATION,
+                self::STATUS_PENDING_PAYMENT,
                 self::STATUS_PAID,
-                self::STATUS_IN_CART
+                self::STATUS_IN_CART,
             ]);
         }
 
@@ -126,41 +136,77 @@ class Order extends Model
             case self::TYPE_STOCK:
                 // Scneario A: Pending -> Paid -> Shipped -> Completed
                 // Skip ready_to_ship as per user request
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) return true;
-                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_SHIPPED) return true;
+                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) {
+                    return true;
+                }
+                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_SHIPPED) {
+                    return true;
+                }
                 // Allow escape from legacy ready_to_ship
-                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) return true; 
+                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) {
+                    return true;
+                }
 
-                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) return true;
+                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
+                    return true;
+                }
                 break;
 
             case self::TYPE_CATALOG:
                 // Scenario B: Pending -> Paid -> Working -> Shipped -> Completed
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) return true;
-                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_WORKING) return true; // Start crafting
-                if ($current == self::STATUS_WORKING && $targetStatus == self::STATUS_SHIPPED) return true; // Finished & Shipped
+                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) {
+                    return true;
+                }
+                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_WORKING) {
+                    return true;
+                } // Start crafting
+                if ($current == self::STATUS_WORKING && $targetStatus == self::STATUS_SHIPPED) {
+                    return true;
+                } // Finished & Shipped
                 // Allow escape from legacy ready_to_ship
-                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) return true;
+                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) {
+                    return true;
+                }
 
-                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) return true;
+                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
+                    return true;
+                }
                 break;
 
             case self::TYPE_CUSTOM:
                 // Scenario C: Quotation -> Pending Payment -> Paid -> Working -> Shipped -> Completed
-                if ($current == self::STATUS_QUOTATION && $targetStatus == self::STATUS_PENDING_PAYMENT) return true; // Owner sets price
-                
+                if ($current == self::STATUS_QUOTATION && $targetStatus == self::STATUS_PENDING_PAYMENT) {
+                    return true;
+                } // Owner sets price
+
                 // Allow moving to cart
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_IN_CART) return true;
-                if ($current == self::STATUS_IN_CART && $targetStatus == self::STATUS_PENDING_PAYMENT) return true; // Removed from cart
-                if ($current == self::STATUS_IN_CART && $targetStatus == self::STATUS_PAID) return true; // Paid from checkout
+                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_IN_CART) {
+                    return true;
+                }
+                if ($current == self::STATUS_IN_CART && $targetStatus == self::STATUS_PENDING_PAYMENT) {
+                    return true;
+                } // Removed from cart
+                if ($current == self::STATUS_IN_CART && $targetStatus == self::STATUS_PAID) {
+                    return true;
+                } // Paid from checkout
 
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) return true;
-                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_WORKING) return true;
-                if ($current == self::STATUS_WORKING && $targetStatus == self::STATUS_SHIPPED) return true;
+                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) {
+                    return true;
+                }
+                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_WORKING) {
+                    return true;
+                }
+                if ($current == self::STATUS_WORKING && $targetStatus == self::STATUS_SHIPPED) {
+                    return true;
+                }
                 // Allow escape from legacy ready_to_ship
-                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) return true;
+                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) {
+                    return true;
+                }
 
-                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) return true;
+                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
+                    return true;
+                }
                 break;
         }
 

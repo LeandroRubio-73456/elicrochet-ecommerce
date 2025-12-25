@@ -14,7 +14,7 @@ class OrderController extends Controller
             $query = Order::with(['user', 'address']);
 
             // 1. Busqueda Global
-            if ($request->has('search') && !empty($request->input('search.value'))) {
+            if ($request->has('search') && ! empty($request->input('search.value'))) {
                 $searchValue = $request->input('search.value');
                 $query->where(function ($q) use ($searchValue) {
                     $q->where('customer_name', 'like', "%{$searchValue}%")
@@ -25,8 +25,8 @@ class OrderController extends Controller
 
             // 2. Filtro por Estado (Columna 3)
             if ($request->has('columns')) {
-                $statusSearch = $request->input("columns.3.search.value");
-                if (!empty($statusSearch)) {
+                $statusSearch = $request->input('columns.3.search.value');
+                if (! empty($statusSearch)) {
                     $query->where('status', $statusSearch);
                 }
             }
@@ -37,7 +37,7 @@ class OrderController extends Controller
                 $orderDirection = $request->input('order.0.dir');
                 // Mapeo visual de columnas a base de datos
                 $columns = ['id', 'customer_name', 'total_amount', 'status', 'created_at', 'actions'];
-                
+
                 if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions') {
                     $query->orderBy($columns[$orderColumnIndex], $orderDirection);
                 }
@@ -50,7 +50,7 @@ class OrderController extends Controller
             $filteredRecords = $query->count();
             $start = $request->input('start', 0);
             $length = $request->input('length', 10);
-            
+
             $orders = $query->skip($start)->take($length)->get();
 
             // 5. Transformación
@@ -58,15 +58,15 @@ class OrderController extends Controller
                 // Cliente
                 $customer = '
                     <div class="d-flex flex-column">
-                        <span class="fw-bold">' . $order->customer_name . '</span>
-                        <small class="text-muted">' . $order->customer_email . '</small>
+                        <span class="fw-bold">'.$order->customer_name.'</span>
+                        <small class="text-muted">'.$order->customer_email.'</small>
                     </div>';
 
                 // Tipo
                 $typeBadge = match ($order->type) {
                     'custom' => '<span class="badge bg-light-primary f-12">Personalizado</span>',
                     'standard' => '<span class="badge bg-light-secondary f-12">Estándar</span>',
-                    default => '<span class="badge bg-light-secondary f-12">' . $order->type . '</span>',
+                    default => '<span class="badge bg-light-secondary f-12">'.$order->type.'</span>',
                 };
 
                 // Estado
@@ -79,30 +79,30 @@ class OrderController extends Controller
                     'cancelled' => '<span class="badge f-12 bg-light-danger">Cancelado</span>',
                     'pending_payment' => '<span class="badge f-12 bg-light-secondary">Pendiente de Pago</span>',
                     'paid' => '<span class="badge f-12 bg-light-success">Pagado</span>',
-                    default => '<span class="badge f-12 bg-light-secondary">' . $order->status . '</span>',
+                    default => '<span class="badge f-12 bg-light-secondary">'.$order->status.'</span>',
                 };
-                
+
                 // Acciones
                 $viewUrl = route('back.orders.show', $order);
-                $actions = '<a href="' . $viewUrl . '" class="btn btn-outline-info"><i class="ti-eye"></i></a>';
+                $actions = '<a href="'.$viewUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>';
 
                 return [
-                    'id' => '#ORD-' . str_pad($order->id, 5, '0', STR_PAD_LEFT),
-                    'id' => '#ORD-' . str_pad($order->id, 5, '0', STR_PAD_LEFT),
+                    'id' => '#ORD-'.str_pad($order->id, 5, '0', STR_PAD_LEFT),
+                    'id' => '#ORD-'.str_pad($order->id, 5, '0', STR_PAD_LEFT),
                     'customer_name' => $customer,
                     'type' => $typeBadge,
-                    'total' => '$' . number_format($order->total_amount, 2),
+                    'total' => '$'.number_format($order->total_amount, 2),
                     'status' => $statusBadge,
                     'created_at' => $order->created_at->format('d M Y, H:i'),
-                    'actions' => $actions
+                    'actions' => $actions,
                 ];
             });
 
             return response()->json([
-                "draw" => intval($request->input('draw')),
-                "recordsTotal" => $totalRecords,
-                "recordsFiltered" => $filteredRecords,
-                "data" => $data
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $data,
             ]);
         }
 
@@ -112,6 +112,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->load(['user', 'address', 'items.product']);
+
         return view('back.orders.show', compact('order'));
     }
 
@@ -120,13 +121,13 @@ class OrderController extends Controller
         $request->validate([
             'status' => 'required|string|max:20',
         ]);
-        
+
         // Special validation check: When moving to 'pending_payment', total_amount is required for custom orders (quotations)
         if ($request->status === 'pending_payment' && $order->type === 'custom') {
-             $request->validate([
+            $request->validate([
                 'total_amount' => 'required|numeric|min:0.01',
             ], [
-                'total_amount.required' => 'Debe ingresar el valor total de la cotización antes de solicitar el pago.'
+                'total_amount.required' => 'Debe ingresar el valor total de la cotización antes de solicitar el pago.',
             ]);
         }
 
@@ -136,11 +137,11 @@ class OrderController extends Controller
                 return back()->with('error', 'No se puede cancelar una orden que ya está en fabricación (Trabajando).');
             }
         }
-        
+
         $data = [
             'status' => $request->status,
         ];
-        
+
         // Update amount if present and we are in quotation phase
         if ($request->has('total_amount') && $order->type === 'custom') {
             $data['total_amount'] = $request->total_amount;

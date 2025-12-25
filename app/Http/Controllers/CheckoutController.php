@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Providers\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log; // <--- Import Log
-use App\Providers\CartService; // <--- IMPORTANTE
+use Illuminate\Support\Facades\Http; // <--- Import Log
+use Illuminate\Support\Facades\Log; // <--- IMPORTANTE
 
 class CheckoutController extends Controller
 {
@@ -28,15 +28,16 @@ class CheckoutController extends Controller
         // 1. Existing Order Flow (e.g. Custom Order Payment)
         if ($request->has('order')) {
             Log::info("Checkout payment retry requested. Order ID: {$request->order}, User ID: {$user->id}");
-            
+
             $order = Order::where('id', $request->order)
-                          ->where('user_id', $user->id)
-                          ->firstOrFail();
+                ->where('user_id', $user->id)
+                ->firstOrFail();
 
             Log::info("Order found. Status: '{$order->status}'");
 
             if ($order->status !== 'pending_payment') {
-                Log::warning("Order status mismatch. Redirecting to show.");
+                Log::warning('Order status mismatch. Redirecting to show.');
+
                 return redirect()->route('customer.orders.show', $order->id)
                     ->with('error', 'Esta orden no está pendiente de pago.');
             }
@@ -68,40 +69,44 @@ class CheckoutController extends Controller
 
         if ($order->status !== 'pending_payment') {
             Log::warning("payExisting: Order {$order->id} is not pending payment. Status: {$order->status}");
+
             return redirect()->route('customer.orders.show', $order->id)->with('error', 'Orden no válida para pago.');
         }
 
         try {
             Log::info("payExisting: Preparing PayPhone request for Order {$order->id}");
             // Call PayPhone
-             $response = Http::withoutVerifying()
+            $response = Http::withoutVerifying()
                 ->withToken(env('PAYPHONE_TOKEN'))
                 ->post('https://pay.payphonetodoesposible.com/api/button/Prepare', [
-                    'amount' => (int)($order->total_amount * 100),
-                    'amountWithoutTax' => (int)($order->total_amount * 100),
+                    'amount' => (int) ($order->total_amount * 100),
+                    'amountWithoutTax' => (int) ($order->total_amount * 100),
                     'amountWithTax' => 0,
                     'tax' => 0,
                     'serviceTax' => 0,
                     'tip' => 0,
                     'currency' => 'USD',
-                    'clientTransactionId' => (string) $order->id . '-' . time(),
+                    'clientTransactionId' => (string) $order->id.'-'.time(),
                     'responseUrl' => route('checkout.callback'),
                     'cancellationUrl' => route('checkout.cancel'),
                 ]);
 
-            Log::info("payExisting: PayPhone response status: " . $response->status());
+            Log::info('payExisting: PayPhone response status: '.$response->status());
 
             if ($response->successful()) {
                 Log::info("PayPhone link generated for Existing Order ID: {$order->id}");
+
                 return redirect()->away($response->json()['payWithCard']);
             }
 
-            Log::error("PayPhone Error for Order ID {$order->id}: " . $response->body());
-            return back()->with('error', 'Error al generar link de pago: ' . $response->body());
+            Log::error("PayPhone Error for Order ID {$order->id}: ".$response->body());
+
+            return back()->with('error', 'Error al generar link de pago: '.$response->body());
 
         } catch (\Exception $e) {
-            Log::error("PayExisting Exception: " . $e->getMessage());
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            Log::error('PayExisting Exception: '.$e->getMessage());
+
+            return back()->with('error', 'Error: '.$e->getMessage());
         }
     }
 
@@ -117,8 +122,8 @@ class CheckoutController extends Controller
             'customer_phone' => 'required|string|max:20',
             'shipping_address' => 'required|string',
             'shipping_city' => 'required|string',
-            'shipping_province' => 'required|string', 
-            'shipping_reference' => 'nullable|string', 
+            'shipping_province' => 'required|string',
+            'shipping_reference' => 'nullable|string',
             'shipping_zip' => 'required|string',
         ]);
 
@@ -135,7 +140,7 @@ class CheckoutController extends Controller
 
             // 2.a Sync Address with User Profile
             $address = $user->addresses()->updateOrCreate(
-                ['user_id' => $user->id], 
+                ['user_id' => $user->id],
                 [
                     'street' => $validated['shipping_address'],
                     'city' => $validated['shipping_city'],
@@ -143,7 +148,7 @@ class CheckoutController extends Controller
                     'reference' => $validated['shipping_reference'] ?? null,
                     'postal_code' => $validated['shipping_zip'],
                     'phone' => $validated['customer_phone'],
-                    'customer_name' => $validated['customer_name'] . ' ' . $validated['customer_lastname'],
+                    'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
                     'customer_email' => $validated['customer_email'],
                     // Legacy redundant fields
                     'address' => $validated['shipping_address'],
@@ -155,7 +160,7 @@ class CheckoutController extends Controller
             $user->update(['phone' => $validated['customer_phone']]);
 
             // --- FUSION LOGIC START ---
-            
+
             // 1. Identify valid Custom Orders in Cart
             $customOrderIds = $cartItems->pluck('custom_order_id')->filter()->unique();
             $masterOrderId = $customOrderIds->first();
@@ -165,9 +170,9 @@ class CheckoutController extends Controller
             if ($masterOrderId) {
                 // Use the FIRST custom order as the Master
                 $order = Order::find($masterOrderId);
-                
-                if (!$order) {
-                    throw new \Exception("El pedido personalizado principal referenciado no existe.");
+
+                if (! $order) {
+                    throw new \Exception('El pedido personalizado principal referenciado no existe.');
                 }
 
                 // Identify the specific "original" item of this master order to avoid confusing it with merged ones later
@@ -192,7 +197,7 @@ class CheckoutController extends Controller
                     'user_id' => $user->id,
                     'address_id' => $address->id,
                     'status' => Order::STATUS_PENDING_PAYMENT,
-                    'customer_name' => $validated['customer_name'] . ' ' . $validated['customer_lastname'],
+                    'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
                     'customer_email' => $validated['customer_email'],
                     'customer_phone' => $validated['customer_phone'],
                     'shipping_address' => $validated['shipping_address'],
@@ -208,23 +213,23 @@ class CheckoutController extends Controller
             foreach ($cartItems as $cartItem) {
                 // CASE A: It is a Custom Order Item
                 if ($cartItem->custom_order_id) {
-                    
+
                     // Sub-case A1: It IS the Master Order Item
                     if ($order && $cartItem->custom_order_id == $order->id) {
                         if ($masterOriginalItem) {
                             $masterOriginalItem->update([
                                 'price' => $cartItem->price,
-                                'quantity' => 1
+                                'quantity' => 1,
                             ]);
                         }
-                    } 
+                    }
                     // Sub-case A2: It is a SECONDARY Custom Order (Merge Strategy)
                     else {
                         $secondaryOrder = Order::find($cartItem->custom_order_id);
                         if ($secondaryOrder) {
                             // Get its item info (assuming 1 custom item per custom order usually)
                             $secondaryItem = $secondaryOrder->items()->whereNull('product_id')->first();
-                            
+
                             if ($secondaryItem) {
                                 // Clone it into the Master Order
                                 OrderItem::create([
@@ -234,31 +239,32 @@ class CheckoutController extends Controller
                                     'custom_description' => $secondaryItem->custom_description,
                                     'price' => $cartItem->price,
                                     'quantity' => 1,
-                                    'images' => $secondaryItem->images // Copy images array
+                                    'images' => $secondaryItem->images, // Copy images array
                                 ]);
                             }
-                            
+
                             // 3. Mark the secondary order as cancelled/merged instead of deleting
                             // This preserves ID sequence and history as requested
                             $secondaryOrder->update([
                                 'status' => 'cancelled',
                                 'total_amount' => 0, // Reset total since items moved
-                                'customer_phone' => $secondaryOrder->customer_phone . ' (Fusionado con Order #' . $order->id . ')'
+                                'customer_phone' => $secondaryOrder->customer_phone.' (Fusionado con Order #'.$order->id.')',
                             ]);
-                            // Optionally soft delete items or leave them? 
+                            // Optionally soft delete items or leave them?
                             // If we cloned items, leaving original items might be confusing if they show up in analytics.
                             // But usually, cancelled orders are ignored in analytics.
                             // Let's clear the items from the cancelled order to avoid double counting?
                             // Actually, keeping them is safer for "constancia". Status cancelled handles the logic.
                         }
                     }
-                    continue; 
+
+                    continue;
                 }
 
                 // CASE B: Standard Stock Items
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'product_id' => $cartItem->product_id, 
+                    'product_id' => $cartItem->product_id,
                     'custom_order_id' => null,
                     'quantity' => $cartItem->quantity,
                     'price' => $cartItem->price,
@@ -267,7 +273,7 @@ class CheckoutController extends Controller
 
             // 3. Recalculate Final Total
             // Re-fetch items to account for all additions/updates
-            $finalTotal = $order->items()->get()->sum(function($item) {
+            $finalTotal = $order->items()->get()->sum(function ($item) {
                 return $item->price * $item->quantity;
             });
 
@@ -281,32 +287,39 @@ class CheckoutController extends Controller
             $response = Http::withoutVerifying()
                 ->withToken(env('PAYPHONE_TOKEN'))
                 ->post('https://pay.payphonetodoesposible.com/api/button/Prepare', [
-                    'amount' => (int)($order->total_amount * 100),
-                    'amountWithoutTax' => (int)($order->total_amount * 100),
+                    'amount' => (int) ($order->total_amount * 100),
+                    'amountWithoutTax' => (int) ($order->total_amount * 100),
                     'amountWithTax' => 0,
                     'tax' => 0,
                     'serviceTax' => 0,
                     'tip' => 0,
                     'currency' => 'USD',
-                    'clientTransactionId' => (string) $order->id . '-' . time(),
+                    'clientTransactionId' => (string) $order->id.'-'.time(),
                     'responseUrl' => route('checkout.callback'),
                     'cancellationUrl' => route('checkout.cancel'),
                 ]);
 
             if ($response->successful()) {
                 Log::info("PayPhone link generated for Order ID: {$order->id}");
+
                 return redirect()->away($response->json()['payWithCard']);
             }
 
-            Log::error("PayPhone Error for Order ID {$order->id}: " . $response->body());
-            return redirect()->route('checkout')->with('error', 'Error al generar link de pago: ' . $response->body());
+            Log::error("PayPhone Error for Order ID {$order->id}: ".$response->body());
+
+            return redirect()->route('checkout')->with('error', 'Error al generar link de pago: '.$response->body());
 
         } catch (\Exception $e) {
-            Log::error("Checkout Exception: " . $e->getMessage());
-            try { DB::rollBack(); } catch (\Exception $r) {}
-            return redirect()->route('checkout')->with('error', 'Error: ' . $e->getMessage());
+            Log::error('Checkout Exception: '.$e->getMessage());
+            try {
+                DB::rollBack();
+            } catch (\Exception $r) {
+            }
+
+            return redirect()->route('checkout')->with('error', 'Error: '.$e->getMessage());
         }
     }
+
     /**
      * Callback de PayPhone: Aquí llega el usuario tras pagar
      */
@@ -320,7 +333,7 @@ class CheckoutController extends Controller
 
         Log::info("PayPhone Callback received. PayPhone ID: {$payphoneId}, Raw Order ID: {$rawOrderId}, Real Order ID: {$orderId}");
 
-        if (!$payphoneId) {
+        if (! $payphoneId) {
             return redirect()->route('cart')->with('error', 'No se recibió el ID de pago.');
         }
 
@@ -328,41 +341,42 @@ class CheckoutController extends Controller
             // INTENTO CON CONFIRM V1 (Para coincidir con Prepare V1)
             $response = Http::withoutVerifying()
                 ->withToken(env('PAYPHONE_TOKEN'))
-                ->post("https://pay.payphonetodoesposible.com/api/button/Confirm", [
+                ->post('https://pay.payphonetodoesposible.com/api/button/Confirm', [
                     'id' => (int) $payphoneId,
-                    'clientTransactionId' => (string) $rawOrderId 
+                    'clientTransactionId' => (string) $rawOrderId,
                 ]);
 
             $result = $response->json();
-            Log::info("PayPhone Confirm Response (V1): " . json_encode($result));
+            Log::info('PayPhone Confirm Response (V1): '.json_encode($result));
 
             if ($response->successful() && isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
-                
+
                 try {
                     DB::beginTransaction();
 
                     // Reload order with items AND lock it for update to prevent other processes from modifying it simultaneously
                     // Note: Ideally we want to lock the PRODUCTS.
-                    $order = Order::with('items')->lockForUpdate()->find($orderId); 
-                    
-                    if (!$order) {
-                        throw new \Exception("Orden no encontrada durante el procesamiento (Race Condition check).");
+                    $order = Order::with('items')->lockForUpdate()->find($orderId);
+
+                    if (! $order) {
+                        throw new \Exception('Orden no encontrada durante el procesamiento (Race Condition check).');
                     }
 
                     // Check if already paid to avoid double processing
                     if ($order->status === Order::STATUS_PAID) {
                         DB::rollBack();
+
                         return redirect()->route('cart')->with('info', 'Esta orden ya fue procesada anteriormente.');
                     }
 
                     $order->update([
                         'status' => 'in_review',
                         'payphone_transaction_id' => $payphoneId,
-                        'payphone_status' => 'Approved'
+                        'payphone_status' => 'Approved',
                     ]);
 
                     // Determine next status and Handle Custom Orders
-                    $newStatus = Order::STATUS_PAID; 
+                    $newStatus = Order::STATUS_PAID;
                     $hasCustomOrder = false;
 
                     foreach ($order->items as $item) {
@@ -392,9 +406,9 @@ class CheckoutController extends Controller
                             }
                         }
                     }
-                    
+
                     $order->update(['status' => $newStatus]);
-                    
+
                     // Vaciamos el carrito (This is safe to do here)
                     $order->user->cartItems()->delete();
 
@@ -404,7 +418,7 @@ class CheckoutController extends Controller
                     try {
                         \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidNotification($order));
                     } catch (\Exception $e) {
-                        Log::error("Error sending OrderPaid email: " . $e->getMessage());
+                        Log::error('Error sending OrderPaid email: '.$e->getMessage());
                     }
 
                     try {
@@ -415,26 +429,28 @@ class CheckoutController extends Controller
                             \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
                         }
                     } catch (\Exception $e) {
-                        Log::error("Error sending NewOrderAdminNotification (Paid): " . $e->getMessage());
+                        Log::error('Error sending NewOrderAdminNotification (Paid): '.$e->getMessage());
                     }
 
                     return view('front.checkout-success', compact('order'));
 
                 } catch (\Exception $e) {
                     DB::rollBack();
-                    Log::error("Transaction Error processing Order {$orderId}: " . $e->getMessage());
-                    return redirect()->route('cart')->with('error', 'Error procesando el pedido: ' . $e->getMessage());
+                    Log::error("Transaction Error processing Order {$orderId}: ".$e->getMessage());
+
+                    return redirect()->route('cart')->with('error', 'Error procesando el pedido: '.$e->getMessage());
                 }
 
             } else {
-                Log::warning("Transaction not approved. Status: " . ($result['transactionStatus'] ?? 'Unknown'));
+                Log::warning('Transaction not approved. Status: '.($result['transactionStatus'] ?? 'Unknown'));
             }
 
-            return redirect()->route('cart')->with('error', 'Pago no aprobado. Estado: ' . ($result['transactionStatus'] ?? 'Error'));
+            return redirect()->route('cart')->with('error', 'Pago no aprobado. Estado: '.($result['transactionStatus'] ?? 'Error'));
 
         } catch (\Exception $e) {
-            Log::error("Callback Exception: " . $e->getMessage());
-            return redirect()->route('cart')->with('error', 'Error al confirmar: ' . $e->getMessage());
+            Log::error('Callback Exception: '.$e->getMessage());
+
+            return redirect()->route('cart')->with('error', 'Error al confirmar: '.$e->getMessage());
         }
     }
 }

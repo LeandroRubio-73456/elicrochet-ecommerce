@@ -7,7 +7,6 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class CustomOrderController extends Controller
 {
@@ -66,7 +65,7 @@ class CustomOrderController extends Controller
                 'product_id' => null,
                 'quantity' => 1,
                 'price' => 0,
-                'custom_description' => $request->description . "\n\nFecha sugerida: " . ($request->suggested_date ?? 'No especificada'),
+                'custom_description' => $request->description."\n\nFecha sugerida: ".($request->suggested_date ?? 'No especificada'),
                 'images' => $imagePaths,
             ]);
 
@@ -76,9 +75,10 @@ class CustomOrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Illuminate\Support\Facades\Log::error('Custom Order Error: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Custom Order Error: '.$e->getMessage());
             \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
-            return back()->with('error', 'Ocurrió un error al enviar tu solicitud: ' . $e->getMessage())->withInput();
+
+            return back()->with('error', 'Ocurrió un error al enviar tu solicitud: '.$e->getMessage())->withInput();
         }
     }
 }

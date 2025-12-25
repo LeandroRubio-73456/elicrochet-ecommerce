@@ -14,6 +14,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user()->load('addresses');
         $address = $user->addresses->first(); // Get the first address or null
+
         return view('customer.profile.edit', compact('user', 'address'));
     }
 
@@ -40,22 +41,22 @@ class ProfileController extends Controller
         // Actualizar o Crear Dirección
         if ($request->filled('shipping_address')) {
             $user->addresses()->updateOrCreate(
-                ['user_id' => $user->id], 
+                ['user_id' => $user->id],
                 [
-                    'street' => $validated['shipping_address'], 
+                    'street' => $validated['shipping_address'],
                     'address' => $validated['shipping_address'], // Keep redundant if needed for legacy
                     'city' => $validated['shipping_city'],
-                    'province' => $validated['shipping_province'], 
+                    'province' => $validated['shipping_province'],
                     'reference' => $validated['shipping_reference'],
                     'postal_code' => $validated['shipping_zip'],
                     'phone' => $validated['phone'],
                     'customer_name' => $user->name,
-                    'customer_email' => $user->email
+                    'customer_email' => $user->email,
                 ]
             );
         }
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 

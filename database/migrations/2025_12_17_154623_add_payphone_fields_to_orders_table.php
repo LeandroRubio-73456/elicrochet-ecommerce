@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-    $table->string('payphone_transaction_id')->nullable();
-    $table->string('payphone_status')->nullable(); // Ej: 'pending', 'approved', 'cancelled'
-});
+            $table->string('payphone_transaction_id')->nullable();
+            $table->string('payphone_status')->nullable(); // Ej: 'pending', 'approved', 'cancelled'
+        });
     }
 
     /**

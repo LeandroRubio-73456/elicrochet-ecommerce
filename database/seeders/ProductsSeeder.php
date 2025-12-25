@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProductsSeeder extends Seeder
@@ -17,7 +16,7 @@ class ProductsSeeder extends Seeder
         Product::truncate();
 
         $categories = Category::all();
-        
+
         if ($categories->isEmpty()) {
             return;
         }
@@ -32,7 +31,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 10,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'amigurumis'
+                'category_slug' => 'amigurumis',
             ],
             [
                 'name' => 'Osito Dormilón',
@@ -42,9 +41,9 @@ class ProductsSeeder extends Seeder
                 'stock' => 5,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'amigurumis'
+                'category_slug' => 'amigurumis',
             ],
-             // Ropa
+            // Ropa
             [
                 'name' => 'Gorro de Lana Merino',
                 'slug' => 'gorro-lana-merino',
@@ -53,7 +52,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 20,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'ropa-y-accesorios'
+                'category_slug' => 'ropa-y-accesorios',
             ],
             [
                 'name' => 'Bufanda Infinita',
@@ -63,7 +62,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 15,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'ropa-y-accesorios'
+                'category_slug' => 'ropa-y-accesorios',
             ],
             // Hogar
             [
@@ -74,9 +73,9 @@ class ProductsSeeder extends Seeder
                 'stock' => 12,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'hogar-y-decoracion'
+                'category_slug' => 'hogar-y-decoracion',
             ],
-             [
+            [
                 'name' => 'Posavasos Boho (Set x4)',
                 'slug' => 'posavasos-boho',
                 'description' => 'Set de 4 posavasos estilo bohemio tejidos en macramé.',
@@ -84,10 +83,10 @@ class ProductsSeeder extends Seeder
                 'stock' => 30,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'hogar-y-decoracion'
+                'category_slug' => 'hogar-y-decoracion',
             ],
             // Bebes
-             [
+            [
                 'name' => 'Escarpines Recién Nacido',
                 'slug' => 'escarpines-rn',
                 'description' => 'Zapatitos tejidos para bebés de 0 a 3 meses. Lana suave que no pica.',
@@ -95,9 +94,9 @@ class ProductsSeeder extends Seeder
                 'stock' => 25,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'bebes'
+                'category_slug' => 'bebes',
             ],
-             [
+            [
                 'name' => 'Manta de Apego Conejito',
                 'slug' => 'manta-apego-conejito',
                 'description' => 'Mini manta con cabeza de conejito, reconfortante para el bebé.',
@@ -105,18 +104,18 @@ class ProductsSeeder extends Seeder
                 'stock' => 8,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'bebes'
+                'category_slug' => 'bebes',
             ],
-             // Patrones (Digital)
-             [
+            // Patrones (Digital)
+            [
                 'name' => 'Patrón PDF - Muñeca Lola',
                 'slug' => 'patron-pdf-muneca-lola',
                 'description' => 'Archivo descargable con las instrucciones para tejer la muñeca Lola. Nivel intermedio.',
                 'price' => 5.00,
-                'stock' => 999, 
+                'stock' => 999,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'patrones-y-guias'
+                'category_slug' => 'patrones-y-guias',
             ],
             [
                 'name' => 'Llavero de Corazón',
@@ -126,7 +125,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 50,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'amigurumis'
+                'category_slug' => 'amigurumis',
             ],
             [
                 'name' => 'Muñeca Sofía',
@@ -136,7 +135,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 3,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'amigurumis'
+                'category_slug' => 'amigurumis',
             ],
             [
                 'name' => 'Chaleco Bohemio',
@@ -146,7 +145,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 8,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'ropa-y-accesorios'
+                'category_slug' => 'ropa-y-accesorios',
             ],
             [
                 'name' => 'Top Crop Verano',
@@ -156,7 +155,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 15,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'ropa-y-accesorios'
+                'category_slug' => 'ropa-y-accesorios',
             ],
             [
                 'name' => 'Alfombra de Trapillo Redonda',
@@ -166,7 +165,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 4,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'hogar-y-decoracion'
+                'category_slug' => 'hogar-y-decoracion',
             ],
             [
                 'name' => 'Funda de Cojín Texturizada',
@@ -176,7 +175,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 10,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'hogar-y-decoracion'
+                'category_slug' => 'hogar-y-decoracion',
             ],
             [
                 'name' => 'Cesta Colgante para Plantas',
@@ -186,7 +185,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 20,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'hogar-y-decoracion'
+                'category_slug' => 'hogar-y-decoracion',
             ],
             [
                 'name' => 'Set de Nacimiento (Gorro + Escarpines)',
@@ -196,7 +195,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 6,
                 'status' => 'active',
                 'is_featured' => true,
-                'category_slug' => 'bebes'
+                'category_slug' => 'bebes',
             ],
             [
                 'name' => 'Sonajero Mordedor',
@@ -206,7 +205,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 18,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'bebes'
+                'category_slug' => 'bebes',
             ],
             [
                 'name' => 'Patrón PDF - Top Halter',
@@ -216,7 +215,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 999,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'patrones-y-guias'
+                'category_slug' => 'patrones-y-guias',
             ],
             [
                 'name' => 'Patrón PDF - Manta XXL',
@@ -226,7 +225,7 @@ class ProductsSeeder extends Seeder
                 'stock' => 999,
                 'status' => 'active',
                 'is_featured' => false,
-                'category_slug' => 'patrones-y-guias'
+                'category_slug' => 'patrones-y-guias',
             ],
         ];
 

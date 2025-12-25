@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -78,6 +77,7 @@ class OrderController extends Controller
     public function createCustom()
     {
         $categories = \App\Models\Category::where('status', 'active')->get();
+
         return view('customer.orders.custom_create', compact('categories'));
     }
 
@@ -87,43 +87,43 @@ class OrderController extends Controller
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string|max:1000',
             'images.*' => 'image|max:2048',
-            'custom_specs' => 'array' // Validation logic below
+            'custom_specs' => 'array', // Validation logic below
         ]);
 
         $category = \App\Models\Category::findOrFail($request->category_id);
-        
+
         // 1. Dynamic Validation
         $specErrors = $category->validateSpecs($request->custom_specs ?? []);
-        if (!empty($specErrors)) {
+        if (! empty($specErrors)) {
             return back()->withErrors($specErrors)->withInput();
         }
 
-        $order = new Order();
+        $order = new Order;
         $order->user_id = Auth::id();
         $order->status = Order::STATUS_QUOTATION;
         $order->type = Order::TYPE_CUSTOM;
         $order->customer_name = Auth::user()->name;
         $order->customer_email = Auth::user()->email;
-        
+
         // Use user's default shipping info
         $order->shipping_address = Auth::user()->shipping_address;
         $order->shipping_city = Auth::user()->shipping_city;
         $order->shipping_zip = Auth::user()->shipping_zip;
-        
+
         $order->total_amount = 0; // TBD by Admin
         $order->save();
 
         // Create Item
-        $item = new OrderItem();
+        $item = new OrderItem;
         $item->order_id = $order->id;
         $item->product_id = null; // Custom
-        // Store category info maybe in custom_description or fetch via relation if we had one. 
+        // Store category info maybe in custom_description or fetch via relation if we had one.
         // Ideally we should link custom order to category, but specs are enough context.
-        $item->custom_description = "Categoría: {$category->name}\n\n" . $request->description;
+        $item->custom_description = "Categoría: {$category->name}\n\n".$request->description;
         $item->price = 0;
         $item->quantity = 1;
         $item->custom_specs = $request->custom_specs; // Save JSON
-        
+
         // Handle images
         $imagePaths = [];
         if ($request->hasFile('images')) {
@@ -132,16 +132,16 @@ class OrderController extends Controller
             }
         }
         $item->images = $imagePaths;
-        
+
         $item->images = $imagePaths;
-        
+
         $item->save();
 
         // Send Email
         try {
             \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\CustomOrderReceived($order));
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Error sending CustomOrderReceived email: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error sending CustomOrderReceived email: '.$e->getMessage());
         }
 
         // Notify Admin
@@ -153,10 +153,10 @@ class OrderController extends Controller
                 \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
                 \Illuminate\Support\Facades\Log::info("Admin notification sent to {$admin->email}");
             } else {
-                \Illuminate\Support\Facades\Log::warning("No admin user found to send notification.");
+                \Illuminate\Support\Facades\Log::warning('No admin user found to send notification.');
             }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Error sending NewOrderAdminNotification: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error sending NewOrderAdminNotification: '.$e->getMessage());
         }
 
         return redirect()->route('customer.orders.index')
@@ -175,6 +175,7 @@ class OrderController extends Controller
 
         try {
             $cartService->addCustomOrder($order);
+
             return redirect()->route('cart')->with('success', 'Pedido personalizado agregado al carrito.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

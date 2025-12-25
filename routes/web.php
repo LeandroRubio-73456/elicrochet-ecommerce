@@ -1,16 +1,8 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProductController as BackProductController;
-use App\Http\Controllers\CategoryController as BackCategoryController;
-use App\Http\Controllers\Back\UserController as BackUserController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WebhookController;
-use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -29,7 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
-    Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add'); 
+    Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
     Route::any('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
     Route::patch('/cart/update', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
 
@@ -37,10 +29,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout'); // Método index original (home->checkout)
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/callback', [CheckoutController::class, 'callback'])->name('checkout.callback');
-    Route::get('/checkout/cancel', function() {
+    Route::get('/checkout/cancel', function () {
         return redirect()->route('cart')->with('info', 'Pago cancelado por el usuario.');
     })->name('checkout.cancel');
-    
+
     // Pay Existing Order Route
     Route::post('/checkout/pay/{order}', [CheckoutController::class, 'payExisting'])->name('checkout.pay_existing');
 });
@@ -53,17 +45,17 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        
+
         // Productos, Categorías, Usuarios, Órdenes
         Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
-        
+
         // Eliminar imagen producto
         // Eliminar imagen producto
         Route::delete('/products/images/{productImage}', [\App\Http\Controllers\ProductImageController::class, 'destroy'])->name('products.images.destroy');
-        
+
         // Reporte Financiero
         Route::get('/finance', [\App\Http\Controllers\Admin\FinancialController::class, 'index'])->name('finance.index');
         Route::get('/finance/export', [\App\Http\Controllers\Admin\FinancialController::class, 'export'])->name('finance.export');
@@ -76,7 +68,7 @@ Route::middleware(['auth', 'verified'])
     ->name('customer.')
     ->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
-        
+
         // Perfil y Dirección
         Route::get('/profile', [\App\Http\Controllers\Customer\ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [\App\Http\Controllers\Customer\ProfileController::class, 'update'])->name('profile.update');
@@ -93,4 +85,4 @@ Route::middleware(['auth', 'verified'])
         Route::post('/orders/{order}/add-to-cart', [\App\Http\Controllers\Customer\OrderController::class, 'addCustomToCart'])->name('orders.add_to_cart');
     });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

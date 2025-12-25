@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('categories', function (Blueprint $table) {
             // Se recomienda usar 'text' para descripciones largas de SEO
-            $table->text('description')->nullable()->after('name'); 
+            $table->text('description')->nullable()->after('name');
         });
     }
 

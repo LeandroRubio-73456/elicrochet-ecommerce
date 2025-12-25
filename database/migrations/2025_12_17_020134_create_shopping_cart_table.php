@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('instance')->default('default'); // Instancia del carrito (para múltiples carritos)
             $table->longText('content'); // Contenido serializado del carrito en JSON
             $table->nullableTimestamps(); // created_at y updated_at
-            
+
             $table->primary(['id', 'instance']); // Clave primaria compuesta
         });
     }

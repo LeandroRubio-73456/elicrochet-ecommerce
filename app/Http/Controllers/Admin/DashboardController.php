@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -13,7 +12,7 @@ class DashboardController extends Controller
         $totalUsers = \App\Models\User::count();
         $totalOrders = \App\Models\Order::count();
         $totalSales = \App\Models\Order::whereIn('status', ['paid', 'completed', 'shipped', 'ready_to_ship'])->sum('total_amount');
-        
+
         // 2. Recent Orders (Top 5)
         $recentOrders = \App\Models\Order::with('user')->orderBy('created_at', 'desc')->take(5)->get();
 

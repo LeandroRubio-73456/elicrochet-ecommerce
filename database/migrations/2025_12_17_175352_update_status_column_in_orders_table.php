@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             // Modificamos la columna 'status' para que sea de 20 caracteres (suficiente)
-            $table->string('status', 20)->change(); 
+            $table->string('status', 20)->change();
         });
     }
 
@@ -18,7 +18,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             // Si quieres revertir, pon la longitud original (ej. 5)
-            $table->string('status', 5)->change(); 
+            $table->string('status', 5)->change();
         });
     }
 };
