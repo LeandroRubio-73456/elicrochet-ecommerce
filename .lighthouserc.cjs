@@ -1,3 +1,9 @@
+const path = require('path');
+
+// Workaround for Windows EPERM error: use a custom directory so chrome-launcher doesn't attempt to delete it
+// and fail due to file locking issues.
+const chromeDataDir = path.join(process.cwd(), '.lighthouse_tmp');
+
 module.exports = {
     ci: {
         collect: {
@@ -5,6 +11,10 @@ module.exports = {
             startServerReadyPattern: 'Server running on',
             url: ['http://localhost:8000/'],
             numberOfRuns: 3,
+            settings: {
+                // added --user-data-dir to bypass automatic profile cleanup which fails on Windows
+                chromeFlags: `--headless=new --no-sandbox --disable-gpu --user-data-dir="${chromeDataDir}"`,
+            },
         },
         upload: {
             target: 'temporary-public-storage',
