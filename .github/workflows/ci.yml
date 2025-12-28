@@ -30,3 +30,34 @@ jobs:
         run: php artisan test --coverage-text --min=60 # Falla si la cobertura es < 60%
       - name: Static Analysis
         run: php artisan insights --min-quality=80 --no-interaction # Falla si la calidad es < 80
+
+  lighthouse:
+    needs: laravel-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: sqlite3
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: Create Database
+        run: touch database/database.sqlite
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress
+      - name: Generate key
+        run: php artisan key:generate
+      - name: Migrate Database
+        run: php artisan migrate --force
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install NPM dependencies
+        run: npm ci
+      - name: Build assets
+        run: npm run build
+      - name: Run Lighthouse CI
+        run: npm run lhci:mobile

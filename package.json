@@ -4,9 +4,12 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "lhci:mobile": "lhci autorun",
+        "lhci:desktop": "lhci autorun --collect.settings.formFactor=desktop --collect.settings.screenEmulation.mobile=false"
     },
     "devDependencies": {
+        "@lhci/cli": "^0.15.1",
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/vite": "^4.0.0",
         "alpinejs": "^3.4.2",
