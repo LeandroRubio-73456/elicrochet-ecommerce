@@ -6,7 +6,7 @@
         "build": "vite build",
         "dev": "vite",
         "lhci:mobile": "lhci autorun",
-        "lhci:desktop": "lhci autorun --collect.settings.formFactor=desktop --collect.settings.screenEmulation.mobile=false"
+        "lhci:desktop": "lhci autorun --config=./.lighthouserc.desktop.cjs"
     },
     "devDependencies": {
         "@lhci/cli": "^0.15.1",

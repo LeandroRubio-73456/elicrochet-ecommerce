@@ -24,3 +24,5 @@ Homestead.yaml
 Thumbs.db
 
 .lighthouse_tmp
+
+.lighthouse_tmp_desktop
