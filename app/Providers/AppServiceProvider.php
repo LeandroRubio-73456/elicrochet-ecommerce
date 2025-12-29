@@ -22,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
+        // Force HTTPS in all environments (Local + Production) to support HTTP/2
+        \Illuminate\Support\Facades\URL::forceScheme('https');
+
         view()->composer('*', function ($view) {
             if (request()->user()) {
                 $cartCount = \App\Models\CartItem::where('user_id', request()->user()->id)->sum('quantity');

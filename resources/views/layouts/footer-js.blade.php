@@ -1,40 +1,37 @@
 <!-- Required Js -->
-<script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/popper.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/plugins/simplebar.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}" defer></script>
 <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
 <script src="{{ asset('assets/js/pcoded.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/feather.min.js') }}" defer></script>
 
 <!-- jQuery and DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" defer></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
 <!-- WOW.js for scrolling animations -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" defer></script>
 <script>
-    new WOW().init();
+    document.addEventListener('DOMContentLoaded', function() {
+        new WOW().init();
+    });
 </script>
 
-<script>layout_change('light');</script>
-
-
-
-
-<script>change_box_container('false');</script>
-
-
-
-<script>layout_rtl_change('false');</script>
-
-
-<script>preset_change("preset-1");</script>
-
-
-<script>font_change("Public-Sans");</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof layout_change === 'function') layout_change('light');
+        if (typeof change_box_container === 'function') change_box_container('false');
+        if (typeof layout_rtl_change === 'function') layout_rtl_change('false');
+        if (typeof preset_change === 'function') preset_change("preset-1");
+        if (typeof font_change === 'function') font_change("Public-Sans");
+    });
+</script>
 
     <script>
         // Global Toast Notification System

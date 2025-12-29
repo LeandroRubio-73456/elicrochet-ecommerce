@@ -1,7 +1,7 @@
 @props(['product'])
 
 <div class="product-card-modern h-100">
-    <a href="{{ route('product.show', $product->slug) }}" class="product-image-wrapper">
+    <a href="{{ route('product.show', $product->slug) }}" class="product-image-wrapper" aria-label="{{ $product->name }}">
         @if($product->images->first())
             <img src="{{ asset('storage/' . $product->images->first()->path) }}" 
                  alt="{{ $product->name }}"

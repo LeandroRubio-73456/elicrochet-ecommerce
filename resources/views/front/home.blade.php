@@ -44,9 +44,17 @@
             <div class="col-lg-6">
                 <div class="hero-image-container">
                     <div class="hero-image-wrapper">
-                        <img src="https://images.unsplash.com/photo-1618354691373-85154177d6db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                             alt="Amigurumis artesanales" 
-                             class="hero-image">
+                        <picture>
+                            <source media="(max-width: 450px)" srcset="{{ asset('assets/images/banner-mobile.avif') }}" width="450" height="400">
+                            <source media="(min-width: 451px)" srcset="{{ asset('assets/images/banner.avif') }}" width="780" height="584">
+                            <img src="{{ asset('assets/images/banner.avif') }}" 
+                                 alt="Amigurumis artesanales" 
+                                 width="780"
+                                 height="584"
+                                 class="hero-image img-fluid"
+                                 loading="eager"
+                                 fetchpriority="high">
+                        </picture>
                     </div>
                 </div>
             </div>
@@ -106,8 +114,12 @@
                 </div>
             </div>
             <div class="cta-image">
-                <img src="https://images.unsplash.com/photo-1618354691373-85154177d6db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                     alt="Personalización">
+                <img src="https://images.unsplash.com/photo-1618354691373-85154177d6db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=450&q=80" 
+                     alt="Personalización"
+                     width="600"
+                     height="450"
+                     loading="lazy"
+                     class="img-fluid rounded shadow">
             </div>
         </div>
     </div>

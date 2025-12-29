@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // feather icon start
   feather.replace();
   // feather icon end
-  
+
   // remove pre-loader start
   setTimeout(function () {
     document.querySelector('.loader-bg').remove();
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     new SimpleBar(document.querySelector('.profile-notification-scroll'));
   }
   // header dropdown scrollbar end
-  
+
   // component scrollbar start
   if (!!document.querySelector('.component-list-card .card-body')) {
     new SimpleBar(document.querySelector('.component-list-card .card-body'));
@@ -150,7 +150,7 @@ function menu_click() {
   var vw = window.innerWidth;
   var elem = document.querySelectorAll('.pc-navbar li');
   for (var j = 0; j < elem.length; j++) {
-    elem[j].removeEventListener('click', function () {});
+    elem[j].removeEventListener('click', function () { });
   }
 
   var elem = document.querySelectorAll('.pc-navbar li:not(.pc-trigger) .pc-submenu');
@@ -238,7 +238,7 @@ function rm_menu() {
   }
 
   document.querySelector('.pc-sidebar .pc-menu-overlay').remove();
-  if(document.querySelector('.topbar .pc-menu-overlay')){
+  if (document.querySelector('.topbar .pc-menu-overlay')) {
     document.querySelector('.topbar .pc-menu-overlay').remove();
   }
 }
@@ -299,13 +299,13 @@ for (var t = 0; t < tc.length; t++) {
       setTimeout(function () {
         try {
           prod_like.parentNode.querySelector('.pc-like').remove();
-        } catch (error) {}
+        } catch (error) { }
       }, 3000);
     } else {
       prod_like = event.target;
       try {
         prod_like.parentNode.querySelector('.pc-like').remove();
-      } catch (error) {}
+      } catch (error) { }
     }
   });
 }
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (targetElement.tagName == 'IMG') {
           targetElement = targetElement.parentNode.parentNode;
         }
-        
+
         var temp = targetElement.getAttribute('data-value');
         preset_change(temp);
       });

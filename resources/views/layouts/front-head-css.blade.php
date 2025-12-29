@@ -1,21 +1,30 @@
-<!-- [Google Font] Family -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
-<!-- [Tabler Icons] https://tablericons.com -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}">
-<!-- [Feather Icons] https://feathericons.com -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}">
-<!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css') }}">
-<!-- [Material Icons] https://fonts.google.com/icons -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 
-<link rel="stylesheet" href="{{ asset('assets/fonts/themify-icons.css') }}">
+<!-- [LCP Optimization] Preload Logo & Hero -->
+<link rel="preload" href="{{ asset('Logo.png') }}" as="image" fetchpriority="high">
+<link rel="preload" as="image" href="{{ asset('assets/images/banner-mobile.avif') }}" media="(max-width: 450px)" fetchpriority="high">
+<link rel="preload" as="image" href="{{ asset('assets/images/banner.avif') }}" media="(min-width: 451px)" fetchpriority="high">
 
-<!-- Animate.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-<!-- [Template CSS Files] -->
-<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
-<link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
+<!-- [Google Font] Family - REMOVED FOR PERFORMANCE -->
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link"> -->
+
+<!-- [Tabler Icons] CDN (Fixes 404) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"></noscript>
+
+<!-- [Critical CSS] Inline for FCP -->
+@include('layouts.critical-css')
+
+<!-- [Bootstrap] 5.3.2 CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+<!-- [Template CSS] Main Modern -->
+<link rel="stylesheet" href="{{ asset('css/main-modern.css') }}">
+
+<!-- [Fonts] Preload and Async -->
+<link rel="preload" href="{{ asset('assets/fonts/themify/themify.woff?-fvbane') }}" as="font" type="font/woff" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ asset('assets/fonts/themify-icons.css') }}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{{ asset('assets/fonts/themify-icons.css') }}"></noscript>
 
 <style>
     /* Custom Design Tweaks - EliCrochet Palette */

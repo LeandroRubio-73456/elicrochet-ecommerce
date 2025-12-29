@@ -19,7 +19,7 @@
     @include('front.partials.footer')
 
     @stack('scripts')
-    @include('layouts.footer-js')
-    <script src="{{ asset('js/main-modern.js') }}"></script>
+    @include('layouts.front-footer-js')
+    <script src="{{ asset('js/main-modern.js') }}" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
             <!-- Brand Section -->
             <div class="col-lg-4 col-md-6">
                 <div class="footer-brand mb-4">
-                    <img src="{{ asset('Logo.png') }}" alt="EliCrochet" height="50" class="mb-3">
+                    <img src="{{asset('Logo.png')}}" alt="EliCrochet" width="55" height="60" class="mb-3" loading="lazy">
                     <p class="footer-description">
                         Tejemos sueños y creamos compañeros inolvidables con la mejor calidad y artesanía.
                     </p>
@@ -22,7 +22,7 @@
 
             <!-- Quick Links -->
             <div class="col-lg-2 col-md-6">
-                <h5 class="footer-title">Enlaces</h5>
+                <h4 class="footer-title">Enlaces</h4>
                 <ul class="footer-links">
                     <li><a href="{{ route('home') }}">Inicio</a></li>
                     <li><a href="{{ route('shop') }}">Tienda</a></li>
@@ -33,7 +33,7 @@
 
             <!-- Customer Service -->
             <div class="col-lg-3 col-md-6">
-                <h5 class="footer-title">Ayuda</h5>
+                <h4 class="footer-title">Ayuda</h4>
                 <ul class="footer-links">
                     <li><a href="#">Seguimiento de pedido</a></li>
                     <li><a href="#">Política de devolución</a></li>
@@ -44,7 +44,7 @@
 
             <!-- Contact Info -->
             <div class="col-lg-3 col-md-6">
-                <h5 class="footer-title">Contacto</h5>
+                <h4 class="footer-title">Contacto</h4>
                 <ul class="footer-contact">
                     <li>
                         <i class="ti-map"></i>
@@ -66,21 +66,6 @@
                         &copy; {{ date('Y') }} EliCrochet. Todos los derechos reservados.
                     </p>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <div class="payment-methods">
-                        <span class="payment-label">Métodos de pago:</span>
-                        <svg width="32" height="24" viewBox="0 0 32 24" fill="none" class="payment-icon">
-                            <rect width="32" height="24" rx="4" fill="#1434CB"/>
-                            <path d="M13.2 17.6h5.6V6.4h-5.6v11.2z" fill="#FF5F00"/>
-                            <path d="M13.6 12a7.1 7.1 0 012.4-5.6 7.2 7.2 0 100 11.2A7.1 7.1 0 0113.6 12z" fill="#EB001B"/>
-                            <path d="M27.2 12a7.2 7.2 0 01-11.2 6 7.2 7.2 0 000-12 7.2 7.2 0 0111.2 6z" fill="#F79E1B"/>
-                        </svg>
-                        <svg width="32" height="24" viewBox="0 0 32 24" fill="none" class="payment-icon">
-                            <rect width="32" height="24" rx="4" fill="#00579F"/>
-                            <path d="M14.4 8.8L12 15.2h-2.4l-1.2-4.7c-.1-.3-.2-.4-.4-.5-.4-.2-1-.4-1.6-.5l.1-.3h2.7c.4 0 .7.2.8.6l.7 3.8 1.8-4.4h2.5zm5.9 4.3c0-1.7-2.4-1.8-2.4-2.5 0-.2.2-.5.7-.5.6-.1 1.1 0 1.5.2l.3-1.3c-.4-.1-.9-.2-1.5-.2-2.3 0-3.9 1.2-3.9 2.9 0 1.3 1.1 2 2 2.4.9.4 1.2.7 1.2 1.1 0 .6-.7.9-1.4.9-.7 0-1.3-.2-1.8-.4l-.3 1.4c.5.2 1.3.4 2.2.4 2.5 0 4.1-1.2 4.1-3.1h.3zm6.3 2.1h2.1l-1.8-6.4h-2c-.3 0-.6.2-.7.5l-2.4 5.9h2.4l.5-1.3h2.9v1.3zm-2.6-3.1l1.2-3.3.7 3.3h-1.9zm-8.8-3.3l-1.9 6.4h-2.3l1.9-6.4h2.3z" fill="white"/>
-                        </svg>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -96,11 +81,6 @@
     }
 
     /* Brand Section */
-    .footer-brand img {
-        filter: brightness(0) invert(1);
-        opacity: 0.9;
-    }
-
     .footer-description {
         color: rgba(255, 255, 255, 0.6);
         line-height: 1.6;
