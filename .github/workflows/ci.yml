@@ -2,6 +2,10 @@ name: CI Quality Gate EliCrochet
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
+
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
