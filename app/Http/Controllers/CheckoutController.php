@@ -355,7 +355,6 @@ class CheckoutController extends Controller
                     DB::beginTransaction();
 
                     // Reload order with items AND lock it for update to prevent other processes from modifying it simultaneously
-                    // Note: Ideally we want to lock the PRODUCTS.
                     $order = Order::with('items')->lockForUpdate()->find($orderId);
 
                     if (! $order) {
