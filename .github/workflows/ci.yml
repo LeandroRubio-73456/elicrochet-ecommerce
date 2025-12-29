@@ -132,3 +132,25 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
+
+  php-security:
+    name: Security Analysis (Psalm)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Psalm Security Scan
+        uses: docker://ghcr.io/psalm/psalm-security-scan:latest
+        with:
+          security_analysis_result_path: "results.sarif"
+
+      - name: Upload Security Bundle
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+          category: php-security
