@@ -1,69 +1,134 @@
 name: CI Quality Gate EliCrochet
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
 
 permissions:
   contents: read
-
 
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, sqlite3
           coverage: pcov
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress
+          cache: 'composer' # Cache automático de dependencias de Composer
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - name: Install NPM dependencies
-        run: npm ci
+          cache: 'npm' # Cache automático de node_modules
+
+      - name: Install Dependencies
+        run: |
+          composer install --prefer-dist --no-progress
+          npm ci
+
+      - name: Prepare Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+
       - name: Build assets
         run: npm run build
-      - name: Generate key
-        run: php artisan key:generate
+
       - name: Run Tests
-        run: php artisan test --coverage-text --min=60 # Falla si la cobertura es < 60%
+        run: php artisan test --coverage-text --min=60
+
       - name: Static Analysis
-        run: php artisan insights --min-quality=80 --no-interaction # Falla si la calidad es < 80
+        run: php artisan insights --min-quality=80 --no-interaction
+
+      # Guardamos el build para que Lighthouse no tenga que volver a compilar
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
 
   lighthouse:
     needs: laravel-tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: sqlite3
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Create Database
-        run: touch database/database.sqlite
-      - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress
-      - name: Generate key
-        run: php artisan key:generate
-      - name: Migrate Database
-        run: php artisan migrate --force
+          cache: 'composer'
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - name: Install NPM dependencies
-        run: npm ci
-      - name: Build assets
-        run: npm run build
-      - name: Run Lighthouse CI (Mobile)
-        run: npm run lhci:mobile
-      - name: Run Lighthouse CI (Desktop)
-        run: npm run lhci:desktop
+          cache: 'npm'
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
+
+      - name: Install Dependencies
+        run: |
+          composer install --prefer-dist --no-progress
+          npm ci
+
+      - name: Prepare Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+          php artisan migrate --force
+
+      - name: Run Lighthouse CI
+        run: |
+          npm run lhci:mobile
+          npm run lhci:desktop
+
+  analyze:
+    name: Security Analysis (CodeQL)
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write # Permiso crucial para publicar resultados en la pestaña de Seguridad
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript-typescript', 'php' ] # Analizamos ambos lenguajes de tu proyecto Laravel
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Inicializa las herramientas de CodeQL
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # Puedes añadir consultas personalizadas aquí si lo deseas
+          queries: security-extended,security-and-quality 
+
+      # CodeQL intenta compilar automáticamente (en PHP/JS es muy rápido)
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      # Ejecuta el análisis semántico
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
