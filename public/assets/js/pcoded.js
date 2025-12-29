@@ -324,6 +324,7 @@ var dark_flag = false;
 
 // ----------    new setup start   ------------
 function layout_change_default() {
+  var dark_layout;
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     dark_layout = 'dark';
   } else {
@@ -418,7 +419,7 @@ function preset_change(value) {
 }
 
 function layout_rtl_change(value) {
-  var control = document.querySelector('#layoutmodertl');
+
   if (value == 'true') {
     rtl_flag = true;
     document.getElementsByTagName('body')[0].setAttribute('data-pc-direction', 'rtl');
@@ -443,7 +444,7 @@ function layout_rtl_change(value) {
 }
 
 function layout_change(layout) {
-  var control = document.querySelector('.pct-offcanvas');
+
   document.getElementsByTagName('body')[0].setAttribute('data-pc-theme', layout);
 
   var btn_control = document.querySelector('.theme-layout > a[data-value="default"]');
