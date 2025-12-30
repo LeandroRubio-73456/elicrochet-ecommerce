@@ -46,6 +46,19 @@ class PayPhoneIntegrationTest extends TestCase
             ], 200),
         ]);
 
+        // Mock CartService to ensure the controller sees items
+        $mockCart = $this->mock(\App\Providers\CartService::class);
+        $mockCart->shouldReceive('getCart')->andReturn(collect([
+            (object) [
+                'id' => $product->id,
+                'product_id' => $product->id,
+                'quantity' => 1,
+                'price' => 10,
+                'custom_order_id' => null
+            ]
+        ]));
+        $mockCart->shouldReceive('getTotal')->andReturn(10);
+
         // 3. Act: Submit Checkout Form
         $response = $this->post(route('checkout.store'), [
             'customer_name' => 'John',

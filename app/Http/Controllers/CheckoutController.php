@@ -77,7 +77,7 @@ class CheckoutController extends Controller
             Log::info("payExisting: Preparing PayPhone request for Order {$order->id}");
             // Call PayPhone
             $response = Http::withoutVerifying()
-                ->withToken(env('PAYPHONE_TOKEN'))
+                ->withToken(config('services.payphone.token'))
                 ->post('https://pay.payphonetodoesposible.com/api/button/Prepare', [
                     'amount' => (int) ($order->total_amount * 100),
                     'amountWithoutTax' => (int) ($order->total_amount * 100),
@@ -340,7 +340,7 @@ class CheckoutController extends Controller
         try {
             // INTENTO CON CONFIRM V1 (Para coincidir con Prepare V1)
             $response = Http::withoutVerifying()
-                ->withToken(env('PAYPHONE_TOKEN'))
+                ->withToken(config('services.payphone.token'))
                 ->post('https://pay.payphonetodoesposible.com/api/button/Confirm', [
                     'id' => (int) $payphoneId,
                     'clientTransactionId' => (string) $rawOrderId,
