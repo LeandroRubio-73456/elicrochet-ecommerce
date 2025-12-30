@@ -73,6 +73,7 @@ class PayPhoneIntegrationTest extends TestCase
     {
         // 1. Arrange: Create an order in pending_payment status
         $user = User::factory()->create();
+        $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
         $product = Product::factory()->create(['price' => 50, 'stock' => 10]);
         
         $order = Order::create([
@@ -86,7 +87,7 @@ class PayPhoneIntegrationTest extends TestCase
             'shipping_province' => 'Guayas',
             'shipping_zip' => '090101',
             'total_amount' => 50,
-            'address_id' => 1 // Dummy ID or create address
+            'address_id' => $address->id // Use real ID
         ]);
 
         // Attach item to order
@@ -130,7 +131,9 @@ class PayPhoneIntegrationTest extends TestCase
     public function it_handles_failed_payphone_callback()
     {
         // 1. Arrange
+        // 1. Arrange
         $user = User::factory()->create();
+        $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
         $order = Order::create([
             'user_id' => $user->id,
             'status' => 'pending_payment',
@@ -142,7 +145,7 @@ class PayPhoneIntegrationTest extends TestCase
             'shipping_province' => 'Guayas',
             'shipping_zip' => '090101',
             'total_amount' => 50,
-            'address_id' => 1
+            'address_id' => $address->id
         ]);
 
         // 2. Mock PayPhone 'Confirm' Response as REJECTED
