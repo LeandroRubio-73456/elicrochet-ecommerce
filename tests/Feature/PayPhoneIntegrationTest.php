@@ -19,6 +19,8 @@ class PayPhoneIntegrationTest extends TestCase
         parent::setUp();
         // Mock ENV variables for PayPhone
         config(['services.payphone.token' => 'test-token']);
+        // Mock Mail to prevent view rendering issues
+        \Illuminate\Support\Facades\Mail::fake();
     }
 
     /** @test */
@@ -86,6 +88,7 @@ class PayPhoneIntegrationTest extends TestCase
     {
         // 1. Arrange: Create an order in pending_payment status
         $user = User::factory()->create();
+        $this->actingAs($user); // Ensure logged in
         $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
         $product = Product::factory()->create(['price' => 50, 'stock' => 10]);
         
