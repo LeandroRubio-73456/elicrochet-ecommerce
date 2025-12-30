@@ -133,6 +133,7 @@ class PayPhoneIntegrationTest extends TestCase
         // 1. Arrange
         // 1. Arrange
         $user = User::factory()->create();
+        $this->actingAs($user); // Ensure user is logged in
         $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
         $order = Order::create([
             'user_id' => $user->id,

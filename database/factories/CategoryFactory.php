@@ -22,7 +22,7 @@ class CategoryFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'description' => $this->faker->sentence,
-            'image' => null,
+
             'icon' => 'ti-box',
             'required_specs' => [],
         ];
