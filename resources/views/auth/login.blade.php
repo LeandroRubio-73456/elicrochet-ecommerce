@@ -38,13 +38,13 @@
                                 <label for="email" class="form-label">
                                     Correo Electrónico <span class="text-danger">*</span>
                                 </label>
-                                <input type="email" 
-                                       class="form-control @error('email') is-invalid @enderror" 
-                                       id="email" 
-                                       name="email" 
-                                       placeholder="correo@ejemplo.com" 
-                                       value="{{ old('email') }}" 
-                                       required 
+                                <input type="email"
+                                       class="form-control @error('email') is-invalid @enderror"
+                                       id="email"
+                                       name="email"
+                                       placeholder="correo@ejemplo.com"
+                                       value="{{ old('email') }}"
+                                       required
                                        autofocus>
                                 @error('email')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -57,10 +57,10 @@
                                     Contraseña <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group">
-                                    <input type="password" 
-                                           class="form-control @error('password') is-invalid @enderror" 
-                                           id="password" 
-                                           name="password" 
+                                    <input type="password"
+                                           class="form-control @error('password') is-invalid @enderror"
+                                           id="password"
+                                           name="password"
                                            placeholder="••••••••" 
                                            required>
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">

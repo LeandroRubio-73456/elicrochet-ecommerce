@@ -139,10 +139,9 @@ class OrderController extends Controller
             }
 
             // If moving to pending_payment, ensure it's not zero
-            if ($request->status === Order::STATUS_PENDING_PAYMENT) {
-                if ($order->total_amount <= 0) {
-                    return back()->withErrors(['total_amount' => 'El monto debe ser mayor a 0 para solicitar el pago.']);
-                }
+            // If moving to pending_payment, ensure it's not zero
+            if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->total_amount <= 0) {
+                return back()->withErrors(['total_amount' => 'El monto debe ser mayor a 0 para solicitar el pago.']);
             }
 
             // PROPAGATE PRICE TO ITEM (Fix for showing $0.00 in item details)

@@ -102,7 +102,6 @@ class ProductController extends Controller
                 $editUrl = route('back.products.edit', $product);
                 $showUrl = route('back.products.show', $product);
                 $deleteUrl = route('back.products.destroy', $product);
-                $csrfToken = csrf_token();
 
                 $actions = '
                     <div class="d-flex gap-2 justify-content-center">
@@ -277,7 +276,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $productName = $product->name;
         $product->delete();
 
         return response()->json([

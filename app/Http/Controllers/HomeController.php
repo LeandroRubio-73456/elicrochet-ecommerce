@@ -168,7 +168,7 @@ class HomeController extends Controller
         return view('front.shop', compact('category', 'categories', 'products'));
     }
 
-    public function addToCart(Request $request, $id)
+    public function addToCart()
     {
         // Lógica del carrito pendiente de implementar
         // o usar una librería de carrito

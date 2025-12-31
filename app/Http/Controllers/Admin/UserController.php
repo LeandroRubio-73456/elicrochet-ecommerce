@@ -140,7 +140,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
         // Not used for now, maybe later for detailed profile view
     }

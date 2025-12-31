@@ -172,7 +172,7 @@ class CheckoutController extends Controller
                 $order = Order::find($masterOrderId);
 
                 if (! $order) {
-                    throw new \Exception('El pedido personalizado principal referenciado no existe.');
+                    throw new \RuntimeException('El pedido personalizado principal referenciado no existe.');
                 }
 
                 // Identify the specific "original" item of this master order to avoid confusing it with merged ones later
@@ -359,7 +359,7 @@ class CheckoutController extends Controller
         $order = Order::with('items')->find($orderId);
 
                     if (! $order) {
-                        throw new \Exception('Orden no encontrada durante el procesamiento (Race Condition check).');
+                        throw new \RuntimeException('Orden no encontrada durante el procesamiento (Race Condition check).');
                     }
 
                     // Check if already paid to avoid double processing
@@ -401,7 +401,7 @@ class CheckoutController extends Controller
 
                             if ($product) {
                                 if ($product->stock < $item->quantity) {
-                                    throw new \Exception("Stock insuficiente para el producto '{$product->name}'. Stock actual: {$product->stock}, Solicitado: {$item->quantity}. La compra ha sido revertida.");
+                                    throw new \RuntimeException("Stock insuficiente para el producto '{$product->name}'. Stock actual: {$product->stock}, Solicitado: {$item->quantity}. La compra ha sido revertida.");
                                 }
                                 $product->decrement('stock', $item->quantity);
                             }

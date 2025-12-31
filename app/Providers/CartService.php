@@ -37,7 +37,7 @@ class CartService
 
         // Verificar stock con el total acumulado
         if ($totalQuantity > $product->stock) {
-            throw new \Exception('Stock insuficiente. Ya tienes '.$currentQuantityInCart.' en el carrito y solo quedan '.$product->stock.' unidades disponibles en total.');
+            throw new \RuntimeException('Stock insuficiente. Ya tienes '.$currentQuantityInCart.' en el carrito y solo quedan '.$product->stock.' unidades disponibles en total.');
         }
 
         if ($existingItem) {
@@ -75,7 +75,7 @@ class CartService
             ->first();
 
         if ($existingItem) {
-            throw new \Exception('Este pedido personalizado ya está en tu carrito.');
+            throw new \RuntimeException('Este pedido personalizado ya está en tu carrito.');
         }
 
         // Update Order Status to IN_CART to prevent other actions
