@@ -119,45 +119,36 @@ class CheckoutController extends Controller
 
         // 2. Obtener items desde el SERVICIO
         $cartItems = $this->cartService->getCart();
-        // 2. Obtener items desde el SERVICIO
-        $cartItems = $this->cartService->getCart();
-        // $total not used here in logic, only for view but this is a POST action
-
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart')->with('error', 'El carrito está vacío en la sesión.');
         }
 
         try {
-            DB::beginTransaction();
+            // Use DB::transaction closure to handle nesting correctly
+            $order = DB::transaction(function () use ($user, $validated, $cartItems) {
+                // 2.a Sync Address with User Profile
+                $address = $this->syncUserAddress($user, $validated);
 
-            // 2.a Sync Address with User Profile
-            $address = $this->syncUserAddress($user, $validated);
+                // --- FUSION LOGIC START ---
+                // 1. Resolve Master Order or Create New
+                [$order, $masterOriginalItem] = $this->resolveOrderForCheckout($user, $address, $cartItems, $validated);
 
-            // --- FUSION LOGIC START ---
-            // 1. Resolve Master Order or Create New
-            [$order, $masterOriginalItem] = $this->resolveOrderForCheckout($user, $address, $cartItems, $validated);
+                // 2. Process Cart Items
+                $this->processCartItems($order, $cartItems, $masterOriginalItem);
 
-            // 2. Process Cart Items
-            $this->processCartItems($order, $cartItems, $masterOriginalItem);
+                // 3. Recalculate Final Total
+                $this->finalizeOrderTotal($order);
 
-            // 3. Recalculate Final Total
-            $this->finalizeOrderTotal($order);
+                Log::info("Order processed successfully (Fusion or Creation). ID: {$order->id}");
+                return $order;
+            });
 
-            DB::commit();
-            Log::info("Order processed successfully (Fusion or Creation). ID: {$order->id}");
-
-            // 3. Llamada a PayPhone
+            // 3. Llamada a PayPhone (fuera de la transacción de DB)
             return $this->initiatePayPhone($order);
 
         } catch (\Exception $e) {
             Log::error('Checkout Exception: '.$e->getMessage());
-            try {
-                DB::rollBack();
-            } catch (\Exception $r) {
-                Log::error("Rollback failed: " . $r->getMessage());
-            }
-
             return redirect()->route('checkout')->with('error', 'Error: '.$e->getMessage());
         }
     }
@@ -400,67 +391,61 @@ class CheckoutController extends Controller
     private function processSuccessfulTransaction($orderId, $payphoneId)
     {
         try {
-            DB::beginTransaction();
+            return DB::transaction(function () use ($orderId, $payphoneId) {
+                // Note: Removed lockForUpdate() to compatible with SQLite testing
+                $order = Order::with('items')->find($orderId);
 
-            // Note: Removed lockForUpdate() to compatible with SQLite testing
-            $order = Order::with('items')->find($orderId);
-
-            if (! $order) {
-                throw new \RuntimeException('Orden no encontrada durante el procesamiento (Race Condition check).');
-            }
-
-            // Check if already paid
-            if ($order->status === Order::STATUS_PAID) {
-                DB::rollBack();
-
-                return redirect()->route('cart')->with('info', 'Esta orden ya fue procesada anteriormente.');
-            }
-
-            $order->update([
-                'status' => 'in_review',
-                'payphone_transaction_id' => $payphoneId,
-                'payphone_status' => 'Approved',
-            ]);
-
-            // Handle Custom Orders status linking
-            foreach ($order->items as $item) {
-                if ($item->custom_order_id) {
-                    $customOrder = Order::find($item->custom_order_id);
-                    if ($customOrder) {
-                        $customOrder->update(['status' => Order::STATUS_PAID]);
-                    }
+                if (! $order) {
+                    throw new \RuntimeException('Orden no encontrada durante el procesamiento (Race Condition check).');
                 }
-            }
 
-            // DECREMENT STOCK
-            foreach ($order->items as $item) {
-                if ($item->product_id) {
-                    $product = \App\Models\Product::find($item->product_id);
-                    if ($product) {
-                        if ($product->stock < $item->quantity) {
-                            throw new \RuntimeException("Stock insuficiente para el producto '{$product->name}'. La compra ha sido revertida.");
+                // Check if already paid
+                if ($order->status === Order::STATUS_PAID) {
+                    return redirect()->route('cart')->with('info', 'Esta orden ya fue procesada anteriormente.');
+                }
+
+                $order->update([
+                    'status' => 'in_review',
+                    'payphone_transaction_id' => $payphoneId,
+                    'payphone_status' => 'Approved',
+                ]);
+
+                // Handle Custom Orders status linking
+                foreach ($order->items as $item) {
+                    if ($item->custom_order_id) {
+                        $customOrder = Order::find($item->custom_order_id);
+                        if ($customOrder) {
+                            $customOrder->update(['status' => Order::STATUS_PAID]);
                         }
-                        $product->decrement('stock', $item->quantity);
                     }
                 }
-            }
 
-            $order->update(['status' => Order::STATUS_PAID]);
+                // DECREMENT STOCK
+                foreach ($order->items as $item) {
+                    if ($item->product_id) {
+                        $product = \App\Models\Product::find($item->product_id);
+                        if ($product) {
+                            if ($product->stock < $item->quantity) {
+                                throw new \RuntimeException("Stock insuficiente para el producto '{$product->name}'. La compra ha sido revertida.");
+                            }
+                            $product->decrement('stock', $item->quantity);
+                        }
+                    }
+                }
 
-            // Clear Cart
-            $order->user->cartItems()->delete();
+                $order->update(['status' => Order::STATUS_PAID]);
 
-            DB::commit();
+                // Clear Cart
+                $order->user->cartItems()->delete();
 
-            // Send Emails
-            $this->sendOrderEmails($order);
+                // Send Emails (outside transaction ideally, but fine here)
+                $this->sendOrderEmails($order);
 
-            return view('front.checkout-success', compact('order'));
+                return view('front.checkout-success', compact('order'));
+            });
 
         } catch (\Exception $e) {
-            DB::rollBack();
             Log::error("Transaction Error processing Order {$orderId}: ".$e->getMessage());
-
             return redirect()->route('cart')->with('error', 'Error procesando el pedido: '.$e->getMessage());
         }
     }
@@ -481,5 +466,13 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             Log::error('Error sending NewOrderAdminNotification (Paid): '.$e->getMessage());
         }
+    }
+
+    // RESTORED METHOD
+    private function finalizeOrderTotal(Order $order)
+    {
+        $total = $order->recalculateTotal();
+        $order->total_amount = $total;
+        $order->save();
     }
 }
