@@ -30,12 +30,12 @@
               <!-- Email -->
               <div class="form-group mb-3">
                 <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
-                <input type="email" 
-                       class="form-control @error('email') is-invalid @enderror" 
-                       id="email" 
-                       name="email" 
-                       value="{{ old('email', $request->email) }}" 
-                       required 
+                <input type="email"
+                       class="form-control @error('email') is-invalid @enderror"
+                       id="email"
+                       name="email"
+                       value="{{ old('email', $request->email) }}"
+                       required
                        autofocus>
                 @error('email')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -45,11 +45,11 @@
               <!-- Password -->
               <div class="form-group mb-3">
                 <label for="password" class="form-label">Nueva Contraseña <span class="text-danger">*</span></label>
-                <input type="password" 
-                       class="form-control @error('password') is-invalid @enderror" 
-                       id="password" 
-                       name="password" 
-                       required 
+                <input type="password"
+                       class="form-control @error('password') is-invalid @enderror"
+                       id="password"
+                       name="password"
+                       required
                        autocomplete="new-password">
                 @error('password')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -59,9 +59,9 @@
               <!-- Confirm Password -->
               <div class="form-group mb-3">
                 <label for="password_confirmation" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                <input type="password" 
-                       class="form-control @error('password_confirmation') is-invalid @enderror" 
-                       id="password_confirmation" 
+                <input type="password"
+                       class="form-control @error('password_confirmation') is-invalid @enderror"
+                       id="password_confirmation"
                        name="password_confirmation" 
                        required 
                        autocomplete="new-password">

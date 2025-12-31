@@ -12,10 +12,10 @@
                 </div>
                 <div class="social-links">
                     <a href="#" class="social-link" aria-label="Instagram">
-                        <i class="ti-instagram"></i>
+                        <i class="ti ti-brand-instagram"></i>
                     </a>
                     <a href="#" class="social-link" aria-label="Facebook">
-                        <i class="ti-facebook"></i>
+                        <i class="ti ti-brand-facebook"></i>
                     </a>
                 </div>
             </div>
@@ -47,11 +47,11 @@
                 <h4 class="footer-title">Contacto</h4>
                 <ul class="footer-contact">
                     <li>
-                        <i class="ti-map"></i>
+                        <i class="ti ti-map-pin"></i>
                         <span>Quito, Ecuador</span>
                     </li>
                     <li>
-                        <i class="ti-email"></i>
+                        <i class="ti ti-mail"></i>
                         <span>contacto@elicrochet.com</span>
                     </li>
                 </ul>
@@ -70,6 +70,7 @@
         </div>
     </div>
 </footer>
+
 
 <style>
     /* Footer moderno y minimalista */

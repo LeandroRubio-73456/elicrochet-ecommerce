@@ -43,7 +43,8 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($item->product && $item->product->images->first())
-                                            <img src="{{ asset('storage/' . $item->product->images->first()->image_path) }}" 
+                                            <img src="{{ asset('storage/' . $item->product->images->first()->image_path) }}"
+                                                 alt="{{ $item->product->name }}"
                                                  class="rounded me-2" width="40" height="40" style="object-fit: cover;">
                                         @else
                                             <div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
@@ -218,7 +219,7 @@
             </div>
             <div class="card-body">
                  @php
-                    // Assuming the first item has the description for the whole order in current logic, 
+                    // Assuming the first item has the description for the whole order in current logic,
                     // or listing all items' descriptions.
                     // Ideally custom orders have 1 main item or multiple.
                  @endphp
@@ -242,7 +243,7 @@
                             <div class="d-flex flex-wrap gap-2 mt-2">
                                 @foreach($item->images as $img)
                                      <a href="{{ asset('storage/' . $img) }}" target="_blank">
-                                        <img src="{{ asset('storage/' . $img) }}" class="rounded border" width="60" height="60" style="object-fit: cover;">
+                                        <img src="{{ asset('storage/' . $img) }}" alt="Imagen de pedido personalizado" class="rounded border" width="60" height="60" style="object-fit: cover;">
                                      </a>
                                 @endforeach
                             </div>

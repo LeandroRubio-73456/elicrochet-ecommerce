@@ -47,7 +47,7 @@
                                                         class="carousel-item {{ $key == 0 ? 'active' : '' }} w-100 h-100">
                                                         <img src="{{ asset('storage/' . $image->image_path) }}"
                                                             class="d-block w-100 h-100"
-                                                            alt="{{ $product->name . ' - Imagen ' . ($key + 1) }}"
+                                                            alt="{{ $product->name . ' - ' . ($key + 1) }}"
                                                             style="object-fit: contain;">
                                                     </div>
                                                 @endforeach

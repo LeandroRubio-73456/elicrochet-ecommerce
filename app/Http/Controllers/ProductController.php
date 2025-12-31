@@ -130,49 +130,17 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // 1. Validar los datos del formulario (debes incluir todas las reglas)
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            // Asegúrate de que el slug es único, excepto para el producto actual
-            'slug' => 'nullable|string|max:255|unique:products,slug,'.$product->id,
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'status' => 'required|in:draft,active,out_of_stock,discontinued,archived',
-            // [NUEVO] Validación para el campo destacado
-            'is_featured' => 'nullable|boolean',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5048',
-        ]);
+        $validated = $this->validateProduct($request, $product->id);
 
-        // 2. [LÓGICA CRUCIAL] Manejar el Checkbox y el Slug ANTES de actualizar
-
-        // Asignar el valor del checkbox: true si fue enviado, false si no.
         $validated['is_featured'] = $request->has('is_featured');
+        $validated['slug'] = $this->ensureSlug($validated['slug'] ?? null, $validated['name'], $product->id);
 
-        // Generar slug si el campo está vacío (similar a store)
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
-            // Opcional: Manejar la unicidad del slug
-        }
-
-        // 3. Actualizar los campos del producto
-        // Usamos $validated directamente, ya que contiene todos los campos necesarios.
         $product->update($validated);
 
-        // 4. Actualizar imágenes si se proporcionan nuevas (Solo Añadir)
         if ($request->hasFile('images')) {
-            // ... (Lógica de subir y guardar imágenes, que ya está correcta)
-            foreach ($request->file('images') as $file) {
-                $path = $file->store('products', 'public');
-
-                $product->images()->create([
-                    'image_path' => $path,
-                ]);
-            }
+            $this->handleImageUploads($request->file('images'), $product);
         }
 
-        // 5. Redireccionar al usuario
         return redirect()->route('back.products.index')
             ->with('success', 'Producto actualizado correctamente.');
     }
@@ -303,5 +271,45 @@ class ProductController extends Controller
             'status' => $statusBadge,
             'actions' => $actions,
         ];
+    }
+
+    private function validateProduct(Request $request, $ignoreId = null)
+    {
+        return $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug,' . $ignoreId,
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'status' => 'required|in:draft,active,out_of_stock,discontinued,archived',
+            'is_featured' => 'nullable|boolean',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5048',
+        ]);
+    }
+
+    private function ensureSlug($slug, $name, $ignoreId = null)
+    {
+        if (!empty($slug)) {
+            return $slug;
+        }
+
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (Product::where('slug', $slug)->where('id', '!=', $ignoreId)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+
+        return $slug;
+    }
+
+    private function handleImageUploads($images, Product $product)
+    {
+        foreach ($images as $image) {
+            $path = $image->store('products', 'public');
+            $product->images()->create(['image_path' => $path]);
+        }
     }
 }

@@ -5,7 +5,7 @@
   <h2>@@title</h2>
   <p class="text-muted">@@text</p>
   <div>
-    <a class="btn btn-sm btn-light-dark rounded-pill px-2" role="button" target="_blank" href="@@link">
+    <a class="btn btn-sm btn-light-dark rounded-pill px-2" role="button" target="_blank" href="@@link" onkeydown="if(event.key==='Enter'){this.click()}">
       <i class="ti ti-external-link me-1"></i>
       Reference
     </a>

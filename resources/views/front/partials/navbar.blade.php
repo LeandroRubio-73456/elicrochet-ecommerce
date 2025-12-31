@@ -5,7 +5,7 @@
         </a>
         
         <button class="navbar-toggler border-0 shadow-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-label="Toggle navigation">
-            <i class="ti-menu"></i>
+            <i class="ti ti-menu-2"></i>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarContent">
@@ -31,7 +31,7 @@
                 <!-- Cart Button -->
                 @auth
                     <a href="{{ route('cart') }}" class="btn-icon-modern position-relative" id="navbar-cart-btn">
-                        <i class="ti-shopping-cart"></i>
+                        <i class="ti ti-shopping-cart"></i>
                         @if($cartCount > 0)
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.25rem 0.4rem;">
                                 {{ $cartCount }}
@@ -40,7 +40,7 @@
                     </a>
                 @else
                     <a href="{{ route('cart.login-required') }}" class="btn-icon-modern">
-                        <i class="ti-shopping-cart"></i>
+                        <i class="ti ti-shopping-cart"></i>
                     </a>
                 @endauth
 
@@ -48,9 +48,9 @@
                 @auth
                     <div class="dropdown">
                         <button class="btn-user-modern dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=C16244&color=fff" 
-                                 alt="{{ Auth::user()->name }}" 
-                                 width="32" 
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=C16244&color=fff"
+                                 alt="{{ Auth::user()->name }}"
+                                 width="32"
                                  height="32" 
                                  class="rounded-circle">
                             <span class="d-none d-lg-inline ms-2">{{ Str::limit(Auth::user()->name, 12) }}</span>
@@ -59,19 +59,14 @@
                             @if(Auth::user()->isAdmin())
                                 <li>
                                     <a class="dropdown-item dropdown-item-modern" href="{{ route('admin.dashboard') }}">
-                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="me-2">
-                                            <rect x="3" y="3" width="7" height="7"/>
-                                            <rect x="14" y="3" width="7" height="7"/>
-                                            <rect x="14" y="14" width="7" height="7"/>
-                                            <rect x="3" y="14" width="7" height="7"/>
-                                        </svg>
+                                        <i class="ti ti-layout-dashboard me-2 fs-5"></i>
                                         Panel Admin
                                     </a>
                                 </li>
                             @else
                                 <li>
                                     <a class="dropdown-item dropdown-item-modern" href="{{ route('customer.dashboard') }}">
-                                        <i class="ti-user"></i>
+                                        <i class="ti ti-user me-2"></i>
                                         Mi Cuenta
                                     </a>
                                 </li>
@@ -81,7 +76,7 @@
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="dropdown-item dropdown-item-modern text-danger">
-                                        <i class="ti-power-off"></i>
+                                        <i class="ti ti-logout me-2"></i>
                                         Cerrar Sesión
                                     </button>
                                 </form>

@@ -197,7 +197,7 @@
                 <div class="btn btn btn-light">View All <i class="ti ti-arrow-narrow-right"></i></div>
               </div>
               <div class="col">
-                <img src="../assets/images/mega-menu/chart.svg" alt="image" class="img-fluid img-charts">
+                <img src="../assets/images/mega-menu/chart.svg" alt="" class="img-fluid img-charts">
               </div>
             </div>
           </div>

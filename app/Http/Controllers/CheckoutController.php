@@ -314,48 +314,8 @@ class CheckoutController extends Controller
     private function processCartItems($order, $cartItems, $masterOriginalItem)
     {
         foreach ($cartItems as $cartItem) {
-            // CASE A: It is a Custom Order Item
             if ($cartItem->custom_order_id) {
-
-                // Sub-case A1: It IS the Master Order Item
-                if ($order && $cartItem->custom_order_id == $order->id) {
-                    if ($masterOriginalItem) {
-                        $masterOriginalItem->update([
-                            'price' => $cartItem->price,
-                            'quantity' => 1,
-                        ]);
-                    }
-                }
-                // Sub-case A2: It is a SECONDARY Custom Order (Merge Strategy)
-                else {
-                    $secondaryOrder = Order::find($cartItem->custom_order_id);
-                    if ($secondaryOrder) {
-                        // Get its item info (assuming 1 custom item per custom order usually)
-                        $secondaryItem = $secondaryOrder->items()->whereNull('product_id')->first();
-
-                        if ($secondaryItem) {
-                            // Clone it into the Master Order
-                            OrderItem::create([
-                                'order_id' => $order->id,
-                                'product_id' => null, // It's still a custom item
-                                'custom_order_id' => $secondaryOrder->id, // Reference to old ID (optional but good for tracking)
-                                'custom_description' => $secondaryItem->custom_description,
-                                'price' => $cartItem->price,
-                                'quantity' => 1,
-                                'images' => $secondaryItem->images, // Copy images array
-                            ]);
-                        }
-
-                        // 3. Mark the secondary order as cancelled/merged instead of deleting
-                        // This preserves ID sequence and history as requested
-                        $secondaryOrder->update([
-                            'status' => 'cancelled',
-                            'total_amount' => 0, // Reset total since items moved
-                            'customer_phone' => $secondaryOrder->customer_phone.' (Fusionado con Order #'.$order->id.')',
-                        ]);
-                    }
-                }
-
+                $this->processCustomOrderItem($order, $cartItem, $masterOriginalItem);
                 continue;
             }
 
@@ -366,6 +326,47 @@ class CheckoutController extends Controller
                 'custom_order_id' => null,
                 'quantity' => $cartItem->quantity,
                 'price' => $cartItem->price,
+            ]);
+        }
+    }
+
+    private function processCustomOrderItem($order, $cartItem, $masterOriginalItem)
+    {
+        // Sub-case A1: It IS the Master Order Item
+        if ($order && $cartItem->custom_order_id == $order->id) {
+            if ($masterOriginalItem) {
+                $masterOriginalItem->update([
+                    'price' => $cartItem->price,
+                    'quantity' => 1,
+                ]);
+            }
+            return;
+        }
+
+        // Sub-case A2: It is a SECONDARY Custom Order (Merge Strategy)
+        $secondaryOrder = Order::find($cartItem->custom_order_id);
+        if ($secondaryOrder) {
+            // Get its item info (assuming 1 custom item per custom order usually)
+            $secondaryItem = $secondaryOrder->items()->whereNull('product_id')->first();
+
+            if ($secondaryItem) {
+                // Clone it into the Master Order
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => null, // It's still a custom item
+                    'custom_order_id' => $secondaryOrder->id, // Reference to old ID (optional but good for tracking)
+                    'custom_description' => $secondaryItem->custom_description,
+                    'price' => $cartItem->price,
+                    'quantity' => 1,
+                    'images' => $secondaryItem->images, // Copy images array
+                ]);
+            }
+
+            // 3. Mark the secondary order as cancelled/merged instead of deleting
+            $secondaryOrder->update([
+                'status' => 'cancelled',
+                'total_amount' => 0, // Reset total since items moved
+                'customer_phone' => $secondaryOrder->customer_phone.' (Fusionado con Order #'.$order->id.')',
             ]);
         }
     }

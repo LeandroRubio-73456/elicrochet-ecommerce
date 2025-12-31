@@ -80,20 +80,20 @@
               <!-- Confirm Password -->
               <div class="form-group mb-3">
                 <label for="password_confirmation" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                <input type="password" 
-                       id="password_confirmation" 
-                       name="password_confirmation" 
-                       class="form-control" 
-                       placeholder="••••••••" 
-                       required 
+                <input type="password"
+                       id="password_confirmation"
+                       name="password_confirmation"
+                       class="form-control"
+                       placeholder="••••••••"
+                       required
                        autocomplete="new-password">
               </div>
               
               <!-- Términos y condiciones -->
               <p class="mt-4 text-sm text-muted">
-                Al registrarte, aceptas nuestros 
-                <a href="#" class="text-primary">Términos de Servicio</a> 
-                y 
+                Al registrarte, aceptas nuestros
+                <a href="#" class="text-primary">Términos de Servicio</a>
+                y
                 <a href="#" class="text-primary">Política de Privacidad</a>
               </p>
               

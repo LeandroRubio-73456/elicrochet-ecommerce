@@ -11,7 +11,7 @@
                     <i class="ti ti-shopping-cart text-muted mb-4" style="font-size: 4rem;"></i>
                     <h3 class="mb-3">¡Inicia sesión para continuar!</h3>
                     <p class="text-muted mb-4">
-                        Para agregar productos a tu carrito y disfrutar de todas las ventajas, 
+                        Para agregar productos a tu carrito y disfrutar de todas las ventajas,
                         necesitas tener una cuenta en EliCrochet.
                     </p>
                     <div class="d-grid gap-3 col-md-8 mx-auto">

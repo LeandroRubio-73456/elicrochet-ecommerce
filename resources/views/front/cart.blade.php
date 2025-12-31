@@ -55,7 +55,7 @@
                         @endif
 
                         <form action="{{ route('cart.remove', $item->product_id ?? $item->id) }}" method="POST" class="d-inline ms-3">
-                            <!-- Note: ensure Controller handles removing by ID if product_id is null, or we need a different route. 
+                            <!-- Note: ensure Controller handles removing by ID if product_id is null, or we need a different route.
                                  Wait, CartController::remove($productId). If I pass item ID it might fail if it looks for product_id.
                                  Let's check controller logic. CartService::removeFromCart uses product_id.
                                  If Custom Order, product_id is null.

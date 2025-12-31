@@ -67,7 +67,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-2.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">3:00 AM</span>
@@ -79,7 +79,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-1.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-1.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">6:00 PM</span>
@@ -91,7 +91,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-3.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-3.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">2:45 PM</span>
@@ -103,7 +103,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-4.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-4.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">9:10 PM</span>
@@ -130,14 +130,14 @@
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
-        <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+        <img src="../assets/images/user/avatar-2.jpg" alt="User" class="user-avtar">
         <span>Stebin Ben</span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
           <div class="d-flex mb-1">
             <div class="flex-shrink-0">
-              <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+              <img src="../assets/images/user/avatar-2.jpg" alt="User" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
               <h6 class="mb-1">Stebin Ben</h6>

@@ -10,7 +10,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Usuarios Totales</h6>
-                    <h4 class="mb-0">{{ $totalUsers }} <i class="ti-user text-primary float-end opacity-50"></i></h4>
+                    <h4 class="mb-0">{{ $totalUsers }} <i class="ti ti-user text-primary float-end opacity-50"></i></h4>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Total Órdenes</h6>
-                    <h4 class="mb-0">{{ $totalOrders }} <i class="ti-shopping-cart text-warning float-end opacity-50"></i></h4>
+                    <h4 class="mb-0">{{ $totalOrders }} <i class="ti ti-shopping-cart text-warning float-end opacity-50"></i></h4>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Ventas Totales</h6>
-                    <h4 class="mb-0">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti-currency-dollar text-success float-end opacity-50"></i></h4>
+                    <h4 class="mb-0">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti ti-currency-dollar text-success float-end opacity-50"></i></h4>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                                                  default => 'ti-info-circle'
                                             };
                                         @endphp
-                                        <span class="d-block"><i class="ti {{ $icon }} {{ $badgeClass }} f-10 m-r-5"></i> {{ ucfirst($order->status) }}</span>
+                                        <span class="d-block"><i class="ti ti-{{ $icon }} {{ $badgeClass }} f-10 m-r-5"></i> {{ ucfirst($order->status) }}</span>
                                     </td>
                                     <td class="text-end">${{ number_format($order->total_amount, 2) }}</td>
                                     <td class="text-end">
@@ -110,7 +110,7 @@
                     </a>
                     @empty
                     <div class="p-3 text-center text-muted">
-                        <i class="ti ti-check-circle text-success fs-1 mb-2"></i>
+                        <i class="ti ti-check text-success fs-1 mb-2"></i>
                         <p class="mb-0">Todo el inventario está saludable.</p>
                     </div>
                     @endforelse

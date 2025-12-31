@@ -17,8 +17,8 @@
     </div>
     <div class="tab-container">
       <div class="tab-sidemenu">
-        <ul class="pc-tab-link nav flex-column" role="tablist" id="pc-layout-submenus">
-				</ul>
+        <ul class="pc-tab-link nav flex-column" id="pc-layout-submenus">
+        </ul>
       </div>
       <div class="tab-link">
         <div class="navbar-content">
@@ -33,7 +33,7 @@
             </li>
 
             <li class="pc-item pc-caption">
-              <label>UI Components</label>
+              <span class="fw-bold">UI Components</span>
               <i class="ti ti-dashboard"></i>
             </li>
             <li class="pc-item">
@@ -56,7 +56,7 @@
             </li>
 
             <li class="pc-item pc-caption">
-              <label>Pages</label>
+              <span class="fw-bold">Pages</span>
               <i class="ti ti-news"></i>
             </li>
             <li class="pc-item">
@@ -73,7 +73,7 @@
             </li>
 
             <li class="pc-item pc-caption">
-              <label>Other</label>
+              <span class="fw-bold">Other</span>
               <i class="ti ti-brand-chrome"></i>
             </li>
             <li class="pc-item pc-hasmenu">
@@ -131,12 +131,12 @@
   <ul class="list-unstyled">
     <!-- ======= Menu collapse Icon ===== -->
     <li class="pc-h-item pc-sidebar-collapse">
-      <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
+      <a href="#" class="pc-head-link ms-0" id="sidebar-hide" aria-label="Hide Sidebar">
         <i class="ti ti-menu-2"></i>
       </a>
     </li>
     <li class="pc-h-item pc-sidebar-popup">
-      <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
+      <a href="#" class="pc-head-link ms-0" id="mobile-collapse" aria-label="Toggle Mobile Menu">
         <i class="ti ti-menu-2"></i>
       </a>
     </li>
@@ -148,6 +148,7 @@
         role="button"
         aria-haspopup="false"
         aria-expanded="false"
+        aria-label="Search"
       >
         <i class="ti ti-search"></i>
       </a>
@@ -155,7 +156,7 @@
         <form class="px-3">
           <div class="form-group mb-0 d-flex align-items-center">
             <i data-feather="search"></i>
-            <input type="search" class="form-control border-0 shadow-none" placeholder="Search here. . .">
+            <input type="search" class="form-control border-0 shadow-none" placeholder="Search here. . ." aria-label="Search">
           </div>
         </form>
       </div>
@@ -163,7 +164,7 @@
     <li class="pc-h-item d-none d-md-inline-flex">
       <form class="header-search">
         <i data-feather="search" class="icon-search"></i>
-        <input type="search" class="form-control" placeholder="Search here. . .">
+        <input type="search" class="form-control" placeholder="Search here. . ." aria-label="Search">
       </form>
     </li>
   </ul>
@@ -179,6 +180,7 @@
         role="button"
         aria-haspopup="false"
         aria-expanded="false"
+        aria-label="Mega Menu"
       >
         <i class="ti ti-layout-grid"></i>
       </a>
@@ -192,7 +194,7 @@
                 <div class="btn btn btn-light">View All <i class="ti ti-arrow-narrow-right"></i></div>
               </div>
               <div class="col">
-                <img src="../assets/images/mega-menu/chart.svg" alt="image" class="img-fluid img-charts">
+                <img src="../assets/images/mega-menu/chart.svg" alt="" class="img-fluid img-charts">
               </div>
             </div>
           </div>
@@ -276,6 +278,7 @@
         role="button"
         aria-haspopup="false"
         aria-expanded="false"
+        aria-label="Languages"
       >
         <i class="ti ti-language"></i>
       </a>
@@ -310,6 +313,7 @@
         role="button"
         aria-haspopup="false"
         aria-expanded="false"
+        aria-label="Notifications"
       >
         <i class="ti ti-bell"></i>
         <span class="badge bg-success pc-h-badge">3</span>
@@ -386,6 +390,7 @@
         role="button"
         aria-haspopup="false"
         aria-expanded="false"
+        aria-label="Messages"
       >
         <i class="ti ti-mail"></i>
       </a>
@@ -400,7 +405,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-2.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">3:00 AM</span>
@@ -412,7 +417,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-1.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-1.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">6:00 PM</span>
@@ -424,7 +429,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-3.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-3.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">2:45 PM</span>
@@ -436,7 +441,7 @@
             <a class="list-group-item list-group-item-action">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-                  <img src="../assets/images/user/avatar-4.jpg" alt="user-image" class="user-avtar">
+                  <img src="../assets/images/user/avatar-4.jpg" alt="User" class="user-avtar">
                 </div>
                 <div class="flex-grow-1 ms-1">
                   <span class="float-end text-muted">9:10 PM</span>
@@ -454,7 +459,7 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a class="pc-head-link me-0" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_pc_layout">
+      <a class="pc-head-link me-0" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvas_pc_layout" aria-label="Settings">
         <i class="ti ti-settings"></i>
       </a>
     </li>
@@ -468,14 +473,14 @@
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
-        <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
+        <img src="../assets/images/user/avatar-2.jpg" alt="User Profile" class="user-avtar">
         <span>Stebin Ben</span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
           <div class="d-flex mb-1">
             <div class="flex-shrink-0">
-              <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
+              <img src="../assets/images/user/avatar-2.jpg" alt="User Profile" class="user-avtar wid-35">
             </div>
             <div class="flex-grow-1 ms-3">
               <h6 class="mb-1">Stebin Ben</h6>
@@ -565,4 +570,5 @@
  </div>
 </header>
 <!-- [ Header ] end -->
+
 

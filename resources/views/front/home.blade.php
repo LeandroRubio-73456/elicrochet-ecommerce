@@ -47,7 +47,7 @@
                         <picture>
                             <source media="(max-width: 450px)" srcset="{{ asset('assets/images/banner-mobile.avif') }}" width="450" height="400">
                             <source media="(min-width: 451px)" srcset="{{ asset('assets/images/banner.avif') }}" width="780" height="584">
-                            <img src="{{ asset('assets/images/banner.avif') }}" 
+                            <img src="{{ asset('assets/images/banner.avif') }}"
                                  alt="Amigurumis artesanales" 
                                  width="780"
                                  height="584"
@@ -114,7 +114,7 @@
                 </div>
             </div>
             <div class="cta-image">
-                <img src="https://images.unsplash.com/photo-1618354691373-85154177d6db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=450&q=80" 
+                <img src="https://images.unsplash.com/photo-1618354691373-85154177d6db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=450&q=80"
                      alt="Personalización"
                      width="600"
                      height="450"
@@ -160,17 +160,17 @@
         <x-section-header label="Testimonios" title="Historias de clientes" />
         
         <div class="testimonials-grid">
-            <x-testimonial-card 
+            <x-testimonial-card
                 name="María González" 
                 text="La calidad es excepcional. Mi hija adora su amigurumi y duerme con él todas las noches. Definitivamente volveré a comprar."
                 image="https://randomuser.me/api/portraits/women/32.jpg"
             />
-            <x-testimonial-card 
+            <x-testimonial-card
                 name="Carlos Rodríguez" 
                 text="Excelente servicio y productos hermosos. El pedido personalizado quedó perfecto, superó mis expectativas."
                 image="https://randomuser.me/api/portraits/men/45.jpg"
             />
-            <x-testimonial-card 
+            <x-testimonial-card
                 name="Laura Martínez" 
                 text="Atención personalizada y rápida. Los productos son hermosos y llegaron bien empaquetados. Recomendado 100%."
                 image="https://randomuser.me/api/portraits/women/68.jpg"

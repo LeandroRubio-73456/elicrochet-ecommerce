@@ -62,13 +62,13 @@
                         <div class="filter-card">
                             <h3 class="filter-title">Categorías</h3>
                             <div class="filter-content">
-                                <a href="{{ route('shop') }}" 
+                                <a href="{{ route('shop') }}"
                                    class="category-item {{ !isset($category) ? 'active' : '' }}">
                                     <span class="category-name">Ver Todo</span>
                                     <i class="ti ti-layers-union"></i>
                                 </a>
                                 @forelse($categories as $cat)
-                                <a href="{{ route('category.show', $cat->slug) }}" 
+                                <a href="{{ route('category.show', $cat->slug) }}"
                                    class="category-item {{ (isset($category) && $category->id == $cat->id) ? 'active' : '' }}">
                                     <span class="category-name">{{ $cat->name }}</span>
                                     <span class="category-count">{{ $cat->products_count }}</span>

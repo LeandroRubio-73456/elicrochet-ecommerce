@@ -44,13 +44,13 @@
     <div class="d-flex flex-wrap gap-2">
         @foreach($icons as $icon)
             <div class="icon-option">
-                <input type="radio" 
-                       name="{{ $name }}" 
-                       id="icon_{{ $icon }}" 
-                       value="{{ $icon }}" 
-                       class="btn-check" 
+                <input type="radio"
+                       name="{{ $name }}"
+                       id="icon_{{ $icon }}"
+                       value="{{ $icon }}"
+                       class="btn-check"
                        {{ old($name, $value) == $icon ? 'checked' : '' }}>
-                <label class="btn btn-outline-primary d-flex align-items-center justify-content-center" 
+                <label class="btn btn-outline-primary d-flex align-items-center justify-content-center"
                        for="icon_{{ $icon }}" 
                        style="width: 45px; height: 45px; font-size: 1.25rem;">
                     <i class="{{ $icon }}"></i>

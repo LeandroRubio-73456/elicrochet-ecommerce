@@ -39,7 +39,7 @@
                 @csrf
                 <input type="hidden" name="quantity" value="1">
                 <button type="submit" class="btn-icon" title="Añadir al carrito">
-                    <i class="ti-shopping-cart"></i>
+                    <i class="ti ti-shopping-cart-plus"></i>
                 </button>
             </form>
         </div>

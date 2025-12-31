@@ -45,8 +45,8 @@
                 { data: 'id', name: 'id' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'status_badge', name: 'status', orderable: false, searchable: false },
-                { 
-                    data: 'total_amount', 
+                {
+                    data: 'total_amount',
                     name: 'total_amount',
                     render: function(data, type, row) {
                         return '$' + parseFloat(data).toFixed(2);

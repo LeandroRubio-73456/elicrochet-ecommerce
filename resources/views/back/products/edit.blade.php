@@ -132,7 +132,7 @@
                                         }
 
                                         categorySelect.addEventListener('change', function() {
-                                            // Note: If category changes, existing specs might not match. 
+                                            // Note: If category changes, existing specs might not match.
                                             // Ideally we clear them or try to match by name. 
                                             // For simplicity, we just re-render. If field names match, nice.
                                             renderSpecs(this.value);
@@ -238,6 +238,7 @@
 
                                                         {{-- Miniatura de la imagen --}}
                                                         <img src="{{ asset('storage/' . $image->image_path) }}"
+                                                            alt="Imagen del producto"
                                                             class="img-fluid rounded mb-2"
                                                             style="height: 100px; width: 100%; object-fit: cover;">
 

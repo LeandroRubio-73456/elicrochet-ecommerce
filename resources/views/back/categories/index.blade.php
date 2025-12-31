@@ -34,7 +34,8 @@
                                 <th class="text-center">
                                     <div class="d-flex align-items-center justify-content-center gap-2">
                                         <span>Estado</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()">
+                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0"
+                                             onkeydown="if(event.key==='Enter'||event.key===' '){this.querySelector('[data-bs-toggle]').click(); event.preventDefault();}">
                                             <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="">Todos</a></li>

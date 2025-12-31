@@ -11,9 +11,7 @@
             <ol class="breadcrumb-modern">
                 <li class="breadcrumb-item">
                     <a href="{{ route('home') }}">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                        </svg>
+                        <i class="ti ti-home"></i>
                         Inicio
                     </a>
                 </li>
@@ -47,8 +45,8 @@
                             $imagePath = $mainImage ? asset('storage/' . $mainImage->image_path) : 'https://placehold.co/600x600?text=No+Image';
                         @endphp
                         <img id="mainProductImage" 
-                             src="{{ $imagePath }}" 
-                             alt="{{ $product->name }}" 
+                             src="{{ $imagePath }}"
+                             alt="{{ $product->name }}"
                              class="main-image">
                     </div>
 
@@ -56,11 +54,12 @@
                     @if($product->images->count() > 1)
                     <div class="thumbnails-grid">
                         @foreach($product->images as $image)
-                        <div class="thumbnail-item {{ $loop->first ? 'active' : '' }}" 
-                             onclick="changeImage(this, '{{ asset('storage/' . $image->image_path) }}')">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                 alt="Thumbnail">
-                        </div>
+                        <button type="button" class="thumbnail-item {{ $loop->first ? 'active' : '' }} border-0 bg-transparent p-0"
+                             onclick="changeImage(this, '{{ asset('storage/' . $image->image_path) }}')"
+                             aria-label="Ver imagen {{ $loop->iteration }}">
+                            <img src="{{ asset('storage/' . $image->image_path) }}"
+                                 alt="Thumbnail {{ $loop->iteration }}">
+                        </button>
                         @endforeach
                     </div>
                     @endif
@@ -80,21 +79,11 @@
                     <!-- Rating -->
                     <div class="product-rating">
                         <div class="stars">
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
-                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" class="half-star">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            </svg>
+                            <i class="ti ti-star-filled text-warning"></i>
+                            <i class="ti ti-star-filled text-warning"></i>
+                            <i class="ti ti-star-filled text-warning"></i>
+                            <i class="ti ti-star-filled text-warning"></i>
+                            <i class="ti ti-star-half-filled text-warning"></i>
                         </div>
                         <span class="rating-text"><strong>4.8</strong> (24 opiniones)</span>
                     </div>
@@ -110,19 +99,11 @@
                     <!-- Features -->
                     <div class="product-features">
                         <div class="feature-item">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                                <polyline points="22 4 12 14.01 9 11.01"/>
-                            </svg>
+                            <i class="ti ti-needle-thread fs-4 text-primary"></i>
                             <span>Hecho 100% a mano con hilo de algodón premium</span>
                         </div>
                         <div class="feature-item">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <rect x="1" y="3" width="15" height="13"/>
-                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                                <circle cx="5.5" cy="18.5" r="2.5"/>
-                                <circle cx="18.5" cy="18.5" r="2.5"/>
-                            </svg>
+                            <i class="ti ti-truck-delivery fs-4 text-primary"></i>
                             <span>Envío gratis en compras superiores a $50.000</span>
                         </div>
                     </div>
@@ -140,9 +121,7 @@
                                     <label class="quantity-label">Cantidad</label>
                                     <div class="quantity-controls">
                                         <button type="button" class="qty-btn" onclick="updateQuantity(-1)">
-                                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <line x1="5" y1="12" x2="19" y2="12"/>
-                                            </svg>
+                                            <i class="ti ti-minus"></i>
                                         </button>
                                         <input type="number" 
                                                name="quantity" 
@@ -153,21 +132,14 @@
                                                max="{{ $product->stock }}" 
                                                readonly>
                                         <button type="button" class="qty-btn" onclick="updateQuantity(1)">
-                                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                                <line x1="5" y1="12" x2="19" y2="12"/>
-                                            </svg>
+                                            <i class="ti ti-plus"></i>
                                         </button>
                                     </div>
                                 </div>
 
                                 <!-- Add to Cart Button -->
                                 <button type="submit" class="btn-add-to-cart">
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <circle cx="9" cy="21" r="1"/>
-                                        <circle cx="20" cy="21" r="1"/>
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
-                                    </svg>
+                                    <i class="ti ti-shopping-cart-plus me-2"></i>
                                     Añadir al carrito
                                 </button>
                             </div>
@@ -196,10 +168,7 @@
                         <!-- Login Required -->
                         <div class="login-required">
                             <div class="login-icon">
-                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <path d="M12 16v-4M12 8h.01"/>
-                                </svg>
+                                <i class="ti ti-lock"></i>
                             </div>
                             <div class="login-content">
                                 <h6>Inicia sesión para comprar</h6>
@@ -214,10 +183,7 @@
                     @else
                         <!-- Out of Stock -->
                         <div class="out-of-stock">
-                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10"/>
-                                <path d="M12 8v4M12 16h.01"/>
-                            </svg>
+                            <i class="ti ti-alert-circle fs-1 text-muted mb-3"></i>
                             <div>
                                 <strong>Producto Agotado</strong>
                                 <p>Lo sentimos, este producto no está disponible por el momento.</p>
@@ -275,9 +241,7 @@
                     </div>
                     @else
                     <div class="empty-state">
-                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
+                        <i class="ti ti-clipboard-list fs-1 text-muted mb-3"></i>
                         <p>No hay especificaciones adicionales para mostrar</p>
                     </div>
                     @endif
@@ -286,10 +250,7 @@
                 <!-- Reviews Tab -->
                 <div class="tab-pane fade" id="reviews">
                     <div class="reviews-notice">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 16v-4M12 8h.01"/>
-                        </svg>
+                        <i class="ti ti-message-circle me-2"></i>
                         <span>Las opiniones mostradas son un ejemplo visual. Próximamente integración real.</span>
                     </div>
 
@@ -300,21 +261,28 @@
                                 <div class="review-header">
                                     <h6>Ana María</h6>
                                     <div class="review-stars">
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                    </div>
+                                </div>
+                                <p>¡Es precioso! Mucho mejor que en las fotos. Los detalles son increíbles y la calidad del hilo se nota a simple vista.</p>
+                            </div>
+                        </div>
+
+                        <div class="review-item">
+                            <div class="review-avatar" style="background: #e0f2fe; color: #0284c7;">CR</div>
+                            <div class="review-content">
+                                <div class="review-header">
+                                    <h6>Carlos Ruiz</h6>
+                                    <div class="review-stars">
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
+                                        <i class="ti ti-star-filled text-warning"></i>
                                     </div>
                                 </div>
                                 <p>¡Es precioso! Mucho mejor que en las fotos. Los detalles son increíbles y la calidad del hilo se nota a simple vista.</p>

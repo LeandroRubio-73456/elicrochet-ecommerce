@@ -8,7 +8,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-0">
                     <div class="p-3 border-bottom text-center">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random&color=fff" 
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random&color=fff"
                              alt="user" class="rounded-circle mb-2" width="60">
                         <h6 class="mb-0 fw-bold">{{ auth()->user()->name }}</h6>
                         <small class="text-muted">{{ auth()->user()->email }}</small>

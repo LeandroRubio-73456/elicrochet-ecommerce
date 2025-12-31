@@ -1,3 +1,4 @@
+<ul class="pc-navbar">
 <li class="pc-item">
   <a href="../dashboard/index.html" class="pc-link">
     <span class="pc-micon"><i class="ti-dashboard"></i></span>
@@ -90,3 +91,4 @@
     <span class="pc-mtext">Sample page</span>
   </a>
 </li>
+</ul>

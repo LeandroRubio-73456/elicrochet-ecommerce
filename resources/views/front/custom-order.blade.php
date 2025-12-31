@@ -35,7 +35,7 @@
                     <div class="alert alert-info d-flex align-items-center" role="alert">
                         <i class="ti ti-info-circle fs-4 me-2"></i>
                         <div>
-                            <strong>Nota Importante:</strong> Esta es una <strong>solicitud de cotización</strong>. 
+                            <strong>Nota Importante:</strong> Esta es una <strong>solicitud de cotización</strong>.
                             Una vez enviada, revisaremos los detalles y te contactaremos con el precio final y el tiempo estimado de entrega.
                         </div>
                     </div>

@@ -75,8 +75,8 @@
                             <!-- Remember me & Forgot password -->
                             <div class="d-flex mt-1 justify-content-between align-items-center">
                                 <div class="form-check">
-                                    <input class="form-check-input input-primary" 
-                                           type="checkbox" 
+                                    <input class="form-check-input input-primary"
+                                           type="checkbox"
                                            id="remember"
                                            name="remember"
                                            {{ old('remember') ? 'checked' : '' }}>
