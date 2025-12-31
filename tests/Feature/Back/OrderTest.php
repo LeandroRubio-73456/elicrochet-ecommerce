@@ -36,7 +36,9 @@ class OrderTest extends TestCase
     {
         Order::factory()->count(3)->create();
 
-        $response = $this->actingAs($this->admin)->getJson(route('admin.orders.index', ['ajax' => true]));
+        $response = $this->actingAs($this->admin)->get(route('admin.orders.index', ['ajax' => true]), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['data', 'recordsTotal', 'recordsFiltered']);
