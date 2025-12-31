@@ -30,7 +30,7 @@ class ProductController extends Controller
 
             // 5. Transformación de datos para DataTables
             // 5. Transformación de datos para DataTables
-            $data = $products->map(fn($product) => $this->transformProduct($product));
+            $data = $products->map(fn ($product) => $this->transformProduct($product));
 
             return response()->json([
                 'draw' => intval($request->input('draw')),

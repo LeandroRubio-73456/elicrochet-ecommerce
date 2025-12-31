@@ -24,7 +24,7 @@ class CheckoutTest extends TestCase
     public function checkout_index_redirects_if_cart_empty()
     {
         $user = User::factory()->make(['id' => 1]); // Mock User
-        
+
         $this->mock(CartService::class, function ($mock) {
             $mock->shouldReceive('getCart')->andReturn(collect([]));
             $mock->shouldReceive('getTotal')->andReturn(0);
@@ -39,7 +39,7 @@ class CheckoutTest extends TestCase
     public function checkout_index_shows_view_if_cart_has_items()
     {
         $user = User::factory()->make(['id' => 1]);
-        
+
         $this->mock(CartService::class, function ($mock) {
             $product = new Product(['name' => 'Test Product']);
             $product->setRelation('images', collect([])); // Mock images relation
@@ -51,8 +51,8 @@ class CheckoutTest extends TestCase
                     'price' => 10,
                     'custom_order_id' => null,
                     'product' => $product,
-                    'attributes' => []
-                ]
+                    'attributes' => [],
+                ],
             ]));
             $mock->shouldReceive('getTotal')->andReturn(10);
         });
@@ -72,16 +72,16 @@ class CheckoutTest extends TestCase
 
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock' => 10, 'price' => 100]);
-        
+
         // Use real CartService if possible or mock but hit store()
         $this->mock(CartService::class, function ($mock) use ($product) {
             $mock->shouldReceive('getCart')->andReturn(collect([
                 (object) [
-                    'product_id' => $product->id, 
-                    'quantity' => 1, 
-                    'price' => 100, 
-                    'custom_order_id' => null
-                ]
+                    'product_id' => $product->id,
+                    'quantity' => 1,
+                    'price' => 100,
+                    'custom_order_id' => null,
+                ],
             ]));
             $mock->shouldReceive('getTotal')->andReturn(100);
         });
@@ -106,14 +106,14 @@ class CheckoutTest extends TestCase
     {
         $user = User::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
-        
+
         Http::fake([
             'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
         ]);
 
         $response = $this->actingAs($user)->get(route('checkout.callback', [
             'id' => 'trans-123',
-            'clientTransactionId' => $order->id . '-time'
+            'clientTransactionId' => $order->id.'-time',
         ]));
 
         $response->assertStatus(200); // success view
@@ -125,14 +125,14 @@ class CheckoutTest extends TestCase
     {
         $user = User::factory()->create();
         $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
-        
+
         Http::fake([
             'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Declined'], 200),
         ]);
 
         $response = $this->actingAs($user)->get(route('checkout.callback', [
             'id' => 'trans-123',
-            'clientTransactionId' => $order->id . '-time'
+            'clientTransactionId' => $order->id.'-time',
         ]));
 
         $response->assertRedirect(route('cart'));
@@ -146,17 +146,17 @@ class CheckoutTest extends TestCase
         $product = Product::factory()->create(['stock' => 0]); // Out of stock now
         $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
         $order->items()->create(['product_id' => $product->id, 'quantity' => 1, 'price' => 10]);
-        
+
         Http::fake([
             'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
         ]);
 
         $response = $this->actingAs($user)->get(route('checkout.callback', [
             'id' => 'trans-123',
-            'clientTransactionId' => $order->id . '-time'
+            'clientTransactionId' => $order->id.'-time',
         ]));
 
         $response->assertRedirect(route('cart'));
-        $response->assertSessionHas('error', 'Error procesando el pedido: Stock insuficiente para el producto \'' . $product->name . '\'. La compra ha sido revertida.');
+        $response->assertSessionHas('error', 'Error procesando el pedido: Stock insuficiente para el producto \''.$product->name.'\'. La compra ha sido revertida.');
     }
 }

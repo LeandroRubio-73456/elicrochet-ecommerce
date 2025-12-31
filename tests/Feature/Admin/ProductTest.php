@@ -19,7 +19,7 @@ class ProductTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create an admin user (assuming verification is required based on routes)
         $this->admin = User::factory()->create([
             'email_verified_at' => now(),
@@ -75,7 +75,7 @@ class ProductTest extends TestCase
 
         $response->assertRedirect(route('admin.products.index'));
         $this->assertDatabaseHas('products', ['name' => 'New Product']);
-        
+
         $product = Product::where('name', 'New Product')->first();
         $this->assertCount(1, $product->images);
     }
@@ -129,7 +129,7 @@ class ProductTest extends TestCase
         // Search
         $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
-            'search' => ['value' => 'Specific']
+            'search' => ['value' => 'Specific'],
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);
@@ -145,8 +145,8 @@ class ProductTest extends TestCase
                 3 => ['data' => 'category'],
                 4 => ['data' => 'price'],
                 5 => ['data' => 'stock'],
-                6 => ['data' => 'status', 'search' => ['value' => 'active']]
-            ]
+                6 => ['data' => 'status', 'search' => ['value' => 'active']],
+            ],
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);
@@ -162,8 +162,8 @@ class ProductTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
             'columns' => [
-                3 => ['data' => 'category', 'search' => ['value' => 'Fibre']]
-            ]
+                3 => ['data' => 'category', 'search' => ['value' => 'Fibre']],
+            ],
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);

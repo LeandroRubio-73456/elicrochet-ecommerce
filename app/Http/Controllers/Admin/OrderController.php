@@ -26,7 +26,7 @@ class OrderController extends Controller
             $length = $request->input('length', 10);
             $orders = $query->skip($start)->take($length)->get();
 
-            $data = $orders->map(fn($order) => $this->transformOrder($order));
+            $data = $orders->map(fn ($order) => $this->transformOrder($order));
 
             return response()->json([
                 'draw' => intval($request->input('draw')),
@@ -81,12 +81,12 @@ class OrderController extends Controller
 
         if ($request->has('total_amount')) {
             $order->total_amount = $request->total_amount;
-            
+
             // PROPAGATE PRICE TO ITEM
             $customItem = $order->items()->whereNull('product_id')->first();
             if ($customItem) {
-                 $customItem->price = $request->total_amount;
-                 $customItem->save();
+                $customItem->price = $request->total_amount;
+                $customItem->save();
             }
         }
 
@@ -102,7 +102,7 @@ class OrderController extends Controller
 
     private function checkStatusNotifications(Request $request, Order $order)
     {
-         // Quotation -> Pending Payment
+        // Quotation -> Pending Payment
         if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->status !== Order::STATUS_PENDING_PAYMENT) {
             \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\PriceAssignedNotification($order));
         }

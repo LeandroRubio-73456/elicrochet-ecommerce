@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -29,7 +28,7 @@ class PayPhoneIntegrationTest extends TestCase
         // 1. Arrange: Create user, product, and login
         $user = User::factory()->create();
         $product = Product::factory()->create(['price' => 10, 'stock' => 5]);
-        
+
         $this->actingAs($user);
 
         // Add item to cart (assuming you use a service or session, but for integration test we can rely on route behavior if CartService mocks correctly or works with DB)
@@ -56,8 +55,8 @@ class PayPhoneIntegrationTest extends TestCase
                 'product_id' => $product->id,
                 'quantity' => 1,
                 'price' => 10,
-                'custom_order_id' => null
-            ]
+                'custom_order_id' => null,
+            ],
         ]));
         $mockCart->shouldReceive('getTotal')->andReturn(10);
 
@@ -91,7 +90,7 @@ class PayPhoneIntegrationTest extends TestCase
         $this->actingAs($user); // Ensure logged in
         $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
         $product = Product::factory()->create(['price' => 50, 'stock' => 10]);
-        
+
         $order = Order::create([
             'user_id' => $user->id,
             'status' => 'pending_payment',
@@ -103,7 +102,7 @@ class PayPhoneIntegrationTest extends TestCase
             'shipping_province' => 'Guayas',
             'shipping_zip' => '090101',
             'total_amount' => 50,
-            'address_id' => $address->id // Use real ID
+            'address_id' => $address->id, // Use real ID
         ]);
 
         // Attach item to order
@@ -124,8 +123,8 @@ class PayPhoneIntegrationTest extends TestCase
 
         // 3. Act: Hit the callback URL
         // clientTransactionId format is usually "ORDER_ID-TIMESTAMP" based on CheckoutController logic
-        $clientTransactionId = $order->id . '-1234567890';
-        
+        $clientTransactionId = $order->id.'-1234567890';
+
         $response = $this->get(route('checkout.callback', [
             'id' => 99999, // PayPhone Transaction ID
             'clientTransactionId' => $clientTransactionId,
@@ -138,7 +137,7 @@ class PayPhoneIntegrationTest extends TestCase
         $this->assertEquals(Order::STATUS_PAID, $order->status); // Status Updated
         $this->assertEquals('99999', $order->payphone_transaction_id);
         $this->assertEquals(9, $product->stock); // Stock Reduced (10 - 1)
-        
+
         $response->assertStatus(200);
         $response->assertViewIs('front.checkout-success');
     }
@@ -162,7 +161,7 @@ class PayPhoneIntegrationTest extends TestCase
             'shipping_province' => 'Guayas',
             'shipping_zip' => '090101',
             'total_amount' => 50,
-            'address_id' => $address->id
+            'address_id' => $address->id,
         ]);
 
         // 2. Mock PayPhone 'Confirm' Response as REJECTED
@@ -173,7 +172,7 @@ class PayPhoneIntegrationTest extends TestCase
         ]);
 
         // 3. Act
-        $clientTransactionId = $order->id . '-1234567890';
+        $clientTransactionId = $order->id.'-1234567890';
         $response = $this->get(route('checkout.callback', [
             'id' => 88888,
             'clientTransactionId' => $clientTransactionId,
@@ -182,7 +181,7 @@ class PayPhoneIntegrationTest extends TestCase
         // 4. Assert
         $order->refresh();
         $this->assertEquals('pending_payment', $order->status); // Should NOT change
-        
+
         $response->assertRedirect(route('cart'));
         $response->assertSessionHas('error');
     }

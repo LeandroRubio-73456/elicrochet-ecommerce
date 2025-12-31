@@ -66,7 +66,7 @@ class UserTest extends TestCase
 
         $response->assertRedirect(route('admin.users.index'));
         $this->assertDatabaseHas('users', ['email' => 'john@example.com', 'role' => 'customer']);
-        
+
         $user = User::where('email', 'john@example.com')->first();
         $this->assertTrue(Hash::check('password123', $user->password));
     }

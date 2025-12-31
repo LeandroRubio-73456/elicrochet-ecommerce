@@ -88,7 +88,7 @@ class CartTest extends TestCase
         $this->mock(CartService::class, function ($mock) {
             $mock->shouldReceive('updateQuantity')->once()->with(1, 5);
             $mock->shouldReceive('getCart')->andReturn(collect([
-                (object) ['product_id' => 1, 'subtotal' => 50]
+                (object) ['product_id' => 1, 'subtotal' => 50],
             ]));
             $mock->shouldReceive('getTotal')->andReturn(50);
             $mock->shouldReceive('getCount')->andReturn(5);
@@ -124,4 +124,3 @@ class CartTest extends TestCase
         $response->assertViewIs('auth.cart-login-required');
     }
 }
-

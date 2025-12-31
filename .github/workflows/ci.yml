@@ -40,6 +40,9 @@ jobs:
           php artisan key:generate
           touch database/database.sqlite
 
+      - name: Check Code Style
+        run: vendor/bin/pint --test
+
       - name: Build assets
         run: npm run build
 

@@ -22,10 +22,10 @@ class CheckoutRaceConditionTest extends TestCase
     {
         // 1. Setup Data
         $user = User::factory()->create();
-        
+
         // Need a category for the product
         $category = \App\Models\Category::create([
-            'name' => 'Test Cat', 
+            'name' => 'Test Cat',
             'slug' => 'test-cat',
         ]);
 
@@ -38,10 +38,10 @@ class CheckoutRaceConditionTest extends TestCase
             'stock' => 1,
             'category_id' => $category->id,
         ]);
-        
+
         // 2. Create Two Orders for the SAME product (Quantity 1 each)
         // Scenario: Two users have the last item in their cart and click pay at the exact same moment.
-        
+
         // Order A
         $orderA = Order::create([
             'user_id' => $user->id,
@@ -79,7 +79,7 @@ class CheckoutRaceConditionTest extends TestCase
         // The race happens when the callback hits our server.
         Http::fake([
             'pay.payphonetodoesposible.com/*' => Http::response([
-                'transactionStatus' => 'Approved'
+                'transactionStatus' => 'Approved',
             ], 200),
         ]);
 
@@ -87,14 +87,14 @@ class CheckoutRaceConditionTest extends TestCase
         // Simulate Callback for Order A
         $payphoneIdA = '10001';
         $responseA = $this->actingAs($user)->get(route('checkout.callback', [
-            'id' => $payphoneIdA, 
-            'clientTransactionId' => $orderA->id . '-1234'
+            'id' => $payphoneIdA,
+            'clientTransactionId' => $orderA->id.'-1234',
         ]));
 
         // Request A Assertion
         $responseA->assertStatus(200); // Should return view 'checkout-success'
         $responseA->assertViewIs('front.checkout-success');
-        
+
         // Check DB State after A
         $this->assertDatabaseHas('orders', ['id' => $orderA->id, 'status' => Order::STATUS_PAID]);
         $this->assertDatabaseHas('products', ['id' => $product->id, 'stock' => 0]); // Stock dropped to 0
@@ -103,8 +103,8 @@ class CheckoutRaceConditionTest extends TestCase
         // Simulate Callback for Order B coming in slightly later (or concurrently in real life)
         $payphoneIdB = '10002';
         $responseB = $this->actingAs($user)->get(route('checkout.callback', [
-            'id' => $payphoneIdB, 
-            'clientTransactionId' => $orderB->id . '-5678'
+            'id' => $payphoneIdB,
+            'clientTransactionId' => $orderB->id.'-5678',
         ]));
 
         // Request B Assertion
@@ -112,7 +112,7 @@ class CheckoutRaceConditionTest extends TestCase
         // Controller Logic: throws Exception "Stock insuficiente..." -> Transaction Rollback -> Redirect directly to cart
         $responseB->assertRedirect(route('cart'));
         $responseB->assertSessionHas('error'); // The controller sets 'error' on Exception
-        
+
         // Assert specific error message part if possible to be sure it's the stock error
         // "Stock insuficiente para el producto..."
         $responseB->assertSessionHas('error', function ($error) {
@@ -121,7 +121,7 @@ class CheckoutRaceConditionTest extends TestCase
 
         // Check DB State after B
         $this->assertDatabaseHas('orders', ['id' => $orderB->id, 'status' => Order::STATUS_PENDING_PAYMENT]); // Should NOT be PAID (rolled back)
-        
+
         $this->assertDatabaseHas('products', ['id' => $product->id, 'stock' => 0]); // Remains 0, doesn't go negative
     }
 }

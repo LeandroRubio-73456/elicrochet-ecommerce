@@ -39,8 +39,8 @@ return [
         'client_id' => env('PAYPHONE_CLIENT_ID'),
         'client_secret' => env('PAYPHONE_CLIENT_SECRET'),
         'mode' => env('PAYPHONE_MODE', 'sandbox'),
-         'base_url' => env('PAYPHONE_MODE') == 'live'
-            ? 'https://api.payphone.app/prod' // URL de producción
-            : 'https://api.payphone.app/dev', // URL de pruebas
+        'base_url' => env('PAYPHONE_MODE') == 'live'
+           ? 'https://api.payphone.app/prod' // URL de producción
+           : 'https://api.payphone.app/dev', // URL de pruebas
     ],
 ];

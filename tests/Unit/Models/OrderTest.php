@@ -13,10 +13,10 @@ class OrderTest extends TestCase
     {
         // Mock items relationship
         $order = \Mockery::mock(Order::class)->makePartial();
-        
+
         $item1 = new OrderItem(['price' => 10, 'quantity' => 2]);
         $item2 = new OrderItem(['price' => 20, 'quantity' => 1]);
-        
+
         // We use setRelation to simulate the loaded relationship
         $order->setRelation('items', collect([$item1, $item2]));
 
@@ -26,9 +26,9 @@ class OrderTest extends TestCase
     /** @test */
     public function it_formats_order_number_attribute()
     {
-        $order = new Order();
+        $order = new Order;
         $order->id = 123;
-        
+
         $this->assertEquals('PED-00123', $order->order_number);
     }
 
@@ -93,7 +93,7 @@ class OrderTest extends TestCase
         // Cannot cancel if already cancelled
         $order->status = Order::STATUS_CANCELLED;
         $this->assertFalse($order->canTransitionTo(Order::STATUS_PAID));
-        
+
         // Cannot change if cancelled
         $this->assertFalse($order->canTransitionTo(Order::STATUS_SHIPPED));
     }

@@ -24,7 +24,7 @@ class OrderController extends Controller
             $orders = $query->skip($start)->take($length)->get();
 
             // 5. Transformación
-            $data = $orders->map(fn($order) => $this->transformOrder($order));
+            $data = $orders->map(fn ($order) => $this->transformOrder($order));
 
             return response()->json([
                 'draw' => intval($request->input('draw')),

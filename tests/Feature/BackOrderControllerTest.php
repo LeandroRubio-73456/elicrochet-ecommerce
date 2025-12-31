@@ -27,7 +27,7 @@ class BackOrderControllerTest extends TestCase
         $response->assertStatus(200);
 
         $response = $this->actingAs($this->admin)->get(route('admin.back.orders.index', ['ajax' => 1]), [
-            'X-Requested-With' => 'XMLHttpRequest'
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
         $response->assertStatus(200);
         $response->assertJsonStructure(['data']);
@@ -45,9 +45,9 @@ class BackOrderControllerTest extends TestCase
     public function back_orders_update_works()
     {
         $order = Order::factory()->create(['status' => 'pending_payment']);
-        
+
         $response = $this->actingAs($this->admin)->put(route('admin.back.orders.update', $order), [
-            'status' => 'paid'
+            'status' => 'paid',
         ]);
 
         $response->assertRedirect();
@@ -59,9 +59,9 @@ class BackOrderControllerTest extends TestCase
     {
         // Line 63 check
         $order = Order::factory()->create(['status' => 'processing']);
-        
+
         $response = $this->actingAs($this->admin)->put(route('admin.back.orders.update', $order), [
-            'status' => 'cancelled'
+            'status' => 'cancelled',
         ]);
 
         $response->assertSessionHas('error');
@@ -72,9 +72,9 @@ class BackOrderControllerTest extends TestCase
     {
         // Line 54 check
         $order = Order::factory()->create(['type' => 'custom', 'status' => 'quotation']);
-        
+
         $response = $this->actingAs($this->admin)->put(route('admin.back.orders.update', $order), [
-            'status' => 'pending_payment'
+            'status' => 'pending_payment',
         ]);
 
         $response->assertSessionHasErrors('total_amount');

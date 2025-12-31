@@ -80,14 +80,14 @@ class OrderTest extends TestCase
         $order = Order::factory()->create(['type' => 'custom', 'status' => 'quotation']);
         // Create a custom item linked to this order
         $order->items()->create([
-             'product_id' => null,
-             'price' => 0,
-             'quantity' => 1
+            'product_id' => null,
+            'price' => 0,
+            'quantity' => 1,
         ]);
 
         $response = $this->actingAs($this->admin)->put(route('admin.orders.update', $order), [
             'status' => 'quotation',
-            'total_amount' => 150.00
+            'total_amount' => 150.00,
         ]);
 
         $this->assertDatabaseHas('orders', ['id' => $order->id, 'total_amount' => 150.00]);
@@ -102,7 +102,7 @@ class OrderTest extends TestCase
 
         $response = $this->actingAs($this->admin)->put(route('admin.orders.update', $order), [
             'status' => 'pending_payment',
-            'total_amount' => 100 // Required validation
+            'total_amount' => 100, // Required validation
         ]);
 
         Mail::assertSent(\App\Mail\PriceAssignedNotification::class);
@@ -129,7 +129,7 @@ class OrderTest extends TestCase
         $order->items()->create([
             'product_id' => $product->id,
             'quantity' => 2,
-            'price' => 50
+            'price' => 50,
         ]);
 
         $response = $this->actingAs($this->admin)->put(route('admin.orders.update', $order), [
@@ -149,7 +149,7 @@ class OrderTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.orders.index', [
             'ajax' => 1,
             'search' => ['value' => 'Alice'],
-            'order' => [['column' => 3, 'dir' => 'asc']] // total_amount
+            'order' => [['column' => 3, 'dir' => 'asc']], // total_amount
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);
@@ -163,7 +163,7 @@ class OrderTest extends TestCase
     public function transform_order_badges()
     {
         $order = Order::factory()->create(['status' => 'ready_to_ship']);
-        
+
         $response = $this->actingAs($this->admin)->get(route('admin.orders.index', [
             'ajax' => 1,
         ]), [

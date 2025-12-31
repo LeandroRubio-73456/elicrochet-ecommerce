@@ -31,8 +31,8 @@ class FinancialController extends Controller
         $paidCount = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0);
 
         // 4. Chart Data (Sales per Month - Last 6 Months)
-        $dateField = DB::getDriverName() === 'sqlite' 
-            ? "strftime('%Y-%m', created_at)" 
+        $dateField = DB::getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', created_at)"
             : "DATE_FORMAT(created_at, '%Y-%m')";
 
         $salesData = Order::select(

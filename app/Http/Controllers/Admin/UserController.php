@@ -27,7 +27,7 @@ class UserController extends Controller
 
             // 5. Transformación
             // 5. Transformación
-            $data = $users->map(fn($user) => $this->transformUser($user));
+            $data = $users->map(fn ($user) => $this->transformUser($user));
 
             return response()->json([
                 'draw' => intval($request->input('draw')),
@@ -106,7 +106,7 @@ class UserController extends Controller
         $user->email = $validated['email'];
         $user->role = $validated['role'];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = $validated['password'];
         }
 

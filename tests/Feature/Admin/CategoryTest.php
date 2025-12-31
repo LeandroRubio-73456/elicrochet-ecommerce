@@ -103,11 +103,11 @@ class CategoryTest extends TestCase
     public function processes_required_specs_json()
     {
         $specs = [['name' => 'Color', 'type' => 'text']];
-        
+
         $response = $this->actingAs($this->admin)->post(route('admin.categories.store'), [
             'name' => 'New Cat',
             'status' => 'active',
-            'required_specs' => json_encode($specs)
+            'required_specs' => json_encode($specs),
         ]);
 
         $category = Category::where('name', 'New Cat')->first();
@@ -126,12 +126,12 @@ class CategoryTest extends TestCase
             'columns' => [
                 5 => [
                     'data' => 'status',
-                    'search' => ['value' => 'active']
-                ]
+                    'search' => ['value' => 'active'],
+                ],
             ],
             'order' => [
-                0 => ['column' => 2, 'dir' => 'desc']
-            ]
+                0 => ['column' => 2, 'dir' => 'desc'],
+            ],
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);

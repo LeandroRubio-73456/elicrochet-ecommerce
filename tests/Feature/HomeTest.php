@@ -44,7 +44,7 @@ class HomeTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee($product->name);
-        // Depending on implementation, it might or might not see the other one. 
+        // Depending on implementation, it might or might not see the other one.
         // We mainly want to hit the logic.
     }
 

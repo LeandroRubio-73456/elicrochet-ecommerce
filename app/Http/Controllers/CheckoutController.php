@@ -146,6 +146,7 @@ class CheckoutController extends Controller
                 $this->finalizeOrderTotal($order);
 
                 Log::info("Order processed successfully (Fusion or Creation). ID: {$order->id}");
+
                 return $order;
             });
 
@@ -154,6 +155,7 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Checkout Exception: '.$e->getMessage());
+
             return redirect()->route('checkout')->with('error', 'Error: '.$e->getMessage());
         }
     }
@@ -322,6 +324,7 @@ class CheckoutController extends Controller
         foreach ($cartItems as $cartItem) {
             if ($cartItem->custom_order_id) {
                 $this->processCustomOrderItem($order, $cartItem, $masterOriginalItem);
+
                 continue;
             }
 
@@ -346,6 +349,7 @@ class CheckoutController extends Controller
                     'quantity' => 1,
                 ]);
             }
+
             return;
         }
 
@@ -425,6 +429,7 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             Log::error("Transaction Error processing Order {$orderId}: ".$e->getMessage());
+
             return redirect()->route('cart')->with('error', 'Error procesando el pedido: '.$e->getMessage());
         }
     }
@@ -436,15 +441,15 @@ class CheckoutController extends Controller
         }
 
         if ($order->status === Order::STATUS_PAID) {
-             // We can't redirect from here easily inside transaction closure, so we throw to be caught
-             // Or we accept that if it's paid, we might just return the view.
-             // But the original code redirected. Let's throw a specific exception we can catch or just handled logic before.
-             // Actually, original code redirected. Refactoring strictly:
-             // To preserve exact behavior, we might need to check this BEFORE transaction or handle it differently.
-             // However, for safely, let's assume if it is paid, we just stop processing.
-             // But to keep the controller clean, let's keep it simple.
-             // The original code did a return redirect inside the closure which works in Laravel.
-             throw new \App\Exceptions\BusinessLogicException('Esta orden ya fue procesada anteriormente.');
+            // We can't redirect from here easily inside transaction closure, so we throw to be caught
+            // Or we accept that if it's paid, we might just return the view.
+            // But the original code redirected. Let's throw a specific exception we can catch or just handled logic before.
+            // Actually, original code redirected. Refactoring strictly:
+            // To preserve exact behavior, we might need to check this BEFORE transaction or handle it differently.
+            // However, for safely, let's assume if it is paid, we just stop processing.
+            // But to keep the controller clean, let's keep it simple.
+            // The original code did a return redirect inside the closure which works in Laravel.
+            throw new \App\Exceptions\BusinessLogicException('Esta orden ya fue procesada anteriormente.');
         }
     }
 

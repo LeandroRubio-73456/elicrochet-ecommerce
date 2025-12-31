@@ -56,10 +56,12 @@ class CartController extends Controller
 
         } catch (\App\Exceptions\BusinessLogicException $e) {
             DB::rollBack();
+
             return back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Cart Add Error: '.$e->getMessage());
+
             return back()->with('error', 'Ocurrió un error al agregar el producto.');
         }
     }

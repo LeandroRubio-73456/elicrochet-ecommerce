@@ -17,7 +17,8 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->unique()->word . ' ' . $this->faker->numberBetween(1, 1000);
+        $name = $this->faker->unique()->word.' '.$this->faker->numberBetween(1, 1000);
+
         return [
             'name' => $name,
             'slug' => Str::slug($name),

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\User;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,6 +42,6 @@ class FinanceTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.finance.export'));
 
         $response->assertStatus(200);
-        $response->assertHeader('Content-Disposition', 'attachment; filename=financial_report_' . date('Y-m-d') . '_' . date('H-i') . '.csv');
+        $response->assertHeader('Content-Disposition', 'attachment; filename=financial_report_'.date('Y-m-d').'_'.date('H-i').'.csv');
     }
 }
