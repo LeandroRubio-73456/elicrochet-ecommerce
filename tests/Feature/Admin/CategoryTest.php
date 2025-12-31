@@ -121,13 +121,15 @@ class CategoryTest extends TestCase
         Category::factory()->create(['name' => 'Old Cat', 'status' => 'archived']);
 
         // Status filter (Column 5)
-        $response = $this->actingAs($this->admin)->json('GET', route('admin.categories.index'), [
+        $response = $this->actingAs($this->admin)->get(route('admin.categories.index', [
             'ajax' => 1,
             'columns' => [
                 ['data' => 'id'],['data' => 'icon'],['data' => 'name'],['data' => 'slug'],['data' => 'products_count'],
                 ['data' => 'status', 'search' => ['value' => 'active']]
             ],
             'order' => [['column' => 2, 'dir' => 'desc']] // Name
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
 
         $response->assertJsonCount(1, 'data');

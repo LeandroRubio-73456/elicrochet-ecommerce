@@ -146,10 +146,12 @@ class OrderTest extends TestCase
         Order::factory()->create(['customer_name' => 'Bob', 'total_amount' => 200]);
 
         // Filter by customer name
-        $response = $this->actingAs($this->admin)->json('GET', route('admin.orders.index'), [
+        $response = $this->actingAs($this->admin)->get(route('admin.orders.index', [
             'ajax' => 1,
             'search' => ['value' => 'Alice'],
             'order' => [['column' => 3, 'dir' => 'asc']] // total_amount
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
 
         $response->assertStatus(200);
@@ -162,8 +164,10 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create(['status' => 'ready_to_ship']);
         
-        $response = $this->actingAs($this->admin)->json('GET', route('admin.orders.index'), [
+        $response = $this->actingAs($this->admin)->get(route('admin.orders.index', [
             'ajax' => 1,
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
 
         $response->assertJsonFragment(['status' => '<span class="badge bg-light-primary text-primary f-12">Listo para Envío</span>']);

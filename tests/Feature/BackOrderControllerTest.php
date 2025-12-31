@@ -23,10 +23,10 @@ class BackOrderControllerTest extends TestCase
     public function back_orders_index_works()
     {
         Order::factory()->count(2)->create();
-        $response = $this->actingAs($this->admin)->get(route('back.orders.index'));
+        $response = $this->actingAs($this->admin)->get(route('admin.back.orders.index'));
         $response->assertStatus(200);
 
-        $response = $this->actingAs($this->admin)->get(route('back.orders.index', ['ajax' => 1]), [
+        $response = $this->actingAs($this->admin)->get(route('admin.back.orders.index', ['ajax' => 1]), [
             'X-Requested-With' => 'XMLHttpRequest'
         ]);
         $response->assertStatus(200);
@@ -37,7 +37,7 @@ class BackOrderControllerTest extends TestCase
     public function back_orders_show_works()
     {
         $order = Order::factory()->create();
-        $response = $this->actingAs($this->admin)->get(route('back.orders.show', $order));
+        $response = $this->actingAs($this->admin)->get(route('admin.back.orders.show', $order));
         $response->assertStatus(200);
     }
 
@@ -46,7 +46,7 @@ class BackOrderControllerTest extends TestCase
     {
         $order = Order::factory()->create(['status' => 'pending_payment']);
         
-        $response = $this->actingAs($this->admin)->put(route('back.orders.update', $order), [
+        $response = $this->actingAs($this->admin)->put(route('admin.back.orders.update', $order), [
             'status' => 'paid'
         ]);
 
@@ -60,7 +60,7 @@ class BackOrderControllerTest extends TestCase
         // Line 63 check
         $order = Order::factory()->create(['status' => 'processing']);
         
-        $response = $this->actingAs($this->admin)->put(route('back.orders.update', $order), [
+        $response = $this->actingAs($this->admin)->put(route('admin.back.orders.update', $order), [
             'status' => 'cancelled'
         ]);
 
@@ -73,7 +73,7 @@ class BackOrderControllerTest extends TestCase
         // Line 54 check
         $order = Order::factory()->create(['type' => 'custom', 'status' => 'quotation']);
         
-        $response = $this->actingAs($this->admin)->put(route('back.orders.update', $order), [
+        $response = $this->actingAs($this->admin)->put(route('admin.back.orders.update', $order), [
             'status' => 'pending_payment'
         ]);
 

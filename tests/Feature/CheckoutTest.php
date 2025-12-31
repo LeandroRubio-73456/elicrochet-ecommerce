@@ -104,13 +104,14 @@ class CheckoutTest extends TestCase
     /** @test */
     public function payphone_callback_handles_success()
     {
-        $order = Order::factory()->create(['status' => 'pending_payment']);
+        $user = User::factory()->create();
+        $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
         
         Http::fake([
             'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
         ]);
 
-        $response = $this->get(route('checkout.callback', [
+        $response = $this->actingAs($user)->get(route('checkout.callback', [
             'id' => 'trans-123',
             'clientTransactionId' => $order->id . '-time'
         ]));
@@ -122,13 +123,14 @@ class CheckoutTest extends TestCase
     /** @test */
     public function payphone_callback_handles_failure()
     {
-        $order = Order::factory()->create(['status' => 'pending_payment']);
+        $user = User::factory()->create();
+        $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
         
         Http::fake([
             'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Declined'], 200),
         ]);
 
-        $response = $this->get(route('checkout.callback', [
+        $response = $this->actingAs($user)->get(route('checkout.callback', [
             'id' => 'trans-123',
             'clientTransactionId' => $order->id . '-time'
         ]));
@@ -140,15 +142,16 @@ class CheckoutTest extends TestCase
     /** @test */
     public function decrement_stock_fails_if_insufficient()
     {
+        $user = User::factory()->create();
         $product = Product::factory()->create(['stock' => 0]); // Out of stock now
-        $order = Order::factory()->create(['status' => 'pending_payment']);
+        $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
         $order->items()->create(['product_id' => $product->id, 'quantity' => 1, 'price' => 10]);
         
         Http::fake([
             'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
         ]);
 
-        $response = $this->get(route('checkout.callback', [
+        $response = $this->actingAs($user)->get(route('checkout.callback', [
             'id' => 'trans-123',
             'clientTransactionId' => $order->id . '-time'
         ]));

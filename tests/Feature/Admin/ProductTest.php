@@ -124,22 +124,26 @@ class ProductTest extends TestCase
     public function test_datatables_can_filter_by_status_and_search()
     {
         Product::factory()->create(['name' => 'Specific Product', 'status' => 'active']);
-        Product::factory()->create(['name' => 'Hidden Item', 'status' => 'inactive']);
+        Product::factory()->create(['name' => 'Hidden Item', 'status' => 'archived']);
 
         // Search
-        $response = $this->actingAs($this->admin)->json('GET', route('admin.products.index'), [
+        $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
             'search' => ['value' => 'Specific']
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
         $response->assertJsonCount(1, 'data');
 
         // Status filter (Column 3)
-        $response = $this->actingAs($this->admin)->json('GET', route('admin.products.index'), [
+        $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
             'columns' => [
                 ['data' => 'id'], ['data' => 'image'], ['data' => 'name'],
                 ['data' => 'status', 'search' => ['value' => 'active']]
             ]
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
         $response->assertJsonCount(1, 'data');
     }
@@ -148,11 +152,13 @@ class ProductTest extends TestCase
     {
         $category = \App\Models\Category::factory()->create();
         Product::factory()->create(['category_id' => $category->id]);
-        Product::factory()->create(['category_id' => null]);
+        Product::factory()->create(); // Another category automatically
 
-        $response = $this->actingAs($this->admin)->json('GET', route('admin.products.index'), [
+        $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
             'category_id' => $category->id
+        ]), [
+            'X-Requested-With' => 'XMLHttpRequest',
         ]);
 
         $response->assertJsonCount(1, 'data');
