@@ -132,146 +132,17 @@ class CheckoutController extends Controller
             DB::beginTransaction();
 
             // 2.a Sync Address with User Profile
-            $address = $user->addresses()->updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'street' => $validated['shipping_address'],
-                    'city' => $validated['shipping_city'],
-                    'province' => $validated['shipping_province'],
-                    'reference' => $validated['shipping_reference'] ?? null,
-                    'postal_code' => $validated['shipping_zip'],
-                    'phone' => $validated['customer_phone'],
-                    'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
-                    'customer_email' => $validated['customer_email'],
-                    // Legacy redundant fields
-                    'address' => $validated['shipping_address'],
-                    'details' => $validated['shipping_reference'] ?? null,
-                ]
-            );
-
-            // Also update legacy user columns
-            $user->update(['phone' => $validated['customer_phone']]);
+            $address = $this->syncUserAddress($user, $validated);
 
             // --- FUSION LOGIC START ---
-
-            // 1. Identify valid Custom Orders in Cart
-            $customOrderIds = $cartItems->pluck('custom_order_id')->filter()->unique();
-            $masterOrderId = $customOrderIds->first();
-            $order = null;
-            $masterOriginalItem = null;
-
-            if ($masterOrderId) {
-                // Use the FIRST custom order as the Master
-                $order = Order::find($masterOrderId);
-
-                if (! $order) {
-                    throw new \RuntimeException('El pedido personalizado principal referenciado no existe.');
-                }
-
-                // Identify the specific "original" item of this master order to avoid confusing it with merged ones later
-                // It should be the one with null product_id that typically exists from creation
-                $masterOriginalItem = $order->items()->whereNull('product_id')->first();
-
-                // Update details on the existing order
-                $order->update([
-                    'address_id' => $address->id,
-                    'shipping_address' => $validated['shipping_address'],
-                    'shipping_city' => $validated['shipping_city'],
-                    'shipping_province' => $validated['shipping_province'],
-                    'shipping_zip' => $validated['shipping_zip'],
-                    'customer_email' => $validated['customer_email'],
-                    'customer_phone' => $validated['customer_phone'],
-                    'status' => Order::STATUS_PENDING_PAYMENT, // Ensure it's ready for payment/retry
-                ]);
-
-            } else {
-                // Create New Standard Order (No Custom Orders involved)
-                $order = Order::create([
-                    'user_id' => $user->id,
-                    'address_id' => $address->id,
-                    'status' => Order::STATUS_PENDING_PAYMENT,
-                    'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
-                    'customer_email' => $validated['customer_email'],
-                    'customer_phone' => $validated['customer_phone'],
-                    'shipping_address' => $validated['shipping_address'],
-                    'shipping_city' => $validated['shipping_city'],
-                    'shipping_province' => $validated['shipping_province'],
-                    'shipping_zip' => $validated['shipping_zip'],
-                    'total_amount' => 0,
-                    'type' => 'stock', // Explicitly mark as stock
-                ]);
-            }
+            // 1. Resolve Master Order or Create New
+            [$order, $masterOriginalItem] = $this->resolveOrderForCheckout($user, $address, $cartItems, $validated);
 
             // 2. Process Cart Items
-            foreach ($cartItems as $cartItem) {
-                // CASE A: It is a Custom Order Item
-                if ($cartItem->custom_order_id) {
-
-                    // Sub-case A1: It IS the Master Order Item
-                    if ($order && $cartItem->custom_order_id == $order->id) {
-                        if ($masterOriginalItem) {
-                            $masterOriginalItem->update([
-                                'price' => $cartItem->price,
-                                'quantity' => 1,
-                            ]);
-                        }
-                    }
-                    // Sub-case A2: It is a SECONDARY Custom Order (Merge Strategy)
-                    else {
-                        $secondaryOrder = Order::find($cartItem->custom_order_id);
-                        if ($secondaryOrder) {
-                            // Get its item info (assuming 1 custom item per custom order usually)
-                            $secondaryItem = $secondaryOrder->items()->whereNull('product_id')->first();
-
-                            if ($secondaryItem) {
-                                // Clone it into the Master Order
-                                OrderItem::create([
-                                    'order_id' => $order->id,
-                                    'product_id' => null, // It's still a custom item
-                                    'custom_order_id' => $secondaryOrder->id, // Reference to old ID (optional but good for tracking)
-                                    'custom_description' => $secondaryItem->custom_description,
-                                    'price' => $cartItem->price,
-                                    'quantity' => 1,
-                                    'images' => $secondaryItem->images, // Copy images array
-                                ]);
-                            }
-
-                            // 3. Mark the secondary order as cancelled/merged instead of deleting
-                            // This preserves ID sequence and history as requested
-                            $secondaryOrder->update([
-                                'status' => 'cancelled',
-                                'total_amount' => 0, // Reset total since items moved
-                                'customer_phone' => $secondaryOrder->customer_phone.' (Fusionado con Order #'.$order->id.')',
-                            ]);
-                            // Optionally soft delete items or leave them?
-                            // If we cloned items, leaving original items might be confusing if they show up in analytics.
-                            // But usually, cancelled orders are ignored in analytics.
-                            // Let's clear the items from the cancelled order to avoid double counting?
-                            // Actually, keeping them is safer for "constancia". Status cancelled handles the logic.
-                        }
-                    }
-
-                    continue;
-                }
-
-                // CASE B: Standard Stock Items
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $cartItem->product_id,
-                    'custom_order_id' => null,
-                    'quantity' => $cartItem->quantity,
-                    'price' => $cartItem->price,
-                ]);
-            }
+            $this->processCartItems($order, $cartItems, $masterOriginalItem);
 
             // 3. Recalculate Final Total
-            // Re-fetch items to account for all additions/updates
-            $finalTotal = $order->items()->get()->sum(function ($item) {
-                return $item->price * $item->quantity;
-            });
-
-            $order->total_amount = $finalTotal;
-            $order->save();
+            $this->finalizeOrderTotal($order);
 
             DB::commit();
             Log::info("Order processed successfully (Fusion or Creation). ID: {$order->id}");
@@ -310,108 +181,11 @@ class CheckoutController extends Controller
 
         try {
             // INTENTO CON CONFIRM V1 (Para coincidir con Prepare V1)
-            $response = Http::withoutVerifying()
-                ->withToken(config('services.payphone.token'))
-                ->post('https://pay.payphonetodoesposible.com/api/button/Confirm', [
-                    'id' => (int) $payphoneId,
-                    'clientTransactionId' => (string) $rawOrderId,
-                ]);
-
-            $result = $response->json();
+            $result = $this->confirmPaymentWithPayPhone($payphoneId, $rawOrderId);
             Log::info('PayPhone Confirm Response (V1): '.json_encode($result));
 
-            if ($response->successful() && isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
-
-                try {
-                    DB::beginTransaction();
-
-                    // Reload order with items
-        // Note: Removed lockForUpdate() to compatible with SQLite testing and simpler concurrency model for this scale
-        $order = Order::with('items')->find($orderId);
-
-                    if (! $order) {
-                        throw new \RuntimeException('Orden no encontrada durante el procesamiento (Race Condition check).');
-                    }
-
-                    // Check if already paid to avoid double processing
-                    if ($order->status === Order::STATUS_PAID) {
-                        DB::rollBack();
-
-                        return redirect()->route('cart')->with('info', 'Esta orden ya fue procesada anteriormente.');
-                    }
-
-                    $order->update([
-                        'status' => 'in_review',
-                        'payphone_transaction_id' => $payphoneId,
-                        'payphone_status' => 'Approved',
-                    ]);
-
-                    // Determine next status and Handle Custom Orders
-                    $newStatus = Order::STATUS_PAID;
-
-
-                    foreach ($order->items as $item) {
-                        // Check if item is linked to a Custom Order
-                        if ($item->custom_order_id) {
-                            $customOrder = Order::find($item->custom_order_id);
-                            if ($customOrder) {
-                                // Mark the ORIGINAL custom order as PAID
-                                $customOrder->update(['status' => Order::STATUS_PAID]);
-                            }
-                        }
-                    }
-
-                    // DECREMENT STOCK WITH LOCKING
-                    foreach ($order->items as $item) {
-                        if ($item->product_id) {
-                            // LOCK the product row to ensure we are reading the absolute latest stock
-                            // LOCK the product row to ensure we are reading the absolute latest stock
-                // Note: Removed lockForUpdate() compatibility
-                $product = \App\Models\Product::find($item->product_id);
-
-                            if ($product) {
-                                if ($product->stock < $item->quantity) {
-                                    throw new \RuntimeException("Stock insuficiente para el producto '{$product->name}'. Stock actual: {$product->stock}, Solicitado: {$item->quantity}. La compra ha sido revertida.");
-                                }
-                                $product->decrement('stock', $item->quantity);
-                            }
-                        }
-                    }
-
-                    $order->update(['status' => $newStatus]);
-
-                    // Vaciamos el carrito (This is safe to do here)
-                    $order->user->cartItems()->delete();
-
-                    DB::commit();
-
-                    // MAIL NOTIFICATIONS (Send AFTER commit to ensure emails are only sent if DB transaction succeeds)
-                    try {
-                        \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidNotification($order));
-                    } catch (\Exception $e) {
-                        Log::error('Error sending OrderPaid email: '.$e->getMessage());
-                    }
-
-                    try {
-                        $admin = \App\Models\User::where('role', 'admin')->first();
-                        if ($admin) {
-                            // Removed sleep() or reduced it significantly as we are now safer or use Queue usually
-                            // But keeping it effectively small or relying on Sync
-                            \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
-                        }
-                    } catch (\Exception $e) {
-                        Log::error('Error sending NewOrderAdminNotification (Paid): '.$e->getMessage());
-                    }
-
-                    return view('front.checkout-success', compact('order'));
-
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    Log::error("Transaction Error processing Order {$orderId}: ".$e->getMessage());
-
-                    return redirect()->route('cart')->with('error', 'Error procesando el pedido: '.$e->getMessage());
-                }
-
+            if (isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
+                return $this->processSuccessfulTransaction($orderId, $payphoneId);
             } else {
                 Log::warning('Transaction not approved. Status: '.($result['transactionStatus'] ?? 'Unknown'));
             }
@@ -466,5 +240,246 @@ class CheckoutController extends Controller
         Log::error("PayPhone Error for Order ID {$order->id}: ".$response->body());
 
         return redirect()->route('checkout')->with('error', 'Error al generar link de pago: '.$response->body());
+    }
+
+    private function syncUserAddress($user, $validated)
+    {
+        $address = $user->addresses()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'street' => $validated['shipping_address'],
+                'city' => $validated['shipping_city'],
+                'province' => $validated['shipping_province'],
+                'reference' => $validated['shipping_reference'] ?? null,
+                'postal_code' => $validated['shipping_zip'],
+                'phone' => $validated['customer_phone'],
+                'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
+                'customer_email' => $validated['customer_email'],
+                // Legacy redundant fields
+                'address' => $validated['shipping_address'],
+                'details' => $validated['shipping_reference'] ?? null,
+            ]
+        );
+
+        // Also update legacy user columns
+        $user->update(['phone' => $validated['customer_phone']]);
+
+        return $address;
+    }
+
+    private function resolveOrderForCheckout($user, $address, $cartItems, $validated)
+    {
+        // 1. Identify valid Custom Orders in Cart
+        $customOrderIds = $cartItems->pluck('custom_order_id')->filter()->unique();
+        $masterOrderId = $customOrderIds->first();
+        $order = null;
+        $masterOriginalItem = null;
+
+        if ($masterOrderId) {
+            // Use the FIRST custom order as the Master
+            $order = Order::find($masterOrderId);
+
+            if (! $order) {
+                throw new \RuntimeException('El pedido personalizado principal referenciado no existe.');
+            }
+
+            // Identify the specific "original" item of this master order to avoid confusing it with merged ones later
+            // It should be the one with null product_id that typically exists from creation
+            $masterOriginalItem = $order->items()->whereNull('product_id')->first();
+
+            // Update details on the existing order
+            $order->update([
+                'address_id' => $address->id,
+                'shipping_address' => $validated['shipping_address'],
+                'shipping_city' => $validated['shipping_city'],
+                'shipping_province' => $validated['shipping_province'],
+                'shipping_zip' => $validated['shipping_zip'],
+                'customer_email' => $validated['customer_email'],
+                'customer_phone' => $validated['customer_phone'],
+                'status' => Order::STATUS_PENDING_PAYMENT, // Ensure it's ready for payment/retry
+            ]);
+
+        } else {
+            // Create New Standard Order (No Custom Orders involved)
+            $order = Order::create([
+                'user_id' => $user->id,
+                'address_id' => $address->id,
+                'status' => Order::STATUS_PENDING_PAYMENT,
+                'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
+                'customer_email' => $validated['customer_email'],
+                'customer_phone' => $validated['customer_phone'],
+                'shipping_address' => $validated['shipping_address'],
+                'shipping_city' => $validated['shipping_city'],
+                'shipping_province' => $validated['shipping_province'],
+                'shipping_zip' => $validated['shipping_zip'],
+                'total_amount' => 0,
+                'type' => 'stock', // Explicitly mark as stock
+            ]);
+        }
+
+        return [$order, $masterOriginalItem];
+    }
+
+    private function processCartItems($order, $cartItems, $masterOriginalItem)
+    {
+        foreach ($cartItems as $cartItem) {
+            // CASE A: It is a Custom Order Item
+            if ($cartItem->custom_order_id) {
+
+                // Sub-case A1: It IS the Master Order Item
+                if ($order && $cartItem->custom_order_id == $order->id) {
+                    if ($masterOriginalItem) {
+                        $masterOriginalItem->update([
+                            'price' => $cartItem->price,
+                            'quantity' => 1,
+                        ]);
+                    }
+                }
+                // Sub-case A2: It is a SECONDARY Custom Order (Merge Strategy)
+                else {
+                    $secondaryOrder = Order::find($cartItem->custom_order_id);
+                    if ($secondaryOrder) {
+                        // Get its item info (assuming 1 custom item per custom order usually)
+                        $secondaryItem = $secondaryOrder->items()->whereNull('product_id')->first();
+
+                        if ($secondaryItem) {
+                            // Clone it into the Master Order
+                            OrderItem::create([
+                                'order_id' => $order->id,
+                                'product_id' => null, // It's still a custom item
+                                'custom_order_id' => $secondaryOrder->id, // Reference to old ID (optional but good for tracking)
+                                'custom_description' => $secondaryItem->custom_description,
+                                'price' => $cartItem->price,
+                                'quantity' => 1,
+                                'images' => $secondaryItem->images, // Copy images array
+                            ]);
+                        }
+
+                        // 3. Mark the secondary order as cancelled/merged instead of deleting
+                        // This preserves ID sequence and history as requested
+                        $secondaryOrder->update([
+                            'status' => 'cancelled',
+                            'total_amount' => 0, // Reset total since items moved
+                            'customer_phone' => $secondaryOrder->customer_phone.' (Fusionado con Order #'.$order->id.')',
+                        ]);
+                    }
+                }
+
+                continue;
+            }
+
+            // CASE B: Standard Stock Items
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $cartItem->product_id,
+                'custom_order_id' => null,
+                'quantity' => $cartItem->quantity,
+                'price' => $cartItem->price,
+            ]);
+        }
+    }
+
+    private function confirmPaymentWithPayPhone($payphoneId, $rawOrderId)
+    {
+        $response = Http::withoutVerifying()
+            ->withToken(config('services.payphone.token'))
+            ->post('https://pay.payphonetodoesposible.com/api/button/Confirm', [
+                'id' => (int) $payphoneId,
+                'clientTransactionId' => (string) $rawOrderId,
+            ]);
+
+        // Combine status check with result
+        $result = $response->json();
+        if (! $response->successful()) {
+            Log::error('PayPhone Confirm Failed: '.$response->body());
+        }
+
+        return $result;
+    }
+
+    private function processSuccessfulTransaction($orderId, $payphoneId)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Note: Removed lockForUpdate() to compatible with SQLite testing
+            $order = Order::with('items')->find($orderId);
+
+            if (! $order) {
+                throw new \RuntimeException('Orden no encontrada durante el procesamiento (Race Condition check).');
+            }
+
+            // Check if already paid
+            if ($order->status === Order::STATUS_PAID) {
+                DB::rollBack();
+
+                return redirect()->route('cart')->with('info', 'Esta orden ya fue procesada anteriormente.');
+            }
+
+            $order->update([
+                'status' => 'in_review',
+                'payphone_transaction_id' => $payphoneId,
+                'payphone_status' => 'Approved',
+            ]);
+
+            // Handle Custom Orders status linking
+            foreach ($order->items as $item) {
+                if ($item->custom_order_id) {
+                    $customOrder = Order::find($item->custom_order_id);
+                    if ($customOrder) {
+                        $customOrder->update(['status' => Order::STATUS_PAID]);
+                    }
+                }
+            }
+
+            // DECREMENT STOCK
+            foreach ($order->items as $item) {
+                if ($item->product_id) {
+                    $product = \App\Models\Product::find($item->product_id);
+                    if ($product) {
+                        if ($product->stock < $item->quantity) {
+                            throw new \RuntimeException("Stock insuficiente para el producto '{$product->name}'. La compra ha sido revertida.");
+                        }
+                        $product->decrement('stock', $item->quantity);
+                    }
+                }
+            }
+
+            $order->update(['status' => Order::STATUS_PAID]);
+
+            // Clear Cart
+            $order->user->cartItems()->delete();
+
+            DB::commit();
+
+            // Send Emails
+            $this->sendOrderEmails($order);
+
+            return view('front.checkout-success', compact('order'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("Transaction Error processing Order {$orderId}: ".$e->getMessage());
+
+            return redirect()->route('cart')->with('error', 'Error procesando el pedido: '.$e->getMessage());
+        }
+    }
+
+    private function sendOrderEmails($order)
+    {
+        try {
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidNotification($order));
+        } catch (\Exception $e) {
+            Log::error('Error sending OrderPaid email: '.$e->getMessage());
+        }
+
+        try {
+            $admin = \App\Models\User::where('role', 'admin')->first();
+            if ($admin) {
+                \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
+            }
+        } catch (\Exception $e) {
+            Log::error('Error sending NewOrderAdminNotification (Paid): '.$e->getMessage());
+        }
     }
 }

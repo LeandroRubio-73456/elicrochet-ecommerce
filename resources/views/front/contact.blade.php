@@ -35,20 +35,20 @@
                         <form>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" placeholder="Tu Nombre">
+                                    <label for="contact_name" class="form-label">Nombre</label>
+                                    <input type="text" id="contact_name" class="form-control" placeholder="Tu Nombre">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Teléfono</label>
-                                    <input type="number" class="form-control" placeholder="Tu Teléfono">
+                                    <label for="contact_phone" class="form-label">Teléfono</label>
+                                    <input type="number" id="contact_phone" class="form-control" placeholder="Tu Teléfono">
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" placeholder="correo@ejemplo.com">
+                                    <label for="contact_email" class="form-label">Correo Electrónico</label>
+                                    <input type="email" id="contact_email" class="form-control" placeholder="correo@ejemplo.com">
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Tipo de Consulta</label>
-                                    <select class="form-select">
+                                    <label for="contact_type" class="form-label">Tipo de Consulta</label>
+                                    <select class="form-select" id="contact_type">
                                         <option selected>Consulta General</option>
                                         <option value="1">Pedido Personalizado</option>
                                         <option value="2">Estado de mi Pedido</option>
@@ -56,8 +56,8 @@
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Mensaje</label>
-                                    <textarea class="form-control" rows="4" placeholder="¿Cómo podemos ayudarte?"></textarea>
+                                    <label for="contact_message" class="form-label">Mensaje</label>
+                                    <textarea class="form-control" id="contact_message" rows="4" placeholder="¿Cómo podemos ayudarte?"></textarea>
                                 </div>
                             </div>
                             

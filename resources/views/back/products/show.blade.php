@@ -119,19 +119,19 @@
                                 <table class="table table-borderless">
                                     <tbody>
                                         <tr>
-                                            <td class="text-muted text-sm py-1">Categoría:</td>
+                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">Categoría:</th>
                                             <td class="py-1 fw-bold">
                                                 {{ $product->category->name ?? 'Sin categoría' }}</td>
                                         </tr>
                                         <tr>
-                                            <td class="text-muted text-sm py-1">Precio:</td>
+                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">Precio:</th>
                                             <td class="py-1">
                                                 <h4 class="mb-0 text-success">
                                                     ${{ number_format($product->price, 2) }}</h4>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-muted text-sm py-1">Stock disponible:</td>
+                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">Stock disponible:</th>
                                             <td class="py-1">
                                                 <span
                                                     class="badge fs-6 bg-light-{{ $product->stock > 10 ? 'success' : ($product->stock > 0 ? 'warning' : 'danger') }}">
@@ -140,11 +140,11 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-muted text-sm py-1">ID del producto:</td>
+                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">ID del producto:</th>
                                             <td class="py-1">{{ $product->id }}</td>
                                         </tr>
                                         <tr>
-                                            <td class="text-muted text-sm py-1">URL amigable:</td>
+                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">URL amigable:</th>
                                             <td class="py-1">{{ $product->slug }}</td>
                                         </tr>
                                     </tbody>
@@ -211,18 +211,17 @@
                                                 <table class="table table-borderless">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="text-muted text-sm py-1">Estado:</td>
+                                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">Estado</th>
                                                             <td class="py-1">{!! $product->status_badge !!}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="text-muted text-sm py-1">Stock crítico:
-                                                            </td>
+                                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">Stock crítico</th>
                                                             <td class="py-1">
                                                                 {{ $product->stock <= 5 ? 'SÍ' : 'NO' }}</td>
                                                         </tr>
                                                         @if ($product->sku)
                                                             <tr>
-                                                                <td class="text-muted text-sm py-1">SKU:</td>
+                                                                <th scope="row" class="text-muted text-sm py-1 fw-normal">SKU</th>
                                                                 <td class="py-1">
                                                                     <code>{{ $product->sku }}</code>
                                                                 </td>
@@ -239,15 +238,15 @@
                                                 <table class="table table-borderless">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="text-muted text-sm py-1">Categoría
-                                                                principal:</td>
+                                                            <th scope="row" class="text-muted text-sm py-1 fw-normal">Categoría
+                                                                principal</th>
                                                             <td class="py-1">
                                                                 {{ $product->category->name ?? 'N/A' }}</td>
                                                         </tr>
                                                         @if ($product->category)
                                                             <tr>
-                                                                <td class="text-muted text-sm py-1">Descripción
-                                                                    categoría:</td>
+                                                                <th scope="row" class="text-muted text-sm py-1 fw-normal">Descripción
+                                                                    categoría</th>
                                                                 <td class="py-1">
                                                                     {{ $product->category->description ?? 'N/A' }}
                                                                 </td>
@@ -295,22 +294,22 @@
                                         <table class="table table-borderless">
                                             <tbody>
                                                 <tr>
-                                                    <td class="text-muted text-sm py-1">Creado:</td>
+                                                    <th scope="row" class="text-muted text-sm py-1 fw-normal">Creado</th>
                                                     <td class="py-1">
                                                         {{ $product->created_at->format('d/m/Y H:i:s') }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-muted text-sm py-1">Actualizado:</td>
+                                                    <th scope="row" class="text-muted text-sm py-1 fw-normal">Actualizado</th>
                                                     <td class="py-1">
                                                         {{ $product->updated_at->format('d/m/Y H:i:s') }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-muted text-sm py-1">Imágenes:</td>
+                                                    <th scope="row" class="text-muted text-sm py-1 fw-normal">Imágenes</th>
                                                     <td class="py-1">{{ $product->images->count() }}
                                                         archivo(s)</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="text-muted text-sm py-1">Visibilidad:</td>
+                                                    <th scope="row" class="text-muted text-sm py-1 fw-normal">Visibilidad</th>
                                                     <td class="py-1">
                                                         {{ $product->status === 'active' ? 'Público' : 'Privado' }}
                                                     </td>

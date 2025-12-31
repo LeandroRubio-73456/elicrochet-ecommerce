@@ -58,7 +58,7 @@
                                             <div class="d-flex align-items-center">
                                                 @if($item->product->images->count() > 0)
                                                     <img src="{{ asset('storage/' . $item->product->images->first()->image_path) }}" 
-                                                         class="rounded me-3 border" width="50" height="50" style="object-fit: cover;">
+                                                         class="rounded me-3 border" width="50" height="50" style="object-fit: cover;" alt="{{ $item->product->name }}">
                                                 @else
                                                      <div class="rounded me-3 bg-light d-flex align-items-center justify-content-center border" style="width:50px; height:50px;">
                                                          <i class="ti ti-photo-off text-muted"></i>

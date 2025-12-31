@@ -28,7 +28,7 @@
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Categoría</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()">
+                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0">
                                             <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="3" data-value="">Todas</a></li>
@@ -44,7 +44,7 @@
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Estado</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()">
+                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0">
                                             <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="">Todos</a></li>

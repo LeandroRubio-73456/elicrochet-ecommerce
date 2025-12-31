@@ -126,13 +126,21 @@ class Order extends Model
         $current = $this->status;
 
         // Pending -> Paid
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) return true;
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) {
+            return true;
+        }
         // Paid -> Shipped
-        if ($current == self::STATUS_PAID && $target == self::STATUS_SHIPPED) return true;
+        if ($current == self::STATUS_PAID && $target == self::STATUS_SHIPPED) {
+            return true;
+        }
         // Legacy Ready -> Shipped
-        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) return true;
+        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) {
+            return true;
+        }
         // Shipped -> Completed
-        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) return true;
+        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) {
+            return true;
+        }
 
         return false;
     }
@@ -141,11 +149,21 @@ class Order extends Model
     {
         $current = $this->status;
 
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) return true;
-        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) return true;
-        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) return true;
-        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) return true;
-        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) return true;
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) {
+            return true;
+        }
+        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) {
+            return true;
+        }
+        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) {
+            return true;
+        }
+        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) {
+            return true;
+        }
+        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) {
+            return true;
+        }
 
         return false;
     }
@@ -154,15 +172,33 @@ class Order extends Model
     {
         $current = $this->status;
 
-        if ($current == self::STATUS_QUOTATION && $target == self::STATUS_PENDING_PAYMENT) return true;
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_IN_CART) return true;
-        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PENDING_PAYMENT) return true;
-        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PAID) return true;
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) return true;
-        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) return true;
-        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) return true;
-        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) return true;
-        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) return true;
+        if ($current == self::STATUS_QUOTATION && $target == self::STATUS_PENDING_PAYMENT) {
+            return true;
+        }
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_IN_CART) {
+            return true;
+        }
+        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PENDING_PAYMENT) {
+            return true;
+        }
+        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PAID) {
+            return true;
+        }
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) {
+            return true;
+        }
+        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) {
+            return true;
+        }
+        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) {
+            return true;
+        }
+        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) {
+            return true;
+        }
+        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) {
+            return true;
+        }
 
         return false;
     }
