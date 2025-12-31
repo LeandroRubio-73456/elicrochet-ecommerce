@@ -192,7 +192,13 @@ class ProductController extends Controller
 
     private function applyFilters($query, Request $request)
     {
-        // 1. Filtrado Global (Search)
+        $this->applySearch($query, $request);
+        $this->applyColumnFilters($query, $request);
+        $this->applySorting($query, $request);
+    }
+
+    private function applySearch($query, Request $request)
+    {
         if ($request->has('search') && ! empty($request->input('search.value'))) {
             $searchValue = $request->input('search.value');
             $query->where(function ($q) use ($searchValue) {
@@ -203,42 +209,49 @@ class ProductController extends Controller
                     });
             });
         }
+    }
 
-        // 2. Filtro por Columna (Status y Category)
-        if ($request->has('columns')) {
-            // Filtro Estado (Columna 6)
-            $statusSearch = $request->input('columns.6.search.value');
-            if (! empty($statusSearch)) {
-                $query->where('status', $statusSearch);
-            }
-
-            // Filtro Categoría (Columna 3 - Nombre de categoría)
-            $categorySearch = $request->input('columns.3.search.value');
-            if (! empty($categorySearch)) {
-                $query->whereHas('category', function ($q) use ($categorySearch) {
-                    $q->where('name', $categorySearch);
-                });
-            }
+    private function applyColumnFilters($query, Request $request)
+    {
+        if (! $request->has('columns')) {
+            return;
         }
 
-        // 3. Ordenamiento
-        if ($request->has('order')) {
-            $orderColumnIndex = $request->input('order.0.column');
-            $orderDirection = $request->input('order.0.dir');
-            $columns = ['id', 'images', 'name', 'category_id', 'price', 'stock', 'status', 'actions']; // Mapeo de columnas
+        // Filtro Estado (Columna 6)
+        $statusSearch = $request->input('columns.6.search.value');
+        if (! empty($statusSearch)) {
+            $query->where('status', $statusSearch);
+        }
 
-            if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'images') {
-                $columnName = $columns[$orderColumnIndex];
-                if ($columnName === 'category_id') { // Ordenar por nombre de categoría
-                    $query->join('categories', 'products.category_id', '=', 'categories.id')
-                        ->orderBy('categories.name', $orderDirection)
-                        ->select('products.*'); // Evitar columnas duplicadas
-                } else {
-                    $query->orderBy($columnName, $orderDirection);
-                }
-            }
-        } else {
+        // Filtro Categoría (Columna 3 - Nombre de categoría)
+        $categorySearch = $request->input('columns.3.search.value');
+        if (! empty($categorySearch)) {
+            $query->whereHas('category', function ($q) use ($categorySearch) {
+                $q->where('name', $categorySearch);
+            });
+        }
+    }
+
+    private function applySorting($query, Request $request)
+    {
+        if (! $request->has('order')) {
             $query->latest('id');
+            return;
+        }
+
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir');
+        $columns = ['id', 'images', 'name', 'category_id', 'price', 'stock', 'status', 'actions'];
+
+        if (isset($columns[$orderColumnIndex]) && !in_array($columns[$orderColumnIndex], ['actions', 'images'])) {
+            $columnName = $columns[$orderColumnIndex];
+            if ($columnName === 'category_id') {
+                $query->join('categories', 'products.category_id', '=', 'categories.id')
+                    ->orderBy('categories.name', $orderDirection)
+                    ->select('products.*');
+            } else {
+                $query->orderBy($columnName, $orderDirection);
+            }
         }
     }
 

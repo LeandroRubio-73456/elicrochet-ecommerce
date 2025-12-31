@@ -59,62 +59,11 @@ class OrderController extends Controller
             'total_amount' => 'nullable|numeric|min:0',
         ]);
 
-        // Logic to update total_amount if we are in quotation (or moving from it)
-        if ($order->type === Order::TYPE_CUSTOM && $order->status === Order::STATUS_QUOTATION) {
-            // Allow updating total_amount anytime while in quotation
-            if ($request->has('total_amount')) {
-                $order->total_amount = $request->total_amount;
-            }
-
-            // If moving to pending_payment, ensure it's not zero
-            // If moving to pending_payment, ensure it's not zero
-            if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->total_amount <= 0) {
-                return back()->withErrors(['total_amount' => 'El monto debe ser mayor a 0 para solicitar el pago.']);
-            }
-
-            // PROPAGATE PRICE TO ITEM (Fix for showing $0.00 in item details)
-            // If we are updating the total amount, we should also update the intrinsic "Custom Service" item price.
-            if ($request->has('total_amount')) {
-                // Find the custom item (product_id is null)
-                $customItem = $order->items()->whereNull('product_id')->first();
-                if ($customItem) {
-                    $customItem->price = $request->total_amount;
-                    $customItem->save();
-                }
-            }
-        }
-
-        // Check if status transitioned to pending_payment (Quotation -> Pending Payment)
-        // AND total_amount is set. We assume if status changed to pending_payment, the price is final.
-        if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->status !== Order::STATUS_PENDING_PAYMENT) {
-            // Send Price Assigned Notification
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\PriceAssignedNotification($order));
-        }
-
-        // Check if status transitioned to shipped
-        if ($request->status === Order::STATUS_SHIPPED && $order->status !== Order::STATUS_SHIPPED) {
-            // Send Shipped Notification
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderShippedNotification($order));
-        }
+        $this->updateQuotationAmount($request, $order);
+        $this->checkStatusNotifications($request, $order);
 
         return DB::transaction(function () use ($request, $order) {
-
-            // Check for cancellation and restore stock
-            if ($request->status === 'cancelled' && $order->status !== 'cancelled') {
-                // Only restore if it was previously deducted
-                $deductedStatuses = ['paid', 'working', 'ready_to_ship', 'shipped', 'completed'];
-
-                if (in_array($order->status, $deductedStatuses)) {
-                    foreach ($order->items as $item) {
-                        if ($item->product_id) {
-                            $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
-                            if ($product) {
-                                $product->increment('stock', $item->quantity);
-                            }
-                        }
-                    }
-                }
-            }
+            $this->restoreStockIfCancelled($request, $order);
 
             $order->status = $request->status;
             $order->save();
@@ -122,6 +71,67 @@ class OrderController extends Controller
             return redirect()->route('admin.orders.show', $order)
                 ->with('success', 'Orden actualizada correctamente.');
         });
+    }
+
+    private function updateQuotationAmount(Request $request, Order $order)
+    {
+        if ($order->type !== Order::TYPE_CUSTOM || $order->status !== Order::STATUS_QUOTATION) {
+            return;
+        }
+
+        if ($request->has('total_amount')) {
+            $order->total_amount = $request->total_amount;
+            
+            // PROPAGATE PRICE TO ITEM
+            $customItem = $order->items()->whereNull('product_id')->first();
+            if ($customItem) {
+                 $customItem->price = $request->total_amount;
+                 $customItem->save();
+            }
+        }
+
+        if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->total_amount <= 0) {
+            // Since we cannot return a redirect from validation here easily without throwing or refactoring significantly,
+            // we will validate this before this method call or throw validation exception.
+            // For now, let's just throw validation exception which Laravel handles.
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'total_amount' => 'El monto debe ser mayor a 0 para solicitar el pago.',
+            ]);
+        }
+    }
+
+    private function checkStatusNotifications(Request $request, Order $order)
+    {
+         // Quotation -> Pending Payment
+        if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->status !== Order::STATUS_PENDING_PAYMENT) {
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\PriceAssignedNotification($order));
+        }
+
+        // -> Shipped
+        if ($request->status === Order::STATUS_SHIPPED && $order->status !== Order::STATUS_SHIPPED) {
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderShippedNotification($order));
+        }
+    }
+
+    private function restoreStockIfCancelled(Request $request, Order $order)
+    {
+        if ($request->status !== 'cancelled' || $order->status === 'cancelled') {
+            return;
+        }
+
+        // Only restore if it was previously deducted
+        $deductedStatuses = ['paid', 'working', 'ready_to_ship', 'shipped', 'completed'];
+
+        if (in_array($order->status, $deductedStatuses)) {
+            foreach ($order->items as $item) {
+                if ($item->product_id) {
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if ($product) {
+                        $product->increment('stock', $item->quantity);
+                    }
+                }
+            }
+        }
     }
 
     private function applyFilters($query, Request $request)

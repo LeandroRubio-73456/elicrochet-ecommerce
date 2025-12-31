@@ -123,83 +123,41 @@ class Order extends Model
 
     private function checkStockFlow($target)
     {
-        $current = $this->status;
+        $transitions = [
+            self::STATUS_PENDING_PAYMENT => [self::STATUS_PAID],
+            self::STATUS_PAID => [self::STATUS_SHIPPED],
+            self::STATUS_READY_TO_SHIP => [self::STATUS_SHIPPED], // Legacy
+            self::STATUS_SHIPPED => [self::STATUS_COMPLETED],
+        ];
 
-        // Pending -> Paid
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) {
-            return true;
-        }
-        // Paid -> Shipped
-        if ($current == self::STATUS_PAID && $target == self::STATUS_SHIPPED) {
-            return true;
-        }
-        // Legacy Ready -> Shipped
-        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) {
-            return true;
-        }
-        // Shipped -> Completed
-        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) {
-            return true;
-        }
-
-        return false;
+        return in_array($target, $transitions[$this->status] ?? []);
     }
 
     private function checkCatalogFlow($target)
     {
-        $current = $this->status;
+        $transitions = [
+            self::STATUS_PENDING_PAYMENT => [self::STATUS_PAID],
+            self::STATUS_PAID => [self::STATUS_WORKING],
+            self::STATUS_WORKING => [self::STATUS_SHIPPED],
+            self::STATUS_READY_TO_SHIP => [self::STATUS_SHIPPED],
+            self::STATUS_SHIPPED => [self::STATUS_COMPLETED],
+        ];
 
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) {
-            return true;
-        }
-        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) {
-            return true;
-        }
-        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) {
-            return true;
-        }
-        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) {
-            return true;
-        }
-        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) {
-            return true;
-        }
-
-        return false;
+        return in_array($target, $transitions[$this->status] ?? []);
     }
 
     private function checkCustomFlow($target)
     {
-        $current = $this->status;
+        $transitions = [
+            self::STATUS_QUOTATION => [self::STATUS_PENDING_PAYMENT],
+            self::STATUS_PENDING_PAYMENT => [self::STATUS_IN_CART, self::STATUS_PAID],
+            self::STATUS_IN_CART => [self::STATUS_PENDING_PAYMENT, self::STATUS_PAID],
+            self::STATUS_PAID => [self::STATUS_WORKING],
+            self::STATUS_WORKING => [self::STATUS_SHIPPED],
+            self::STATUS_READY_TO_SHIP => [self::STATUS_SHIPPED],
+            self::STATUS_SHIPPED => [self::STATUS_COMPLETED],
+        ];
 
-        if ($current == self::STATUS_QUOTATION && $target == self::STATUS_PENDING_PAYMENT) {
-            return true;
-        }
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_IN_CART) {
-            return true;
-        }
-        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PENDING_PAYMENT) {
-            return true;
-        }
-        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PAID) {
-            return true;
-        }
-        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) {
-            return true;
-        }
-        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) {
-            return true;
-        }
-        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) {
-            return true;
-        }
-        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) {
-            return true;
-        }
-        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) {
-            return true;
-        }
-
-        return false;
+        return in_array($target, $transitions[$this->status] ?? []);
     }
 }

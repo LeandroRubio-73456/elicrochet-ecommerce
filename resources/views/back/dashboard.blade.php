@@ -10,7 +10,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Usuarios Totales</h6>
-                    <h4 class="mb-0">{{ $totalUsers }} <i class="ti ti-users text-primary float-end opacity-50"></i></h4>
+                    <h4 class="mb-0">{{ $totalUsers }} <i class="ti-user text-primary float-end opacity-50"></i></h4>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Total Órdenes</h6>
-                    <h4 class="mb-0">{{ $totalOrders }} <i class="ti ti-shopping-cart text-warning float-end opacity-50"></i></h4>
+                    <h4 class="mb-0">{{ $totalOrders }} <i class="ti-shopping-cart text-warning float-end opacity-50"></i></h4>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Ventas Totales</h6>
-                    <h4 class="mb-0">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti ti-currency-dollar text-success float-end opacity-50"></i></h4>
+                    <h4 class="mb-0">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti-currency-dollar text-success float-end opacity-50"></i></h4>
                 </div>
             </div>
         </div>
