@@ -47,7 +47,7 @@ jobs:
         run: php artisan test --coverage-clover=coverage.xml --log-junit=test-report.xml --min=60
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub lo pone solo
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Este es el que creamos
