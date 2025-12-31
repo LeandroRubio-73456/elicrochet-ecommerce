@@ -101,7 +101,7 @@ class UserTest extends TestCase
     /** @test */
     public function admin_can_update_user_password()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'customer']);
 
         $response = $this->actingAs($this->admin)->put(route('admin.users.update', $user), [
             'name' => $user->name,
