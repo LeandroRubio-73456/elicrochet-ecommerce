@@ -41,8 +41,18 @@ class CheckoutTest extends TestCase
         $user = User::factory()->make(['id' => 1]);
         
         $this->mock(CartService::class, function ($mock) {
+            $product = new Product(['name' => 'Test Product']);
+            $product->setRelation('images', collect([])); // Mock images relation
+
             $mock->shouldReceive('getCart')->andReturn(collect([
-                (object) ['product_id' => 1, 'quantity' => 1, 'price' => 10, 'custom_order_id' => null]
+                (object) [
+                    'product_id' => 1,
+                    'quantity' => 1,
+                    'price' => 10,
+                    'custom_order_id' => null,
+                    'product' => $product,
+                    'attributes' => []
+                ]
             ]));
             $mock->shouldReceive('getTotal')->andReturn(10);
         });
