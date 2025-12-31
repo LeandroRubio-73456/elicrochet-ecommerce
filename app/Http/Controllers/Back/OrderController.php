@@ -144,7 +144,7 @@ class OrderController extends Controller
         };
 
         // Acciones
-        $viewUrl = route('back.orders.show', $order);
+        $viewUrl = route('admin.back.orders.show', $order);
         $actions = '<a href="'.$viewUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>';
 
         return [

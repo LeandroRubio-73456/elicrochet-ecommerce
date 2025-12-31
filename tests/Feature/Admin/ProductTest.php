@@ -135,12 +135,17 @@ class ProductTest extends TestCase
         ]);
         $response->assertJsonCount(1, 'data');
 
-        // Status filter (Column 3)
+        // Status filter (Column 6)
         $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
             'columns' => [
-                ['data' => 'id'], ['data' => 'image'], ['data' => 'name'],
-                ['data' => 'status', 'search' => ['value' => 'active']]
+                0 => ['data' => 'id'],
+                1 => ['data' => 'image'],
+                2 => ['data' => 'name'],
+                3 => ['data' => 'category'],
+                4 => ['data' => 'price'],
+                5 => ['data' => 'stock'],
+                6 => ['data' => 'status', 'search' => ['value' => 'active']]
             ]
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
@@ -150,13 +155,15 @@ class ProductTest extends TestCase
 
     public function test_admin_can_filter_by_category()
     {
-        $category = \App\Models\Category::factory()->create();
+        $category = \App\Models\Category::factory()->create(['name' => 'Fibre']);
         Product::factory()->create(['category_id' => $category->id]);
-        Product::factory()->create(); // Another category automatically
+        Product::factory()->create(); // Another category
 
         $response = $this->actingAs($this->admin)->get(route('admin.products.index', [
             'ajax' => 1,
-            'category_id' => $category->id
+            'columns' => [
+                3 => ['data' => 'category', 'search' => ['value' => 'Fibre']]
+            ]
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);

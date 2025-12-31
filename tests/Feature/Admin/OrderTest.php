@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Back;
+namespace Tests\Feature\Admin;
 
 use App\Models\Order;
 use App\Models\User;

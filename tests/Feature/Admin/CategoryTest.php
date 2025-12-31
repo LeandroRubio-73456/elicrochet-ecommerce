@@ -124,14 +124,19 @@ class CategoryTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.categories.index', [
             'ajax' => 1,
             'columns' => [
-                ['data' => 'id'],['data' => 'icon'],['data' => 'name'],['data' => 'slug'],['data' => 'products_count'],
-                ['data' => 'status', 'search' => ['value' => 'active']]
+                5 => [
+                    'data' => 'status',
+                    'search' => ['value' => 'active']
+                ]
             ],
-            'order' => [['column' => 2, 'dir' => 'desc']] // Name
+            'order' => [
+                0 => ['column' => 2, 'dir' => 'desc']
+            ]
         ]), [
             'X-Requested-With' => 'XMLHttpRequest',
         ]);
 
+        $response->assertStatus(200);
         $response->assertJsonCount(1, 'data');
     }
 }
