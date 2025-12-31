@@ -141,17 +141,16 @@
       </a>
     </li>
     <li class="dropdown pc-h-item d-inline-flex d-md-none">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none m-0"
+      <button
+        class="btn pc-head-link dropdown-toggle arrow-none m-0 border-0 bg-transparent"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
+        type="button"
         aria-haspopup="false"
         aria-expanded="false"
         aria-label="Search"
       >
         <i class="ti ti-search"></i>
-      </a>
+      </button>
       <div class="dropdown-menu pc-h-dropdown drp-search">
         <form class="px-3">
           <div class="form-group mb-0 d-flex align-items-center">
@@ -173,17 +172,16 @@
 <div class="ms-auto">
   <ul class="list-unstyled">
     <li class="dropdown pc-h-item pc-mega-menu">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        class="btn pc-head-link dropdown-toggle arrow-none me-0 border-0 bg-transparent"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
+        type="button"
         aria-haspopup="false"
         aria-expanded="false"
         aria-label="Mega Menu"
       >
         <i class="ti ti-layout-grid"></i>
-      </a>
+      </button>
       <div class="dropdown-menu pc-h-dropdown pc-mega-dmenu">
         <div class="row g-0">
           <div class="col image-block">
@@ -271,17 +269,16 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        class="btn pc-head-link dropdown-toggle arrow-none me-0 border-0 bg-transparent"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
+        type="button"
         aria-haspopup="false"
         aria-expanded="false"
         aria-label="Languages"
       >
         <i class="ti ti-language"></i>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
         <a href="#!" class="dropdown-item">
           <i class="ti ti-user"></i>
@@ -306,18 +303,17 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        class="btn pc-head-link dropdown-toggle arrow-none me-0 border-0 bg-transparent"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
+        type="button"
         aria-haspopup="false"
         aria-expanded="false"
         aria-label="Notifications"
       >
         <i class="ti ti-bell"></i>
         <span class="badge bg-success pc-h-badge">3</span>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header d-flex align-items-center justify-content-between">
           <h5 class="m-0">Notification</h5>
@@ -383,17 +379,16 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        class="btn pc-head-link dropdown-toggle arrow-none me-0 border-0 bg-transparent"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
+        type="button"
         aria-haspopup="false"
         aria-expanded="false"
         aria-label="Messages"
       >
         <i class="ti ti-mail"></i>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header d-flex align-items-center justify-content-between">
           <h5 class="m-0">Message</h5>
@@ -464,18 +459,17 @@
       </a>
     </li>
     <li class="dropdown pc-h-item header-user-profile">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        class="btn pc-head-link dropdown-toggle arrow-none me-0 border-0 bg-transparent"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
+        type="button"
         aria-haspopup="false"
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
         <img src="../assets/images/user/avatar-2.jpg" alt="User Profile" class="user-avtar">
         <span>Stebin Ben</span>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
           <div class="d-flex mb-1">

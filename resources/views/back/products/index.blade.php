@@ -28,9 +28,10 @@
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Categoría</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0"
-                                             onkeydown="if(event.key==='Enter'||event.key===' '){this.querySelector('[data-bs-toggle]').click(); event.preventDefault();}">
-                                            <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
+                                                <i class="ti-filter text-muted cursor-pointer" style="cursor: pointer;"></i>
+                                            </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="3" data-value="">Todas</a></li>
                                                 @foreach ($categories as $category)
@@ -45,9 +46,10 @@
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Estado</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0"
-                                             onkeydown="if(event.key==='Enter'||event.key===' '){this.querySelector('[data-bs-toggle]').click(); event.preventDefault();}">
-                                            <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
+                                                <i class="ti-filter text-muted cursor-pointer" style="cursor: pointer;"></i>
+                                            </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="">Todos</a></li>
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="active">Activo</a></li>

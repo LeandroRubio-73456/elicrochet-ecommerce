@@ -16,6 +16,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            $query = Product::with(['category', 'images']);
             $this->applyFilters($query, $request);
 
             // 4. Paginación
@@ -169,7 +170,13 @@ class ProductController extends Controller
 
     private function applyFilters($query, Request $request)
     {
-        // 1. Filtrado Global (Search)
+        $this->applySearch($query, $request);
+        $this->applyColumnFilters($query, $request);
+        $this->applySorting($query, $request);
+    }
+
+    private function applySearch($query, Request $request)
+    {
         if ($request->has('search') && ! empty($request->input('search.value'))) {
             $searchValue = $request->input('search.value');
             $query->where(function ($q) use ($searchValue) {
@@ -180,8 +187,10 @@ class ProductController extends Controller
                     });
             });
         }
+    }
 
-        // 2. Filtro por Columna (Status y Category)
+    private function applyColumnFilters($query, Request $request)
+    {
         if ($request->has('columns')) {
             // Filtro Estado (Columna 6)
             $statusSearch = $request->input('columns.6.search.value');
@@ -197,8 +206,10 @@ class ProductController extends Controller
                 });
             }
         }
+    }
 
-        // 3. Ordenamiento
+    private function applySorting($query, Request $request)
+    {
         if ($request->has('order')) {
             $orderColumnIndex = $request->input('order.0.column');
             $orderDirection = $request->input('order.0.dir');
@@ -206,7 +217,7 @@ class ProductController extends Controller
 
             if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'images') {
                 $columnName = $columns[$orderColumnIndex];
-                if ($columnName === 'category_id') { // Ordenar por nombre de categoría
+                if ($columnName === 'category_id') {
                     $query->join('categories', 'products.category_id', '=', 'categories.id')
                         ->orderBy('categories.name', $orderDirection)
                         ->select('products.*');

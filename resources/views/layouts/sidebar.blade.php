@@ -104,7 +104,7 @@
       </ul>
       <div class="card text-center">
         <div class="card-body">
-          <img src="../assets/images/img-navbar-card.png" alt="images" class="img-fluid mb-2">
+          <img src="../assets/images/img-navbar-card.png" alt="" class="img-fluid mb-2">
           <h5>Upgrade To Pro</h5>
           <p>To get more features and components</p>
           <a href="https://codedthemes.com/item/berry-bootstrap-5-admin-template/" target="_blank"
