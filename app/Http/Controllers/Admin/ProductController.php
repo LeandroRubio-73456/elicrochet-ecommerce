@@ -107,8 +107,7 @@ class ProductController extends Controller
                     <div class="d-flex gap-2 justify-content-center">
                         <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
                         <a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>
-                        <button type="button" class="btn btn-outline-danger delete-product-btn" 
-                            data-product-id="'.$product->id.'" 
+                        <button type="button" class="btn btn-outline-danger delete-product-btn" data-product-id="'.$product->id.'" 
                             data-action-url="'.$deleteUrl.'">
                             <i class="ti-trash"></i>
                         </button>

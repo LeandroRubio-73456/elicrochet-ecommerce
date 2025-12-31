@@ -80,28 +80,9 @@ class Order extends Model
      */
     public function recalculateTotal()
     {
-        $itemsTotal = $this->items->sum(function ($item) {
+        return $this->items->sum(function ($item) {
             return $item->price * $item->quantity;
         });
-
-        // If it's a custom order, we might want to respect the original negotiated price
-        // OR assuming the custom order item IS the custom price.
-        // In the new logic, the custom order ITSELF is the container.
-        // But do we represent the "custom part" as an item?
-        // No, in the current DB schema, custom orders might not have an "item" representing the service yet if they were created via the form.
-        // Wait, Custom Orders usually don't have OrderItems for the custom part itself initially?
-        // Let's check how they are created.
-        // If they don't have an item, the total_amount is just set.
-        // But if we add stock items, we need to ADD their value to the original custom price.
-
-        // Strategy:
-        // We will assume the current total_amount INCLUDES the custom price.
-        // BUT if we recalculate from scratch, we might lose the custom price if it's not in an item.
-        // FIX: The fusion logic in CheckoutController will handle the initial addition.
-        // This method will be used to SUM items.
-        // Let's make it safe: calculate sum of items.
-
-        return $itemsTotal;
     }
 
     // --- State Machine Logic ---
@@ -207,6 +188,9 @@ class Order extends Model
                 if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
                     return true;
                 }
+                break;
+
+            default:
                 break;
         }
 

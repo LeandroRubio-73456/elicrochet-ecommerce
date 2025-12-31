@@ -42,11 +42,9 @@ class Category extends Model
             }
 
             // Type validation (basic)
-            if (! empty($input[$fieldName])) {
-                if ($fieldType === 'number' && ! is_numeric($input[$fieldName])) {
-                    $errors[] = "El campo '{$fieldName}' debe ser numérico.";
-                }
-                // Add more type checks as needed
+            // Type validation (basic)
+            if (! empty($input[$fieldName]) && $fieldType === 'number' && ! is_numeric($input[$fieldName])) {
+                $errors[] = "El campo '{$fieldName}' debe ser numérico.";
             }
         }
 

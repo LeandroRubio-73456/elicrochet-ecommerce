@@ -33,11 +33,11 @@ class CartController extends Controller
             $freshProduct = Product::lockForUpdate()->find($product->id);
 
             if (! $freshProduct) {
-                throw new \Exception('Producto no encontrado.');
+                throw new \RuntimeException('Producto no encontrado.');
             }
 
             if ($freshProduct->stock < $request->input('quantity', 1)) {
-                throw new \Exception("Stock insuficiente (Actual: {$freshProduct->stock}). Por favor intenta con menos cantidad.");
+                throw new \RuntimeException("Stock insuficiente (Actual: {$freshProduct->stock}). Por favor intenta con menos cantidad.");
             }
 
             $this->cartService->addToCart(

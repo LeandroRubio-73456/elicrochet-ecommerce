@@ -132,10 +132,8 @@ class OrderController extends Controller
         }
 
         // Logic: Client/Admin strict cancellation
-        if ($request->status === 'cancelled') {
-            if ($order->status === 'processing') { // 'working'
-                return back()->with('error', 'No se puede cancelar una orden que ya está en fabricación (Trabajando).');
-            }
+        if ($request->status === 'cancelled' && $order->status === 'processing') {
+            return back()->with('error', 'No se puede cancelar una orden que ya está en fabricación (Trabajando).');
         }
 
         $data = [

@@ -43,11 +43,11 @@
                 <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
                 <input type="email" 
                        class="form-control @error('email') is-invalid @enderror" 
-                       id="email" 
-                       name="email" 
-                       value="{{ old('email') }}" 
-                       placeholder="correo@ejemplo.com" 
-                       required 
+                       id="email"
+                       name="email"
+                       value="{{ old('email') }}"
+                       placeholder="correo@ejemplo.com"
+                       required
                        autofocus>
                 @error('email')
                   <div class="invalid-feedback d-block">{{ $message }}</div>

@@ -31,14 +31,14 @@
               <!-- Nombre -->
               <div class="form-group mb-3">
                 <label for="name" class="form-label">Nombre Completo <span class="text-danger">*</span></label>
-                <input type="text" 
-                       id="name" 
-                       name="name" 
-                       class="form-control @error('name') is-invalid @enderror" 
-                       placeholder="Tu nombre completo" 
-                       value="{{ old('name') }}" 
-                       required 
-                       autofocus 
+                <input type="text"
+                       id="name"
+                       name="name"
+                       class="form-control @error('name') is-invalid @enderror"
+                       placeholder="Tu nombre completo"
+                       value="{{ old('name') }}"
+                       required
+                       autofocus
                        autocomplete="name">
                 @error('name')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -48,13 +48,13 @@
               <!-- Email -->
               <div class="form-group mb-3">
                 <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
-                <input type="email" 
-                       id="email" 
-                       name="email" 
-                       class="form-control @error('email') is-invalid @enderror" 
-                       placeholder="correo@ejemplo.com" 
-                       value="{{ old('email') }}" 
-                       required 
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control @error('email') is-invalid @enderror"
+                       placeholder="correo@ejemplo.com"
+                       value="{{ old('email') }}"
+                       required
                        autocomplete="username">
                 @error('email')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -64,12 +64,12 @@
               <!-- Password -->
               <div class="form-group mb-3">
                 <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
-                <input type="password" 
-                       id="password" 
-                       name="password" 
-                       class="form-control @error('password') is-invalid @enderror" 
-                       placeholder="••••••••" 
-                       required 
+                <input type="password"
+                       id="password"
+                       name="password"
+                       class="form-control @error('password') is-invalid @enderror"
+                       placeholder="••••••••"
+                       required
                        autocomplete="new-password">
                 <small class="text-muted">Mínimo 8 caracteres</small>
                 @error('password')

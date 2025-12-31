@@ -17,35 +17,7 @@ class CategoryController extends Controller
         if ($request->ajax()) {
             $query = Category::withCount('products');
 
-            // 1. Busqueda Global
-            if ($request->has('search') && ! empty($request->input('search.value'))) {
-                $searchValue = $request->input('search.value');
-                $query->where(function ($q) use ($searchValue) {
-                    $q->where('name', 'like', "%{$searchValue}%")
-                        ->orWhere('description', 'like', "%{$searchValue}%");
-                });
-            }
-
-            // 2. Filtro por Estado (Columna 5)
-            if ($request->has('columns')) {
-                $statusSearch = $request->input('columns.5.search.value');
-                if (! empty($statusSearch) && in_array($statusSearch, ['active', 'inactive', 'archived'])) {
-                    $query->where('status', $statusSearch);
-                }
-            }
-
-            // 3. Ordenamiento
-            if ($request->has('order')) {
-                $orderColumnIndex = $request->input('order.0.column');
-                $orderDirection = $request->input('order.0.dir');
-                $columns = ['id', 'icon', 'name', 'slug', 'products_count', 'status', 'actions'];
-
-                if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'icon') {
-                    $query->orderBy($columns[$orderColumnIndex], $orderDirection);
-                }
-            } else {
-                $query->latest('id');
-            }
+            $this->applyFilters($query, $request);
 
             // 4. Paginación
             $totalRecords = Category::count();
@@ -160,7 +132,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
         //
     }
@@ -220,5 +192,41 @@ class CategoryController extends Controller
             'success' => true,
             'message' => 'Categoría eliminada correctamente.',
         ]);
+    }
+
+    /**
+     * Apply filters, search and sorting to the query.
+     */
+    private function applyFilters($query, Request $request)
+    {
+        // 1. Busqueda Global
+        if ($request->has('search') && ! empty($request->input('search.value'))) {
+            $searchValue = $request->input('search.value');
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('name', 'like', "%{$searchValue}%")
+                    ->orWhere('description', 'like', "%{$searchValue}%");
+            });
+        }
+
+        // 2. Filtro por Estado (Columna 5)
+        if ($request->has('columns')) {
+            $statusSearch = $request->input('columns.5.search.value');
+            if (! empty($statusSearch) && in_array($statusSearch, ['active', 'inactive', 'archived'])) {
+                $query->where('status', $statusSearch);
+            }
+        }
+
+        // 3. Ordenamiento
+        if ($request->has('order')) {
+            $orderColumnIndex = $request->input('order.0.column');
+            $orderDirection = $request->input('order.0.dir');
+            $columns = ['id', 'icon', 'name', 'slug', 'products_count', 'status', 'actions'];
+
+            if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'icon') {
+                $query->orderBy($columns[$orderColumnIndex], $orderDirection);
+            }
+        } else {
+            $query->latest('id');
+        }
     }
 }
