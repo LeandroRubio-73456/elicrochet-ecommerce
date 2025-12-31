@@ -49,48 +49,48 @@
                             <div class="card-body p-4 pt-0">
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Nombre *</label>
-                                        <input type="text" name="customer_name" class="form-control bg-light border-0"
+                                        <label for="customer_name" class="form-label">Nombre *</label>
+                                        <input type="text" id="customer_name" name="customer_name" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->name ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Apellidos *</label>
-                                        <input type="text" name="customer_lastname"
+                                        <label for="customer_lastname" class="form-label">Apellidos *</label>
+                                        <input type="text" id="customer_lastname" name="customer_lastname"
                                             class="form-control bg-light border-0" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Email *</label>
-                                        <input type="email" name="customer_email" class="form-control bg-light border-0"
+                                        <label for="customer_email" class="form-label">Email *</label>
+                                        <input type="email" id="customer_email" name="customer_email" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->email ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Teléfono *</label>
-                                        <input type="tel" name="customer_phone" class="form-control bg-light border-0"
+                                        <label for="customer_phone" class="form-label">Teléfono *</label>
+                                        <input type="tel" id="customer_phone" name="customer_phone" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->phone ?? auth()->user()->phone ?? '' }}" required>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">Dirección *</label>
-                                        <input type="text" name="shipping_address" class="form-control bg-light border-0"
+                                        <label for="shipping_address" class="form-label">Dirección *</label>
+                                        <input type="text" id="shipping_address" name="shipping_address" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->street ?? '' }}" placeholder="Calle, número, depto..." required>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label">Referencia (Opcional)</label>
-                                        <input type="text" name="shipping_reference" class="form-control bg-light border-0"
+                                        <label for="shipping_reference" class="form-label">Referencia (Opcional)</label>
+                                        <input type="text" id="shipping_reference" name="shipping_reference" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->reference ?? '' }}" placeholder="Ej: Junto a la farmacia azul">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Ciudad *</label>
-                                        <input type="text" name="shipping_city" class="form-control bg-light border-0"
+                                        <label for="shipping_city" class="form-label">Ciudad *</label>
+                                        <input type="text" id="shipping_city" name="shipping_city" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->city ?? '' }}" required>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Provincia/Estado *</label>
-                                        <input type="text" name="shipping_province" class="form-control bg-light border-0"
+                                        <label for="shipping_province" class="form-label">Provincia/Estado *</label>
+                                        <input type="text" id="shipping_province" name="shipping_province" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->province ?? '' }}" required>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Código Postal *</label>
-                                        <input type="text" name="shipping_zip" class="form-control bg-light border-0"
+                                        <label for="shipping_zip" class="form-label">Código Postal *</label>
+                                        <input type="text" id="shipping_zip" name="shipping_zip" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->postal_code ?? '' }}" required>
                                     </div>
                                 </div>
