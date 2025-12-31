@@ -43,8 +43,18 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Run Tests
-        run: php artisan test --coverage-text --min=60
+      - name: Run Tests with Coverage
+        run: php artisan test --coverage-clover=coverage.xml --log-junit=test-report.xml --min=60
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 # v3.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub lo pone solo
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    # Este es el que creamos
+        with:
+          args: >
+            -Dsonar.projectKey=LeandroRubio-73456_elicrochet-ecommerce
+            -Dsonar.organization=leandrorubio-73456
 
       - name: Static Analysis
         run: php artisan insights --min-quality=80 --no-interaction
