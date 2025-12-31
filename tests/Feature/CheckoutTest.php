@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class CheckoutTest extends TestCase
 {
-    // use RefreshDatabase; // Disabled due to SQLite driver issues in local env
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
