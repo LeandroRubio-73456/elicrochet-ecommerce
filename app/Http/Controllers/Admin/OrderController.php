@@ -102,14 +102,24 @@ class OrderController extends Controller
 
     private function checkStatusNotifications(Request $request, Order $order)
     {
-        // Quotation -> Pending Payment
-        if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->status !== Order::STATUS_PENDING_PAYMENT) {
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\PriceAssignedNotification($order));
+        $email = $order->customer_email ?? $order->user?->email;
+
+        if (! $email) {
+            return;
         }
 
-        // -> Shipped
-        if ($request->status === Order::STATUS_SHIPPED && $order->status !== Order::STATUS_SHIPPED) {
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderShippedNotification($order));
+        try {
+            // Quotation -> Pending Payment
+            if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->status !== Order::STATUS_PENDING_PAYMENT) {
+                \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\PriceAssignedNotification($order));
+            }
+
+            // -> Shipped
+            if ($request->status === Order::STATUS_SHIPPED && $order->status !== Order::STATUS_SHIPPED) {
+                \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\OrderShippedNotification($order));
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error sending order notification email: '.$e->getMessage());
         }
     }
 
