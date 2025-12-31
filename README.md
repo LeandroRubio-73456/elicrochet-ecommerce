@@ -1,7 +1,10 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="EliCrochet Ecommerce">
+  [![CI Quality Gate EliCrochet](https://github.com/LeandroRubio-73456/EliCrochet-Ecommerce/actions/workflows/main.yml/badge.svg)](https://github.com/LeandroRubio-73456/EliCrochet-Ecommerce/actions/workflows/main.yml)
+  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=LeandroRubio-73456_elicrochet-ecommerce&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce)
+  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=LeandroRubio-73456_elicrochet-ecommerce&metric=coverage)](https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce)
 </p>
-
+  
 # EliCrochet Ecommerce
 
 Este es un proyecto de comercio electrónico desarrollado con Laravel, diseñado para la venta y gestión de productos de crochet.
