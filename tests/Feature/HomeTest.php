@@ -68,7 +68,7 @@ class HomeTest extends TestCase
         $response = $this->get(route('category.show', $category->slug));
 
         $response->assertStatus(200);
-        $response->assertViewIs('front.category-single');
+        $response->assertViewIs('front.shop');
         $response->assertViewHas('category');
     }
 

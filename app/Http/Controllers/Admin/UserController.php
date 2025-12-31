@@ -63,7 +63,7 @@ class UserController extends Controller
         \App\Models\User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+            'password' => $validated['password'],
             'role' => $validated['role'],
         ]);
 
@@ -107,7 +107,7 @@ class UserController extends Controller
         $user->role = $validated['role'];
 
         if ($request->filled('password')) {
-            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
+            $user->password = $validated['password'];
         }
 
         $user->save();

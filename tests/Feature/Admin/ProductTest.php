@@ -35,6 +35,18 @@ class ProductTest extends TestCase
         $response->assertViewIs('back.products.index');
     }
 
+    public function test_admin_can_view_products_index_ajax()
+    {
+        Product::factory()->count(3)->create();
+
+        $response = $this->actingAs($this->admin)->get(route('admin.products.index', ['ajax' => true]), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['data', 'recordsTotal', 'recordsFiltered']);
+    }
+
     public function test_admin_can_view_create_page()
     {
         $response = $this->actingAs($this->admin)->get(route('admin.products.create'));
