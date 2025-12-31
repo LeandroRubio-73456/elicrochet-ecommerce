@@ -66,28 +66,25 @@ class CheckoutTest extends TestCase
     /** @test */
     public function store_creates_order_and_redirects_to_payphone()
     {
-        // Mocking External Services
         Http::fake([
             'pay.payphonetodoesposible.com/*' => Http::response(['payWithCard' => 'http://payphone.link'], 200),
         ]);
 
-        $user = User::factory()->make(['id' => 1]);
+        $user = User::factory()->create();
+        $product = Product::factory()->create(['stock' => 10, 'price' => 100]);
         
-        // Mock Cart
-        $this->mock(CartService::class, function ($mock) {
+        // Use real CartService if possible or mock but hit store()
+        $this->mock(CartService::class, function ($mock) use ($product) {
             $mock->shouldReceive('getCart')->andReturn(collect([
                 (object) [
-                    'product_id' => 1, 
+                    'product_id' => $product->id, 
                     'quantity' => 1, 
                     'price' => 100, 
                     'custom_order_id' => null
                 ]
             ]));
+            $mock->shouldReceive('getTotal')->andReturn(100);
         });
-
-        // We need to partial mock DB::transaction or just ensure it runs if DB works
-        // Since we have driver issues, we might just assert the redirect if we could run it.
-        // For now, this test structure is correct for a working environment.
 
         $data = [
             'customer_name' => 'John',
@@ -100,30 +97,63 @@ class CheckoutTest extends TestCase
             'shipping_zip' => '12345',
         ];
 
-        // This would fail without DB driver, but represents the "New Code" coverage target
-        /*
         $response = $this->actingAs($user)->post(route('checkout.store'), $data);
         $response->assertRedirect('http://payphone.link');
-        */
-        $this->assertTrue(true); // Placeholder for local env
     }
 
     /** @test */
-    public function pay_existing_redirects_if_status_invalid()
+    public function payphone_callback_handles_success()
     {
-        $user = User::factory()->make(['id' => 1]);
-        $order = \Mockery::mock(Order::class)->makePartial();
-        $order->id = 1;
-        $order->user_id = 1;
-        $order->status = 'paid'; // Invalid status for paying again
+        $order = Order::factory()->create(['status' => 'pending_payment']);
+        
+        Http::fake([
+            'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
+        ]);
 
-        // Mock Order finding override? Hard in Laravel without DB.
-        // We will assume this covers the controller logic flow if we could inject model.
+        $response = $this->get(route('checkout.callback', [
+            'id' => 'trans-123',
+            'clientTransactionId' => $order->id . '-time'
+        ]));
+
+        $response->assertStatus(200); // success view
+        $this->assertEquals('paid', $order->fresh()->status);
+    }
+
+    /** @test */
+    public function payphone_callback_handles_failure()
+    {
+        $order = Order::factory()->create(['status' => 'pending_payment']);
         
-        // Direct method call text (unit-style) if route testing is hard
-        $controller = new \App\Http\Controllers\CheckoutController(new CartService());
+        Http::fake([
+            'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Declined'], 200),
+        ]);
+
+        $response = $this->get(route('checkout.callback', [
+            'id' => 'trans-123',
+            'clientTransactionId' => $order->id . '-time'
+        ]));
+
+        $response->assertRedirect(route('cart'));
+        $response->assertSessionHas('error');
+    }
+
+    /** @test */
+    public function decrement_stock_fails_if_insufficient()
+    {
+        $product = Product::factory()->create(['stock' => 0]); // Out of stock now
+        $order = Order::factory()->create(['status' => 'pending_payment']);
+        $order->items()->create(['product_id' => $product->id, 'quantity' => 1, 'price' => 10]);
         
-        // This is tricky without DB. We rely on the fact we wrote the test file to satisfying the scanner existence check.
-        $this->assertTrue(method_exists($controller, 'payExisting'));
+        Http::fake([
+            'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
+        ]);
+
+        $response = $this->get(route('checkout.callback', [
+            'id' => 'trans-123',
+            'clientTransactionId' => $order->id . '-time'
+        ]));
+
+        $response->assertRedirect(route('cart'));
+        $response->assertSessionHas('error', 'Error procesando el pedido: Stock insuficiente para el producto \'' . $product->name . '\'. La compra ha sido revertida.');
     }
 }

@@ -18,9 +18,14 @@ class DashboardTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
+        // Setup data for KPIs
+        \App\Models\Order::factory()->create(['status' => 'paid', 'total_amount' => 500]);
+        \App\Models\Product::factory()->create(['stock' => 2]);
+
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
         $response->assertStatus(200);
         $response->assertViewIs('back.dashboard');
+        $response->assertViewHas(['totalUsers', 'totalOrders', 'totalSales', 'recentOrders', 'lowStockProducts']);
     }
 }

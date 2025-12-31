@@ -117,7 +117,44 @@ class ProductTest extends TestCase
 
         $response = $this->actingAs($this->admin)->delete(route('admin.products.destroy', $product));
 
-        $response->assertStatus(200); // Controller returns JSON
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
+    }
+
+    public function test_datatables_can_filter_by_status_and_search()
+    {
+        Product::factory()->create(['name' => 'Specific Product', 'status' => 'active']);
+        Product::factory()->create(['name' => 'Hidden Item', 'status' => 'inactive']);
+
+        // Search
+        $response = $this->actingAs($this->admin)->json('GET', route('admin.products.index'), [
+            'ajax' => 1,
+            'search' => ['value' => 'Specific']
+        ]);
+        $response->assertJsonCount(1, 'data');
+
+        // Status filter (Column 3)
+        $response = $this->actingAs($this->admin)->json('GET', route('admin.products.index'), [
+            'ajax' => 1,
+            'columns' => [
+                ['data' => 'id'], ['data' => 'image'], ['data' => 'name'],
+                ['data' => 'status', 'search' => ['value' => 'active']]
+            ]
+        ]);
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_admin_can_filter_by_category()
+    {
+        $category = \App\Models\Category::factory()->create();
+        Product::factory()->create(['category_id' => $category->id]);
+        Product::factory()->create(['category_id' => null]);
+
+        $response = $this->actingAs($this->admin)->json('GET', route('admin.products.index'), [
+            'ajax' => 1,
+            'category_id' => $category->id
+        ]);
+
+        $response->assertJsonCount(1, 'data');
     }
 }

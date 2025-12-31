@@ -107,4 +107,65 @@ class OrderTest extends TestCase
 
         Mail::assertSent(\App\Mail\PriceAssignedNotification::class);
     }
+
+    /** @test */
+    public function sends_email_when_status_changes_to_shipped()
+    {
+        Mail::fake();
+        $order = Order::factory()->create(['status' => 'paid']);
+
+        $response = $this->actingAs($this->admin)->put(route('admin.orders.update', $order), [
+            'status' => 'shipped',
+        ]);
+
+        Mail::assertSent(\App\Mail\OrderShippedNotification::class);
+    }
+
+    /** @test */
+    public function restores_stock_when_order_is_cancelled()
+    {
+        $product = \App\Models\Product::factory()->create(['stock' => 10]);
+        $order = Order::factory()->create(['status' => 'paid']);
+        $order->items()->create([
+            'product_id' => $product->id,
+            'quantity' => 2,
+            'price' => 50
+        ]);
+
+        $response = $this->actingAs($this->admin)->put(route('admin.orders.update', $order), [
+            'status' => 'cancelled',
+        ]);
+
+        $this->assertEquals(12, $product->fresh()->stock);
+    }
+
+    /** @test */
+    public function datatables_can_filter_and_sort()
+    {
+        Order::factory()->create(['customer_name' => 'Alice', 'total_amount' => 100]);
+        Order::factory()->create(['customer_name' => 'Bob', 'total_amount' => 200]);
+
+        // Filter by customer name
+        $response = $this->actingAs($this->admin)->json('GET', route('admin.orders.index'), [
+            'ajax' => 1,
+            'search' => ['value' => 'Alice'],
+            'order' => [['column' => 3, 'dir' => 'asc']] // total_amount
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertCount(1, $response->json('data'));
+        $this->assertEquals('Alice', $response->json('data.0.customer_name'));
+    }
+
+    /** @test */
+    public function transform_order_badges()
+    {
+        $order = Order::factory()->create(['status' => 'ready_to_ship']);
+        
+        $response = $this->actingAs($this->admin)->json('GET', route('admin.orders.index'), [
+            'ajax' => 1,
+        ]);
+
+        $response->assertJsonFragment(['status' => '<span class="badge bg-light-primary text-primary f-12">Listo para Envío</span>']);
+    }
 }

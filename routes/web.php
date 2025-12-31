@@ -60,6 +60,10 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
         Route::get('/finance', [\App\Http\Controllers\Admin\FinancialController::class, 'index'])->name('finance.index');
         Route::get('/finance/export', [\App\Http\Controllers\Admin\FinancialController::class, 'export'])->name('finance.export');
 
+        // Legacy / Alternative Back routes
+        Route::prefix('alt')->name('back.')->group(function() {
+            Route::resource('orders', \App\Http\Controllers\Back\OrderController::class);
+        });
     });
 
 // --- GRUPO CUSTOMER (Cliente) ---

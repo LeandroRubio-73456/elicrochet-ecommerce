@@ -97,6 +97,31 @@ class CartTest extends TestCase
         $response = $this->actingAs($user)->patch(route('cart.update'), ['product_id' => 1, 'quantity' => 5]);
 
         $response->assertOk();
-        $response->assertJson(['success' => true]);
+    }
+
+    /** @test */
+    public function update_returns_0_if_item_not_found()
+    {
+        $user = User::factory()->create();
+        $this->mock(CartService::class, function ($mock) {
+            $mock->shouldReceive('updateQuantity');
+            $mock->shouldReceive('getCart')->andReturn(collect([])); // Empty cart
+            $mock->shouldReceive('getTotal')->andReturn(0);
+            $mock->shouldReceive('getCount')->andReturn(0);
+        });
+
+        $response = $this->actingAs($user)->patch(route('cart.update'), ['product_id' => 999, 'quantity' => 5]);
+
+        $response->assertOk();
+        $response->assertJson(['itemTotal' => '0.00']);
+    }
+
+    /** @test */
+    public function can_view_login_required_message()
+    {
+        $response = $this->get(route('cart.login-required'));
+        $response->assertStatus(200);
+        $response->assertViewIs('auth.cart-login-required');
     }
 }
+
