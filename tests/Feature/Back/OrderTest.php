@@ -18,8 +18,10 @@ class OrderTest extends TestCase
     {
         parent::setUp();
         // Assuming admin middleware checks for a role or permission
-        $this->admin = User::factory()->create(['email' => 'admin@example.com']); 
-        // In a real app, assign admin role here. Assuming basic auth for now based on files seen.
+        $this->admin = User::factory()->create([
+            'email_verified_at' => now(),
+            'role' => 'admin',
+        ]);
     }
 
     /** @test */

@@ -23,7 +23,7 @@ class ProductTest extends TestCase
         // Create an admin user (assuming verification is required based on routes)
         $this->admin = User::factory()->create([
             'email_verified_at' => now(),
-            // add role field if needed for middleware, usually 'role' => 'admin'
+            'role' => 'admin',
         ]);
     }
 
