@@ -54,10 +54,13 @@ class CartController extends Controller
             return redirect()->route('cart')
                 ->with('success', '¡'.$freshProduct->name.' agregado al carrito!');
 
+        } catch (\RuntimeException $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
             DB::rollBack();
-
-            return back()->with('error', $e->getMessage());
+            Log::error('Cart Add Error: '.$e->getMessage());
+            return back()->with('error', 'Ocurrió un error al agregar el producto.');
         }
     }
 
