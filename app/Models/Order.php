@@ -92,107 +92,77 @@ class Order extends Model
      */
     public function canTransitionTo($targetStatus)
     {
-        $current = $this->status;
-
-        // Admin force override logic could be added, but stricter strict flow:
-
         // 1. Cancelled orders cannot change
-        if ($current === self::STATUS_CANCELLED) {
+        if ($this->status === self::STATUS_CANCELLED) {
             return false;
         }
 
         // 2. Cancellation rules
         if ($targetStatus === self::STATUS_CANCELLED) {
-            // Can cancel if pending payment or paid (but not yet working/shipping)
-            // Also allow cancelling if in_cart
-            return in_array($current, [
-                self::STATUS_QUOTATION,
-                self::STATUS_PENDING_PAYMENT,
-                self::STATUS_PAID,
-                self::STATUS_IN_CART,
-            ]);
+            return $this->canBeCancelled();
         }
 
-        switch ($this->type) {
-            case self::TYPE_STOCK:
-                // Scneario A: Pending -> Paid -> Shipped -> Completed
-                // Skip ready_to_ship as per user request
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) {
-                    return true;
-                }
-                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_SHIPPED) {
-                    return true;
-                }
-                // Allow escape from legacy ready_to_ship
-                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) {
-                    return true;
-                }
+        // 3. Status flow based on type
+        return match ($this->type) {
+            self::TYPE_STOCK => $this->checkStockFlow($targetStatus),
+            self::TYPE_CATALOG => $this->checkCatalogFlow($targetStatus),
+            self::TYPE_CUSTOM => $this->checkCustomFlow($targetStatus),
+            default => false,
+        };
+    }
 
-                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
-                    return true;
-                }
-                break;
+    private function canBeCancelled()
+    {
+        return in_array($this->status, [
+            self::STATUS_QUOTATION,
+            self::STATUS_PENDING_PAYMENT,
+            self::STATUS_PAID,
+            self::STATUS_IN_CART,
+        ]);
+    }
 
-            case self::TYPE_CATALOG:
-                // Scenario B: Pending -> Paid -> Working -> Shipped -> Completed
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) {
-                    return true;
-                }
-                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_WORKING) {
-                    return true;
-                } // Start crafting
-                if ($current == self::STATUS_WORKING && $targetStatus == self::STATUS_SHIPPED) {
-                    return true;
-                } // Finished & Shipped
-                // Allow escape from legacy ready_to_ship
-                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) {
-                    return true;
-                }
+    private function checkStockFlow($target)
+    {
+        $current = $this->status;
 
-                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
-                    return true;
-                }
-                break;
+        // Pending -> Paid
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) return true;
+        // Paid -> Shipped
+        if ($current == self::STATUS_PAID && $target == self::STATUS_SHIPPED) return true;
+        // Legacy Ready -> Shipped
+        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) return true;
+        // Shipped -> Completed
+        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) return true;
 
-            case self::TYPE_CUSTOM:
-                // Scenario C: Quotation -> Pending Payment -> Paid -> Working -> Shipped -> Completed
-                if ($current == self::STATUS_QUOTATION && $targetStatus == self::STATUS_PENDING_PAYMENT) {
-                    return true;
-                } // Owner sets price
+        return false;
+    }
 
-                // Allow moving to cart
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_IN_CART) {
-                    return true;
-                }
-                if ($current == self::STATUS_IN_CART && $targetStatus == self::STATUS_PENDING_PAYMENT) {
-                    return true;
-                } // Removed from cart
-                if ($current == self::STATUS_IN_CART && $targetStatus == self::STATUS_PAID) {
-                    return true;
-                } // Paid from checkout
+    private function checkCatalogFlow($target)
+    {
+        $current = $this->status;
 
-                if ($current == self::STATUS_PENDING_PAYMENT && $targetStatus == self::STATUS_PAID) {
-                    return true;
-                }
-                if ($current == self::STATUS_PAID && $targetStatus == self::STATUS_WORKING) {
-                    return true;
-                }
-                if ($current == self::STATUS_WORKING && $targetStatus == self::STATUS_SHIPPED) {
-                    return true;
-                }
-                // Allow escape from legacy ready_to_ship
-                if ($current == self::STATUS_READY_TO_SHIP && $targetStatus == self::STATUS_SHIPPED) {
-                    return true;
-                }
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) return true;
+        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) return true;
+        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) return true;
+        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) return true;
+        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) return true;
 
-                if ($current == self::STATUS_SHIPPED && $targetStatus == self::STATUS_COMPLETED) {
-                    return true;
-                }
-                break;
+        return false;
+    }
 
-            default:
-                break;
-        }
+    private function checkCustomFlow($target)
+    {
+        $current = $this->status;
+
+        if ($current == self::STATUS_QUOTATION && $target == self::STATUS_PENDING_PAYMENT) return true;
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_IN_CART) return true;
+        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PENDING_PAYMENT) return true;
+        if ($current == self::STATUS_IN_CART && $target == self::STATUS_PAID) return true;
+        if ($current == self::STATUS_PENDING_PAYMENT && $target == self::STATUS_PAID) return true;
+        if ($current == self::STATUS_PAID && $target == self::STATUS_WORKING) return true;
+        if ($current == self::STATUS_WORKING && $target == self::STATUS_SHIPPED) return true;
+        if ($current == self::STATUS_READY_TO_SHIP && $target == self::STATUS_SHIPPED) return true;
+        if ($current == self::STATUS_SHIPPED && $target == self::STATUS_COMPLETED) return true;
 
         return false;
     }

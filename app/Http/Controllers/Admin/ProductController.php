@@ -16,56 +16,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Product::with(['category', 'images']);
-
-            // 1. Filtrado Global (Search)
-            if ($request->has('search') && ! empty($request->input('search.value'))) {
-                $searchValue = $request->input('search.value');
-                $query->where(function ($q) use ($searchValue) {
-                    $q->where('name', 'like', "%{$searchValue}%")
-                        ->orWhere('description', 'like', "%{$searchValue}%")
-                        ->orWhereHas('category', function ($catQ) use ($searchValue) {
-                            $catQ->where('name', 'like', "%{$searchValue}%");
-                        });
-                });
-            }
-
-            // 2. Filtro por Columna (Status y Category)
-            if ($request->has('columns')) {
-                // Filtro Estado (Columna 6)
-                $statusSearch = $request->input('columns.6.search.value');
-                if (! empty($statusSearch)) {
-                    $query->where('status', $statusSearch);
-                }
-
-                // Filtro Categoría (Columna 3 - Nombre de categoría)
-                $categorySearch = $request->input('columns.3.search.value');
-                if (! empty($categorySearch)) {
-                    $query->whereHas('category', function ($q) use ($categorySearch) {
-                        $q->where('name', $categorySearch);
-                    });
-                }
-            }
-
-            // 3. Ordenamiento
-            if ($request->has('order')) {
-                $orderColumnIndex = $request->input('order.0.column');
-                $orderDirection = $request->input('order.0.dir');
-                $columns = ['id', 'images', 'name', 'category_id', 'price', 'stock', 'status', 'actions'];
-
-                if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'images') {
-                    $columnName = $columns[$orderColumnIndex];
-                    if ($columnName === 'category_id') { // Ordenar por nombre de categoría
-                        $query->join('categories', 'products.category_id', '=', 'categories.id')
-                            ->orderBy('categories.name', $orderDirection)
-                            ->select('products.*');
-                    } else {
-                        $query->orderBy($columnName, $orderDirection);
-                    }
-                }
-            } else {
-                $query->latest('id');
-            }
+            $this->applyFilters($query, $request);
 
             // 4. Paginación
             $totalRecords = Product::count();
@@ -77,53 +28,8 @@ class ProductController extends Controller
             $products = $query->skip($start)->take($length)->get();
 
             // 5. Transformación de datos para DataTables
-            $data = $products->map(function ($product) {
-                // Imagen
-                $imageHtml = '<div class="d-flex align-items-center"><div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="ti ti-photo text-muted"></i></div></div>';
-                if ($product->images->count() > 0) {
-                    $imageHtml = '<div class="d-flex align-items-center"><img src="'.asset('storage/'.$product->images->first()->image_path).'" alt="" class="rounded me-2" width="40" height="40" style="object-fit: cover;"></div>';
-                }
-
-                // Estado (Badge)
-                $statusBadge = match ($product->status) {
-                    'draft' => '<span class="badge bg-light-secondary f-12">Borrador</span>',
-                    'active' => '<span class="badge bg-light-success f-12">Activo</span>',
-                    'out_of_stock' => '<span class="badge bg-light-danger f-12">Sin Stock</span>',
-                    'discontinued' => '<span class="badge bg-light-dark f-12">Descontinuado</span>',
-                    'archived' => '<span class="badge bg-light-warning f-12">Archivado</span>',
-                    default => '<span class="badge bg-light-secondary f-12">'.$product->status.'</span>',
-                };
-
-                if ($product->status === 'active' && $product->stock <= 0) {
-                    $statusBadge .= '<span class="badge bg-danger mt-1 f-12"><i class="ti-exclamation-triangle me-1"></i> Sin Stock</span>';
-                }
-
-                // Acciones (Updated Routes to admin.)
-                $editUrl = route('admin.products.edit', $product);
-                $showUrl = route('admin.products.show', $product);
-                $deleteUrl = route('admin.products.destroy', $product);
-
-                $actions = '
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
-                        <a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>
-                        <button type="button" class="btn btn-outline-danger delete-product-btn" data-product-id="'.$product->id.'" 
-                            data-action-url="'.$deleteUrl.'">
-                            <i class="ti-trash"></i>
-                        </button>
-                    </div>';
-
-                return [
-                    'id' => $product->id,
-                    'image' => $imageHtml,
-                    'name' => '<h6 class="mb-0">'.$product->name.'</h6>',
-                    'category' => $product->category ? $product->category->name : 'N/A',
-                    'price' => '$'.number_format($product->price, 2),
-                    'stock' => $product->stock,
-                    'status' => $statusBadge,
-                    'actions' => $actions,
-                ];
-            });
+            // 5. Transformación de datos para DataTables
+            $data = $products->map(fn($product) => $this->transformProduct($product));
 
             return response()->json([
                 'draw' => intval($request->input('draw')),
@@ -259,5 +165,106 @@ class ProductController extends Controller
             'success' => true,
             'message' => 'Producto eliminado correctamente.',
         ]);
+    }
+
+    private function applyFilters($query, Request $request)
+    {
+        // 1. Filtrado Global (Search)
+        if ($request->has('search') && ! empty($request->input('search.value'))) {
+            $searchValue = $request->input('search.value');
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('name', 'like', "%{$searchValue}%")
+                    ->orWhere('description', 'like', "%{$searchValue}%")
+                    ->orWhereHas('category', function ($catQ) use ($searchValue) {
+                        $catQ->where('name', 'like', "%{$searchValue}%");
+                    });
+            });
+        }
+
+        // 2. Filtro por Columna (Status y Category)
+        if ($request->has('columns')) {
+            // Filtro Estado (Columna 6)
+            $statusSearch = $request->input('columns.6.search.value');
+            if (! empty($statusSearch)) {
+                $query->where('status', $statusSearch);
+            }
+
+            // Filtro Categoría (Columna 3 - Nombre de categoría)
+            $categorySearch = $request->input('columns.3.search.value');
+            if (! empty($categorySearch)) {
+                $query->whereHas('category', function ($q) use ($categorySearch) {
+                    $q->where('name', $categorySearch);
+                });
+            }
+        }
+
+        // 3. Ordenamiento
+        if ($request->has('order')) {
+            $orderColumnIndex = $request->input('order.0.column');
+            $orderDirection = $request->input('order.0.dir');
+            $columns = ['id', 'images', 'name', 'category_id', 'price', 'stock', 'status', 'actions'];
+
+            if (isset($columns[$orderColumnIndex]) && $columns[$orderColumnIndex] !== 'actions' && $columns[$orderColumnIndex] !== 'images') {
+                $columnName = $columns[$orderColumnIndex];
+                if ($columnName === 'category_id') { // Ordenar por nombre de categoría
+                    $query->join('categories', 'products.category_id', '=', 'categories.id')
+                        ->orderBy('categories.name', $orderDirection)
+                        ->select('products.*');
+                } else {
+                    $query->orderBy($columnName, $orderDirection);
+                }
+            }
+        } else {
+            $query->latest('id');
+        }
+    }
+
+    private function transformProduct($product)
+    {
+        // Imagen
+        $imageHtml = '<div class="d-flex align-items-center"><div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="ti ti-photo text-muted"></i></div></div>';
+        if ($product->images->count() > 0) {
+            $imageHtml = '<div class="d-flex align-items-center"><img src="'.asset('storage/'.$product->images->first()->image_path).'" alt="" class="rounded me-2" width="40" height="40" style="object-fit: cover;"></div>';
+        }
+
+        // Estado (Badge)
+        $statusBadge = match ($product->status) {
+            'draft' => '<span class="badge bg-light-secondary f-12">Borrador</span>',
+            'active' => '<span class="badge bg-light-success f-12">Activo</span>',
+            'out_of_stock' => '<span class="badge bg-light-danger f-12">Sin Stock</span>',
+            'discontinued' => '<span class="badge bg-light-dark f-12">Descontinuado</span>',
+            'archived' => '<span class="badge bg-light-warning f-12">Archivado</span>',
+            default => '<span class="badge bg-light-secondary f-12">'.$product->status.'</span>',
+        };
+
+        if ($product->status === 'active' && $product->stock <= 0) {
+            $statusBadge .= '<span class="badge bg-danger mt-1 f-12"><i class="ti-exclamation-triangle me-1"></i> Sin Stock</span>';
+        }
+
+        // Acciones (Updated Routes to admin.)
+        $editUrl = route('admin.products.edit', $product);
+        $showUrl = route('admin.products.show', $product);
+        $deleteUrl = route('admin.products.destroy', $product);
+
+        $actions = '
+            <div class="d-flex gap-2 justify-content-center">
+                <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
+                <a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>
+                <button type="button" class="btn btn-outline-danger delete-product-btn" data-product-id="'.$product->id.'"
+                    data-action-url="'.$deleteUrl.'">
+                    <i class="ti-trash"></i>
+                </button>
+            </div>';
+
+        return [
+            'id' => $product->id,
+            'image' => $imageHtml,
+            'name' => '<h6 class="mb-0">'.$product->name.'</h6>',
+            'category' => $product->category ? $product->category->name : 'N/A',
+            'price' => '$'.number_format($product->price, 2),
+            'stock' => $product->stock,
+            'status' => $statusBadge,
+            'actions' => $actions,
+        ];
     }
 }

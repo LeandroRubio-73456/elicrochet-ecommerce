@@ -99,15 +99,15 @@ class CheckoutController extends Controller
                 return redirect()->away($response->json()['payWithCard']);
             }
 
+            $errorMsg = 'Error al generar link de pago: '.$response->body();
             Log::error("PayPhone Error for Order ID {$order->id}: ".$response->body());
 
-            return back()->with('error', 'Error al generar link de pago: '.$response->body());
-
         } catch (\Exception $e) {
+            $errorMsg = 'Error: '.$e->getMessage();
             Log::error('PayExisting Exception: '.$e->getMessage());
-
-            return back()->with('error', 'Error: '.$e->getMessage());
         }
+
+        return back()->with('error', $errorMsg);
     }
 
     public function store(Request $request)
@@ -115,21 +115,14 @@ class CheckoutController extends Controller
         $user = $request->user();
 
         // 1. Validar inputs
-        $validated = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_lastname' => 'required|string|max:255',
-            'customer_email' => 'required|email',
-            'customer_phone' => 'required|string|max:20',
-            'shipping_address' => 'required|string',
-            'shipping_city' => 'required|string',
-            'shipping_province' => 'required|string',
-            'shipping_reference' => 'nullable|string',
-            'shipping_zip' => 'required|string',
-        ]);
+        $validated = $this->validateShipping($request);
 
         // 2. Obtener items desde el SERVICIO
         $cartItems = $this->cartService->getCart();
-        $total = $this->cartService->getTotal();
+        // 2. Obtener items desde el SERVICIO
+        $cartItems = $this->cartService->getCart();
+        // $total not used here in logic, only for view but this is a POST action
+
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart')->with('error', 'El carrito está vacío en la sesión.');
@@ -284,36 +277,14 @@ class CheckoutController extends Controller
             Log::info("Order processed successfully (Fusion or Creation). ID: {$order->id}");
 
             // 3. Llamada a PayPhone
-            $response = Http::withoutVerifying()
-                ->withToken(env('PAYPHONE_TOKEN'))
-                ->post('https://pay.payphonetodoesposible.com/api/button/Prepare', [
-                    'amount' => (int) ($order->total_amount * 100),
-                    'amountWithoutTax' => (int) ($order->total_amount * 100),
-                    'amountWithTax' => 0,
-                    'tax' => 0,
-                    'serviceTax' => 0,
-                    'tip' => 0,
-                    'currency' => 'USD',
-                    'clientTransactionId' => (string) $order->id.'-'.time(),
-                    'responseUrl' => route('checkout.callback'),
-                    'cancellationUrl' => route('checkout.cancel'),
-                ]);
-
-            if ($response->successful()) {
-                Log::info("PayPhone link generated for Order ID: {$order->id}");
-
-                return redirect()->away($response->json()['payWithCard']);
-            }
-
-            Log::error("PayPhone Error for Order ID {$order->id}: ".$response->body());
-
-            return redirect()->route('checkout')->with('error', 'Error al generar link de pago: '.$response->body());
+            return $this->initiatePayPhone($order);
 
         } catch (\Exception $e) {
             Log::error('Checkout Exception: '.$e->getMessage());
             try {
                 DB::rollBack();
             } catch (\Exception $r) {
+                Log::error("Rollback failed: " . $r->getMessage());
             }
 
             return redirect()->route('checkout')->with('error', 'Error: '.$e->getMessage());
@@ -377,7 +348,7 @@ class CheckoutController extends Controller
 
                     // Determine next status and Handle Custom Orders
                     $newStatus = Order::STATUS_PAID;
-                    $hasCustomOrder = false;
+
 
                     foreach ($order->items as $item) {
                         // Check if item is linked to a Custom Order
@@ -386,7 +357,6 @@ class CheckoutController extends Controller
                             if ($customOrder) {
                                 // Mark the ORIGINAL custom order as PAID
                                 $customOrder->update(['status' => Order::STATUS_PAID]);
-                                $hasCustomOrder = true;
                             }
                         }
                     }
@@ -453,5 +423,48 @@ class CheckoutController extends Controller
 
             return redirect()->route('cart')->with('error', 'Error al confirmar: '.$e->getMessage());
         }
+    }
+
+    private function validateShipping(Request $request)
+    {
+        return $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_lastname' => 'required|string|max:255',
+            'customer_email' => 'required|email',
+            'customer_phone' => 'required|string|max:20',
+            'shipping_address' => 'required|string',
+            'shipping_city' => 'required|string',
+            'shipping_province' => 'required|string',
+            'shipping_reference' => 'nullable|string',
+            'shipping_zip' => 'required|string',
+        ]);
+    }
+
+    private function initiatePayPhone(Order $order)
+    {
+        $response = Http::withoutVerifying()
+            ->withToken(config('services.payphone.token'))
+            ->post('https://pay.payphonetodoesposible.com/api/button/Prepare', [
+                'amount' => (int) ($order->total_amount * 100),
+                'amountWithoutTax' => (int) ($order->total_amount * 100),
+                'amountWithTax' => 0,
+                'tax' => 0,
+                'serviceTax' => 0,
+                'tip' => 0,
+                'currency' => 'USD',
+                'clientTransactionId' => (string) $order->id.'-'.time(),
+                'responseUrl' => route('checkout.callback'),
+                'cancellationUrl' => route('checkout.cancel'),
+            ]);
+
+        if ($response->successful()) {
+            Log::info("PayPhone link generated for Order ID: {$order->id}");
+
+            return redirect()->away($response->json()['payWithCard']);
+        }
+
+        Log::error("PayPhone Error for Order ID {$order->id}: ".$response->body());
+
+        return redirect()->route('checkout')->with('error', 'Error al generar link de pago: '.$response->body());
     }
 }
