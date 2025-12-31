@@ -107,12 +107,13 @@ class UserTest extends TestCase
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
-            'password' => 'newpassword123',
-            'password_confirmation' => 'newpassword123',
+            'password' => 'NewPassword123!',
+            'password_confirmation' => 'NewPassword123!',
         ]);
 
+        $response->assertRedirect(route('admin.users.index'));
         $user->refresh();
-        $this->assertTrue(Hash::check('newpassword123', $user->password));
+        $this->assertTrue(Hash::check('NewPassword123!', $user->password));
     }
 
     /** @test */
