@@ -1,4 +1,6 @@
-<title>@title | Mantis Bootstrap 5 Admin Template</title>
+@isset($title)
+<title>{{ $title }} | Mantis Bootstrap 5 Admin Template</title>
+@endisset
 <!-- [Meta] -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">

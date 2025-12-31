@@ -243,7 +243,7 @@
                             <div class="d-flex flex-wrap gap-2 mt-2">
                                 @foreach($item->images as $img)
                                      <a href="{{ asset('storage/' . $img) }}" target="_blank">
-                                        <img src="{{ asset('storage/' . $img) }}" alt="Imagen de pedido personalizado" class="rounded border" width="60" height="60" style="object-fit: cover;">
+                                        <img src="{{ asset('storage/' . $img) }}" alt="Solicitud de Personalización" class="rounded border" width="60" height="60" style="object-fit: cover;">
                                      </a>
                                 @endforeach
                             </div>

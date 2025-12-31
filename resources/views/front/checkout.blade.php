@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <!-- INICIO: Formulario Principal que envía todo -->
+
             <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
                 @csrf <!-- Token de seguridad de Laravel -->
                 @if(session('error'))
@@ -130,7 +130,7 @@
                                     </a>
                                 </div>
 
-                                <!-- MODIFICACIÓN: Lista de Items Dinámica -->
+                                <!-- Lista de Items Dinámica -->
                                 <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
                                     @foreach ($cartItems as $item)
                                         <div class="d-flex align-items-center mb-3">
@@ -175,7 +175,7 @@
                                     <span class="h4 fw-bold text-primary mb-0">${{ number_format($total, 2) }}</span>
                                 </div>
 
-                                <!-- MODIFICACIÓN: Botón que envía el formulario -->
+                                <!-- Botón que envía el formulario -->
                                 <button type="submit" class="btn btn-primary w-100 py-3 mt-4 shadow-lg pulse-button"
                                     id="submitBtn">
                                     <i class="ti ti-check me-2"></i> Confirmar Pedido
@@ -190,7 +190,7 @@
                     </div>
                 </div>
             </form>
-            <!-- FIN: Formulario Principal -->
+
         </div>
     </section>
 @endsection

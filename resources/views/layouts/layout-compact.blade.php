@@ -25,7 +25,7 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>UI Components</label>
+          <span>UI Components</span>
           <i class="ti ti-dashboard"></i>
         </li>
         <li class="pc-item">
@@ -48,7 +48,7 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>Pages</label>
+          <span>Pages</span>
           <i class="ti ti-news"></i>
         </li>
         <li class="pc-item">
@@ -65,7 +65,7 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>Other</label>
+          <span>Other</span>
           <i class="ti ti-brand-chrome"></i>
         </li>
         <li class="pc-item pc-hasmenu">
@@ -146,16 +146,15 @@
       </a>
     </li>
     <li class="dropdown pc-h-item d-inline-flex d-md-none">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none m-0"
+      <button
+        type="button"
+        class="pc-head-link dropdown-toggle arrow-none m-0 btn btn-link"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
         aria-haspopup="false"
         aria-expanded="false"
       >
         <i class="ti ti-search"></i>
-      </a>
+      </button>
       <div class="dropdown-menu pc-h-dropdown drp-search">
         <form class="px-3">
           <div class="form-group mb-0 d-flex align-items-center">
@@ -177,16 +176,15 @@
 <div class="ms-auto">
   <ul class="list-unstyled">
     <li class="dropdown pc-h-item pc-mega-menu">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        type="button"
+        class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
         aria-haspopup="false"
         aria-expanded="false"
       >
         <i class="ti ti-layout-grid"></i>
-      </a>
+      </button>
       <div class="dropdown-menu pc-h-dropdown pc-mega-dmenu">
         <div class="row g-0">
           <div class="col image-block">
@@ -274,16 +272,15 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        type="button"
+        class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
         aria-haspopup="false"
         aria-expanded="false"
       >
         <i class="ti ti-language"></i>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
         <a href="#!" class="dropdown-item">
           <i class="ti ti-user"></i>
@@ -308,17 +305,16 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        type="button"
+        class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
         aria-haspopup="false"
         aria-expanded="false"
       >
         <i class="ti ti-bell"></i>
         <span class="badge bg-success pc-h-badge">3</span>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header d-flex align-items-center justify-content-between">
           <h5 class="m-0">Notification</h5>
@@ -384,16 +380,15 @@
       </div>
     </li>
     <li class="dropdown pc-h-item">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        type="button"
+        class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
         aria-haspopup="false"
         aria-expanded="false"
       >
         <i class="ti ti-mail"></i>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header d-flex align-items-center justify-content-between">
           <h5 class="m-0">Message</h5>
@@ -464,18 +459,17 @@
       </a>
     </li>
     <li class="dropdown pc-h-item header-user-profile">
-      <a
-        class="pc-head-link dropdown-toggle arrow-none me-0"
+      <button
+        type="button"
+        class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link"
         data-bs-toggle="dropdown"
-        href="#"
-        role="button"
         aria-haspopup="false"
         data-bs-auto-close="outside"
         aria-expanded="false"
       >
         <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
         <span>Stebin Ben</span>
-      </a>
+      </button>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">
           <div class="d-flex mb-1">

@@ -26,7 +26,7 @@
               <div class="pc-rtl">
                 <p class="mb-1">Direction</p>
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" role="switch" id="layoutmodertl">
+                  <input class="form-check-input" type="checkbox" role="switch" id="layoutmodertl" aria-checked="false">
                   <label class="form-check-label" for="layoutmodertl">RTL</label>
                 </div>
               </div>

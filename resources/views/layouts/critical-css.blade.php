@@ -21,8 +21,8 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Ro
 .row { --bs-gutter-x: 1.5rem; --bs-gutter-y: 0; display: flex; flex-wrap: wrap; margin-top: calc(var(--bs-gutter-y) * -1); margin-right: calc(var(--bs-gutter-x) / -2); margin-left: calc(var(--bs-gutter-x) / -2); }
 .col-lg-4, .col-lg-6, .col-md-6 { position: relative; width: 100%; padding-right: calc(var(--bs-gutter-x) / 2); padding-left: calc(var(--bs-gutter-x) / 2); }
 @media (min-width: 768px) { .col-md-6 { flex: 0 0 auto; width: 50%; } }
-@media (min-width: 992px) { 
-    .col-lg-4 { flex: 0 0 auto; width: 33.33333333%; } 
+@media (min-width: 992px) {
+    .col-lg-4 { flex: 0 0 auto; width: 33.33333333%; }
     .col-lg-6 { flex: 0 0 auto; width: 50%; }
 }
 

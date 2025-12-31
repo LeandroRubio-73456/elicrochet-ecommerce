@@ -168,15 +168,20 @@ class ProductController extends Controller
     private function applySearch($query, Request $request)
     {
         if ($request->has('search') && ! empty($request->input('search.value'))) {
-            $searchValue = $request->input('search.value');
-            $query->where(function ($q) use ($searchValue) {
-                $q->where('name', 'like', "%{$searchValue}%")
-                    ->orWhere('description', 'like', "%{$searchValue}%")
-                    ->orWhereHas('category', function ($catQ) use ($searchValue) {
-                        $catQ->where('name', 'like', "%{$searchValue}%");
-                    });
-            });
+            $this->addSearchConditions($query, $request->input('search.value'));
         }
+    }
+
+    private function addSearchConditions($query, $searchValue)
+    {
+        $query->where(function ($q) use ($searchValue) {
+            $q->where('name', 'like', "%{$searchValue}%")
+                ->orWhere('description', 'like', "%{$searchValue}%")
+                ->orWhereHas('category', function ($catQ) use ($searchValue) {
+                    $catQ->where('name', 'like', "%{$searchValue}%");
+                });
+            });
+
     }
 
     private function applyColumnFilters($query, Request $request)

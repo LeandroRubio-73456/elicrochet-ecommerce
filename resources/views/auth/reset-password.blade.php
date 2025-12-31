@@ -62,8 +62,8 @@
                 <input type="password"
                        class="form-control @error('password_confirmation') is-invalid @enderror"
                        id="password_confirmation"
-                       name="password_confirmation" 
-                       required 
+                       name="password_confirmation"
+                       required
                        autocomplete="new-password">
                 @error('password_confirmation')
                   <div class="invalid-feedback d-block">{{ $message }}</div>

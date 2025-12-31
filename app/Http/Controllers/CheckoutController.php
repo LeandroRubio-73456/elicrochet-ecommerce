@@ -27,22 +27,7 @@ class CheckoutController extends Controller
 
         // 1. Existing Order Flow (e.g. Custom Order Payment)
         if ($request->has('order')) {
-            Log::info("Checkout payment retry requested. Order ID: {$request->order}, User ID: {$user->id}");
-
-            $order = Order::where('id', $request->order)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
-
-            Log::info("Order found. Status: '{$order->status}'");
-
-            if ($order->status !== 'pending_payment') {
-                Log::warning('Order status mismatch. Redirecting to show.');
-
-                return redirect()->route('customer.orders.show', $order->id)
-                    ->with('error', 'Esta orden no está pendiente de pago.');
-            }
-
-            return view('front.checkout_payment', compact('order', 'user'));
+            return $this->handleExistingOrderCheckout($request, $user);
         }
 
         // 2. Standard Cart Flow
@@ -54,6 +39,26 @@ class CheckoutController extends Controller
         }
 
         return view('front.checkout', compact('cartItems', 'total', 'user'));
+    }
+
+    private function handleExistingOrderCheckout($request, $user)
+    {
+        Log::info("Checkout payment retry requested. Order ID: {$request->order}, User ID: {$user->id}");
+
+        $order = Order::where('id', $request->order)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        Log::info("Order found. Status: '{$order->status}'");
+
+        if ($order->status !== 'pending_payment') {
+            Log::warning('Order status mismatch. Redirecting to show.');
+
+            return redirect()->route('customer.orders.show', $order->id)
+                ->with('error', 'Esta orden no está pendiente de pago.');
+        }
+
+        return view('front.checkout_payment', compact('order', 'user'));
     }
 
     /**
@@ -166,28 +171,29 @@ class CheckoutController extends Controller
 
         Log::info("PayPhone Callback received. PayPhone ID: {$payphoneId}, Raw Order ID: {$rawOrderId}, Real Order ID: {$orderId}");
 
-        if (! $payphoneId) {
-            return redirect()->route('cart')->with('error', 'No se recibió el ID de pago.');
-        }
+        $error = 'No se recibió el ID de pago.';
 
-        try {
-            // INTENTO CON CONFIRM V1 (Para coincidir con Prepare V1)
-            $result = $this->confirmPaymentWithPayPhone($payphoneId, $rawOrderId);
-            Log::info('PayPhone Confirm Response (V1): '.json_encode($result));
+        if ($payphoneId) {
+            try {
+                // INTENTO CON CONFIRM V1 (Para coincidir con Prepare V1)
+                $result = $this->confirmPaymentWithPayPhone($payphoneId, $rawOrderId);
+                Log::info('PayPhone Confirm Response (V1): '.json_encode($result));
 
-            if (isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
-                return $this->processSuccessfulTransaction($orderId, $payphoneId);
-            } else {
-                Log::warning('Transaction not approved. Status: '.($result['transactionStatus'] ?? 'Unknown'));
+                if (isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
+                    return $this->processSuccessfulTransaction($orderId, $payphoneId);
+                }
+
+                $status = $result['transactionStatus'] ?? 'Unknown';
+                Log::warning("Transaction not approved. Status: {$status}");
+                $error = "Pago no aprobado. Estado: {$status}";
+
+            } catch (\Exception $e) {
+                Log::error('Callback Exception: '.$e->getMessage());
+                $error = 'Error al confirmar: '.$e->getMessage();
             }
-
-            return redirect()->route('cart')->with('error', 'Pago no aprobado. Estado: '.($result['transactionStatus'] ?? 'Error'));
-
-        } catch (\Exception $e) {
-            Log::error('Callback Exception: '.$e->getMessage());
-
-            return redirect()->route('cart')->with('error', 'Error al confirmar: '.$e->getMessage());
         }
+
+        return redirect()->route('cart')->with('error', $error);
     }
 
     private function validateShipping(Request $request)
@@ -271,7 +277,7 @@ class CheckoutController extends Controller
             $order = Order::find($masterOrderId);
 
             if (! $order) {
-                throw new \RuntimeException('El pedido personalizado principal referenciado no existe.');
+                throw new \App\Exceptions\BusinessLogicException('El pedido personalizado principal referenciado no existe.');
             }
 
             // Identify the specific "original" item of this master order to avoid confusing it with merged ones later
@@ -426,7 +432,7 @@ class CheckoutController extends Controller
     private function validateProcessingOrder($order)
     {
         if (! $order) {
-            throw new \RuntimeException('Orden no encontrada durante el procesamiento (Race Condition check).');
+            throw new \App\Exceptions\BusinessLogicException('Orden no encontrada durante el procesamiento (Race Condition check).');
         }
 
         if ($order->status === Order::STATUS_PAID) {
@@ -438,7 +444,7 @@ class CheckoutController extends Controller
              // However, for safely, let's assume if it is paid, we just stop processing.
              // But to keep the controller clean, let's keep it simple.
              // The original code did a return redirect inside the closure which works in Laravel.
-             throw new \Exception('Esta orden ya fue procesada anteriormente.');
+             throw new \App\Exceptions\BusinessLogicException('Esta orden ya fue procesada anteriormente.');
         }
     }
 
@@ -461,7 +467,7 @@ class CheckoutController extends Controller
                 $product = \App\Models\Product::find($item->product_id);
                 if ($product) {
                     if ($product->stock < $item->quantity) {
-                        throw new \RuntimeException("Stock insuficiente para el producto '{$product->name}'. La compra ha sido revertida.");
+                        throw new \App\Exceptions\BusinessLogicException("Stock insuficiente para el producto '{$product->name}'. La compra ha sido revertida.");
                     }
                     $product->decrement('stock', $item->quantity);
                 }

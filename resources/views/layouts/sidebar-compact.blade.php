@@ -18,7 +18,7 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>UI Components</label>
+          <span>UI Components</span>
           <i class="ti ti-dashboard"></i>
         </li>
         <li class="pc-item">
@@ -41,7 +41,7 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>Pages</label>
+          <span>Pages</span>
           <i class="ti ti-news"></i>
         </li>
         <li class="pc-item">
@@ -58,7 +58,7 @@
         </li>
 
         <li class="pc-item pc-caption">
-          <label>Other</label>
+          <span>Other</span>
           <i class="ti ti-brand-chrome"></i>
         </li>
         <li class="pc-item pc-hasmenu">

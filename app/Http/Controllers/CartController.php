@@ -33,11 +33,11 @@ class CartController extends Controller
             $freshProduct = Product::lockForUpdate()->find($product->id);
 
             if (! $freshProduct) {
-                throw new \RuntimeException('Producto no encontrado.');
+                throw new \App\Exceptions\BusinessLogicException('Producto no encontrado.');
             }
 
             if ($freshProduct->stock < $request->input('quantity', 1)) {
-                throw new \RuntimeException("Stock insuficiente (Actual: {$freshProduct->stock}). Por favor intenta con menos cantidad.");
+                throw new \App\Exceptions\BusinessLogicException("Stock insuficiente (Actual: {$freshProduct->stock}). Por favor intenta con menos cantidad.");
             }
 
             $this->cartService->addToCart(
@@ -54,7 +54,7 @@ class CartController extends Controller
             return redirect()->route('cart')
                 ->with('success', '¡'.$freshProduct->name.' agregado al carrito!');
 
-        } catch (\RuntimeException $e) {
+        } catch (\App\Exceptions\BusinessLogicException $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         } catch (\Exception $e) {

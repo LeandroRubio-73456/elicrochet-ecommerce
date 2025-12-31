@@ -13,10 +13,10 @@
             </a>
         </li>
         <li class="dropdown pc-h-item d-inline-flex d-md-none">
-            <a class="pc-head-link dropdown-toggle arrow-none m-0" data-bs-toggle="dropdown" href="#"
-                role="button" aria-haspopup="false" aria-expanded="false">
+            <button class="pc-head-link dropdown-toggle arrow-none m-0 btn btn-link" data-bs-toggle="dropdown"
+                aria-haspopup="false" aria-expanded="false" type="button">
                 <i class="ti-search"></i>
-            </a>
+            </button>
             <div class="dropdown-menu pc-h-dropdown drp-search">
                 <form class="px-3">
                     <div class="form-group mb-0 d-flex align-items-center">
@@ -38,10 +38,10 @@
 <div class="ms-auto">
     <ul class="list-unstyled">
         <li class="dropdown pc-h-item">
-            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
-                role="button" aria-haspopup="false" aria-expanded="false">
+            <button class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link" data-bs-toggle="dropdown"
+                aria-haspopup="false" aria-expanded="false" type="button">
                 <i class="ti-mail"></i>
-            </a>
+            </button>
             <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
                 <div class="dropdown-header d-flex align-items-center justify-content-between">
                     <h5 class="m-0">Message</h5>
@@ -109,11 +109,11 @@
             </div>
         </li>
         <li class="dropdown pc-h-item header-user-profile">
-            <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
-                role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+            <button class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link" data-bs-toggle="dropdown"
+                 aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false" type="button">
                 <img src="../assets/images/user/avatar-2.jpg" alt="User Profile" class="user-avtar">
                 <span>Stebin Ben</span>
-            </a>
+            </button>
             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                 <div class="dropdown-header">
                     <div class="d-flex mb-1">
@@ -159,12 +159,12 @@
                             <i class="ti ti-wallet"></i>
                             <span>Billing</span>
                         </a>
-                        <a href="#"
+                        <button
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                            class="dropdown-item">
+                            class="dropdown-item" type="button">
                             <i class="ti-power"></i>
                             <span>Logout</span>
-                        </a>
+                        </button>
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf

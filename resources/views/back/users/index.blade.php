@@ -31,15 +31,14 @@
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Rol</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0"
-                                             onkeydown="if(event.key==='Enter'||event.key===' '){this.querySelector('[data-bs-toggle]').click(); event.preventDefault();}">
-                                            <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="admin">Admin</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="customer">Cliente</a></li>
-                                            </ul>
-                                        </div>
+                                        <button class="dropdown border-0 bg-transparent p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
+                                            <i class="ti-filter text-muted cursor-pointer"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="admin">Admin</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="customer">Cliente</a></li>
+                                        </ul>
                                     </div>
                                 </th>
                                 <th>Fecha Registro</th>

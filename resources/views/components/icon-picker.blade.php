@@ -39,8 +39,8 @@
     ];
 @endphp
 
-<div class="mb-3">
-    <label class="form-label fw-bold">{{ $label }}</label>
+<fieldset class="mb-3">
+    <legend class="form-label fw-bold p-0 mb-2 border-0" style="font-size: 1rem;">{{ $label }}</legend>
     <div class="d-flex flex-wrap gap-2">
         @foreach($icons as $icon)
             <div class="icon-option">
@@ -62,4 +62,4 @@
     @error($name)
         <div class="text-danger small mt-1">{{ $message }}</div>
     @enderror
-</div>
+</fieldset>

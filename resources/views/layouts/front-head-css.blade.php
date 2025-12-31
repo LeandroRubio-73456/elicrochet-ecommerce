@@ -6,7 +6,7 @@
 <link rel="preload" as="image" href="{{ asset('assets/images/banner.avif') }}" media="(min-width: 451px)" fetchpriority="high">
 
 <!-- [Google Font] Family - REMOVED FOR PERFORMANCE -->
-<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link"> -->
+
 
 <!-- [Tabler Icons] CDN (Fixes 404) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" media="print" onload="this.media='all'">
@@ -100,11 +100,11 @@
         background: linear-gradient(135deg, #C16244 0%, #BAA794 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 700; 
+        font-weight: 700;
     }
 
-    .section-title, 
-    h1.text-gradient, 
+    .section-title,
+    h1.text-gradient,
     h2.text-gradient {
         background: linear-gradient(135deg, #C16244 0%, #BAA794 100%);
         -webkit-background-clip: text;

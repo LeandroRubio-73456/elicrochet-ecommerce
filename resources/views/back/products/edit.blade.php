@@ -238,7 +238,7 @@
 
                                                         {{-- Miniatura de la imagen --}}
                                                         <img src="{{ asset('storage/' . $image->image_path) }}"
-                                                            alt="Imagen del producto"
+                                                            alt="Producto"
                                                             class="img-fluid rounded mb-2"
                                                             style="height: 100px; width: 100%; object-fit: cover;">
 

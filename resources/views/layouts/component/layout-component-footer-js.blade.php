@@ -4,7 +4,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-4">
-            <img src="../assets/images/logo-white.svg" alt="image" class="img-fluid mb-3">
+            <img src="../assets/images/logo-white.svg" alt="Mantis Logo" class="img-fluid mb-3">
             <p>Since 2017, More than 50K+ Developers trust the CodedThemes Digital Product. Mantis is Manage under their Experienced Team Players.</p>
           </div>
           <div class="col-md-8">

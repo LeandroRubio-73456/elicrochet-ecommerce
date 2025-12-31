@@ -85,18 +85,7 @@ class HomeController extends Controller
         return view('front.bestseller');
     }
 
-    public function cart()
-    {
-        return view('front.cart');
-    }
 
-    public function checkout(CartService $cartService)
-    {
-        $cartItems = $cartService->getCart();
-        $total = $cartService->getTotal();
-
-        return view('front.checkout', compact('cartItems', 'total'));
-    }
 
     public function contact()
     {
@@ -166,13 +155,5 @@ class HomeController extends Controller
 
         // 5. Devolver la vista de la tienda pasando todo
         return view('front.shop', compact('category', 'categories', 'products'));
-    }
-
-    public function addToCart()
-    {
-        // Lógica del carrito pendiente de implementar
-        // o usar una librería de carrito
-
-        return redirect()->back()->with('success', 'Producto añadido al carrito (Simulación)');
     }
 }

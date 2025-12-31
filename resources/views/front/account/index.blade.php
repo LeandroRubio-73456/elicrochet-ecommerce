@@ -17,16 +17,16 @@
                     
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Nombre Completo</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                            <label for="name" class="form-label">Nombre Completo</label>
+                            <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Correo Electrónico</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Teléfono</label>
-                            <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="Ej: 0991234567">
+                            <label for="phone" class="form-label">Teléfono</label>
+                            <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="Ej: 0991234567">
                         </div>
                     </div>
                     <div class="mt-4 text-end">
@@ -50,29 +50,29 @@
                     
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Calle Principal y Número</label>
-                            <input type="text" name="street" class="form-control" value="{{ old('street', $address->street ?? '') }}" required placeholder="Ej: Av. Amazonas y Shyris">
+                            <label for="street" class="form-label">Calle Principal y Número</label>
+                            <input type="text" id="street" name="street" class="form-control" value="{{ old('street', $address->street ?? '') }}" required placeholder="Ej: Av. Amazonas y Shyris">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Detalles / Referencia</label>
-                            <input type="text" name="details" class="form-control" value="{{ old('details', $address->details ?? '') }}" placeholder="Ej: Edificio Blanco, Piso 2">
+                            <label for="details" class="form-label">Detalles / Referencia</label>
+                            <input type="text" id="details" name="details" class="form-control" value="{{ old('details', $address->details ?? '') }}" placeholder="Ej: Edificio Blanco, Piso 2">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Ciudad</label>
-                            <input type="text" name="city" class="form-control" value="{{ old('city', $address->city ?? '') }}" required>
+                            <label for="city" class="form-label">Ciudad</label>
+                            <input type="text" id="city" name="city" class="form-control" value="{{ old('city', $address->city ?? '') }}" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Provincia</label>
-                            <input type="text" name="province" class="form-control" value="{{ old('province', $address->province ?? '') }}" required>
+                            <label for="province" class="form-label">Provincia</label>
+                            <input type="text" id="province" name="province" class="form-control" value="{{ old('province', $address->province ?? '') }}" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">Código Postal</label>
-                            <input type="text" name="postal_code" class="form-control" value="{{ old('postal_code', $address->postal_code ?? '') }}" required>
+                            <label for="postal_code" class="form-label">Código Postal</label>
+                            <input type="text" id="postal_code" name="postal_code" class="form-control" value="{{ old('postal_code', $address->postal_code ?? '') }}" required>
                         </div>
                         <!-- Use user phone as default if address phone is empty -->
                         <div class="col-md-6">
-                             <label class="form-label">Teléfono de Contacto para Envío</label>
-                             <input type="text" name="phone" class="form-control" value="{{ old('phone', $address->phone ?? ($user->phone ?? '')) }}" required>
+                             <label for="shipping_phone" class="form-label">Teléfono de Contacto para Envío</label>
+                             <input type="text" id="shipping_phone" name="phone" class="form-control" value="{{ old('phone', $address->phone ?? ($user->phone ?? '')) }}" required>
                         </div>
                     </div>
                     

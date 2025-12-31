@@ -48,7 +48,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 700; 
+        font-weight: 700;
     }
 
     /* Global Headings Override (Optional - based on request) */
@@ -56,8 +56,8 @@
         color: #333; /* Default dark */
     }
     
-    .section-title, 
-    h1.text-gradient, 
+    .section-title,
+    h1.text-gradient,
     h2.text-gradient {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         -webkit-background-clip: text;

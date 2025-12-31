@@ -20,20 +20,20 @@
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Estado</span>
-                                        <div class="dropdown" onclick="event.stopPropagation()" role="button" tabindex="0">
-                                            <i class="ti-filter text-muted cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"></i>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="quotation">En Cotización</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="pending_payment">Pendiente Pago</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="paid">Pagado</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="working">En Fabricación</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="ready_to_ship">Listo para Envio</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="shipped">Enviado</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="completed">Completado</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="cancelled">Cancelado</a></li>
-                                            </ul>
-                                        </div>
+                                        <button class="dropdown border-0 bg-transparent p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
+                                            <i class="ti-filter text-muted cursor-pointer"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="quotation">En Cotización</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="pending_payment">Pendiente Pago</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="paid">Pagado</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="working">En Fabricación</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="ready_to_ship">Listo para Envio</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="shipped">Enviado</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="completed">Completado</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="cancelled">Cancelado</a></li>
+                                        </ul>
                                     </div>
                                 </th>
                                 <th>Fecha</th>
