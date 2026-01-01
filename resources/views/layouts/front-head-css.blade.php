@@ -7,6 +7,11 @@
 
 
 
+<!-- [Preload] Critical Assets -->
+<link rel="preload" href="{{ asset('assets/css/libs/bootstrap.min.css') }}" as="style">
+<link rel="preload" href="{{ asset('css/main-modern.css') }}" as="style">
+<link rel="preload" href="{{ asset('assets/css/libs/fonts/tabler-icons.woff2') }}" as="font" type="font/woff2" crossorigin>
+
 <!-- [Tabler Icons] Local with font-display: swap -->
 <link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}">
 

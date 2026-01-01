@@ -3,7 +3,6 @@
 <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}" defer></script>
 
 <!-- jQuery (Required for many plugins) -->
-<!-- jQuery (Required for many plugins) -->
 <script src="{{ asset('assets/js/libs/jquery-3.7.1.min.js') }}" defer></script>
 
 <!-- SweetAlert2 (Notifications) -->
