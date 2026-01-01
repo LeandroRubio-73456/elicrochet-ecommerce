@@ -28,13 +28,13 @@
 
 {{-- jQuery and DataTables are required. Assuming they are not in front-layout by default, we load via CDN or reuse if available --}}
 @push('css')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="{{ asset('assets/css/libs/dataTables.bootstrap5.min.css') }}">
 @endpush
 
 @push('scripts')
 <script src="{{ asset('assets/js/libs/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ asset('assets/js/libs/jquery.dataTables.min.js') }}"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="{{ asset('assets/js/libs/dataTables.bootstrap5.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         $('#users-orders-table').DataTable({
@@ -55,7 +55,7 @@
                 { data: 'actions', name: 'actions', orderable: false, searchable: false }
             ],
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                url: "{{ asset('assets/js/libs/i18n/es-ES.json') }}"
             },
             order: [[ 0, "desc" ]] // Order by ID desc
         });
