@@ -30,17 +30,33 @@
               
               <!-- Nombre -->
               <div class="form-group mb-3">
-                <label for="name" class="form-label">Nombre Completo <span class="text-danger">*</span></label>
+                <label for="name" class="form-label">Nombres <span class="text-danger">*</span></label>
                 <input type="text"
                        id="name"
                        name="name"
                        class="form-control @error('name') is-invalid @enderror"
-                       placeholder="Tu nombre completo"
+                       placeholder="Tus nombres"
                        value="{{ old('name') }}"
                        required
                        autofocus
-                       autocomplete="name">
+                       autocomplete="given-name">
                 @error('name')
+                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+              </div>
+
+              <!-- Apellidos -->
+              <div class="form-group mb-3">
+                <label for="lastname" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                <input type="text"
+                       id="lastname"
+                       name="lastname"
+                       class="form-control @error('lastname') is-invalid @enderror"
+                       placeholder="Tus apellidos"
+                       value="{{ old('lastname') }}"
+                       required
+                       autocomplete="family-name">
+                @error('lastname')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
               </div>

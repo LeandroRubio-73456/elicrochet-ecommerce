@@ -48,21 +48,15 @@
                             </div>
                             <div class="card-body p-4 pt-0">
                                 <div class="row g-3">
-                                    @php
-                                        $fullName = auth()->user()->name ?? '';
-                                        $parts = explode(' ', $fullName, 2);
-                                        $firstName = $parts[0] ?? '';
-                                        $lastName = $parts[1] ?? '';
-                                    @endphp
                                     <div class="col-md-6">
                                         <label for="customer_name" class="form-label">Nombres <span class="text-danger">*</span></label>
                                         <input type="text" id="customer_name" name="customer_name" class="form-control bg-light border-0"
-                                            value="{{ $firstName }}" required>
+                                            value="{{ auth()->user()->name ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="customer_lastname" class="form-label">Apellidos <span class="text-danger">*</span></label>
                                         <input type="text" id="customer_lastname" name="customer_lastname" class="form-control bg-light border-0"
-                                            value="{{ $lastName }}" required>
+                                            value="{{ auth()->user()->lastname ?? '' }}" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="customer_email" class="form-label">Email <span class="text-danger">*</span></label>
@@ -138,8 +132,9 @@
 
                                 <!-- Lista de Items Dinámica -->
                                 <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                                    <div class="d-flex align-items-center mb-3">
                                     @foreach ($cartItems as $item)
-                                        <div class="d-flex align-items-center mb-3">
+                                        
                                             <div class="flex-shrink-0">
                                             <div class="flex-shrink-0">
                                                 @php
@@ -159,11 +154,12 @@
                                                 <small class="text-muted">{{ $item->quantity }} x
                                                     ${{ number_format($item->price, 2) }}</small>
                                             </div>
-                                            <div class="text-end fw-bold">
+                                            <div class="fw-bold">
                                                 ${{ number_format($item->price * $item->quantity, 2) }}
                                             </div>
+                                            @endforeach
                                         </div>
-                                    @endforeach
+                                    
                                 </div>
 
                                 <hr>
