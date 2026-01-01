@@ -15,7 +15,7 @@
     <div class="auth-wrapper v3">
       <div class="auth-form">
         <div class="auth-header">
-          <a href="{{ route('home') }}"><img src="{{ asset('Logo.png') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;"></a>
+          <a href="{{ route('home') }}"><img src="{{ asset('Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;"></a>
         </div>
         
         <div class="card my-5">

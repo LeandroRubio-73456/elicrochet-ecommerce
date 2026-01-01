@@ -10,7 +10,7 @@
     <div class="navbar-wrapper">
         <div class="m-header">
             <a href="{{ route('admin.dashboard') }}" class="b-brand">
-                <img src="{{ asset('Logo.png') }}" class="img-fluid " alt="EliCrochet" style="height: 50px;">
+                <img src="{{ asset('Logo.webp') }}" class="img-fluid " alt="EliCrochet" style="height: 50px;">
             </a>
         </div>
         <div class="navbar-content">

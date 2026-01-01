@@ -5,7 +5,7 @@
             <!-- Brand Section -->
             <div class="col-lg-4 col-md-6">
                 <div class="footer-brand mb-4">
-                    <img src="{{asset('Logo.png')}}" alt="EliCrochet" width="55" height="60" class="mb-3" loading="lazy">
+                    <img src="{{asset('Logo.webp')}}" alt="EliCrochet" width="55" height="60" class="mb-3" loading="lazy">
                     <p class="footer-description">
                         Tejemos sueños y creamos compañeros inolvidables con la mejor calidad y artesanía.
                     </p>

@@ -26,9 +26,8 @@
                 </div>
             </div>
 
-
             <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
-                @csrf <!-- Token de seguridad de Laravel -->
+                @csrf
                 @if(session('error'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ session('error') }}
@@ -42,7 +41,9 @@
                         <div class="card border-0 shadow-sm mb-4">
                             <div class="card-header bg-white p-4 border-bottom-0">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-primary text-white rounded-circle me-3 px-2">1</div>
+                                    <div class="bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                        <span class="fw-bold">1</span>
+                                    </div>
                                     <h5 class="mb-0 fw-bold">Información de Envío</h5>
                                 </div>
                             </div>
@@ -74,7 +75,7 @@
                                             value="{{ auth()->user()->addresses->first()->street ?? '' }}" placeholder="Calle, número, depto..." required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="shipping_reference" class="form-label">Referencia <span class="text-danger">*</span></label>
+                                        <label for="shipping_reference" class="form-label">Referencia</label>
                                         <input type="text" id="shipping_reference" name="shipping_reference" class="form-control bg-light border-0"
                                             value="{{ auth()->user()->addresses->first()->reference ?? '' }}" placeholder="Ej: Junto a la farmacia azul">
                                     </div>
@@ -97,20 +98,22 @@
                             </div>
                         </div>
 
-                        <!-- Paso 2: Método de Pago (Simplificado) -->
+                        <!-- Paso 2: Método de Pago -->
                         <div class="card border-0 shadow-sm">
                             <div class="card-header bg-white p-4 border-bottom-0">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-primary text-white rounded-circle me-3 px-2">2</div>
+                                    <div class="bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                        <span class="fw-bold">2</span>
+                                    </div>
                                     <h5 class="mb-0 fw-bold">Método de Pago</h5>
                                 </div>
                             </div>
                             <div class="card-body p-4 pt-0 text-center">
-                                <div class="alert alert-success border-0">
+                                <div class="alert alert-success border-0 mb-0">
                                     <div class="d-flex align-items-center">
                                         <i class="ti ti-cash fs-3 me-3 text-success"></i>
-                                        <div>
-                                            <h6 class="mb-1">Pago del Pedido</h6>
+                                        <div class="text-start">
+                                            <h6 class="mb-1 fw-bold">Pago del Pedido</h6>
                                             <p class="mb-0 small">Al confirmar, se generará tu pedido para ser procesado.</p>
                                         </div>
                                     </div>
@@ -119,113 +122,252 @@
                         </div>
                     </div>
 
-                    <!-- Columna Derecha: Resumen -->
+                    <!-- Columna Derecha: Resumen Optimizado -->
                     <div class="col-lg-4 wow fadeInRight" data-wow-delay="0.4s">
                         <div class="card border-0 shadow-lg position-sticky" style="top: 100px;">
                             <div class="card-body p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h4 class="card-title fw-bold mb-0">Tu Pedido</h4>
-                                    <a href="{{ route('cart') }}" class="text-decoration-none small text-primary fw-bold">
-                                        <i class="ti ti-pencil me-1"></i>Modificar Pedido
+                                    <a href="{{ route('cart') }}" class="small text-decoration-none text-primary fw-semibold">
+                                        <i class="ti ti-pencil me-1"></i>Editar
                                     </a>
                                 </div>
 
-                                <!-- Lista de Items Dinámica -->
-                                <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
-                                    <div class="d-flex align-items-center mb-3">
+                                <!-- Lista de Items Optimizada -->
+                                <div class="order-items-container mb-4" style="max-height: 350px; overflow-y: auto;">
                                     @foreach ($cartItems as $item)
+                                        @php
+                                            $imagePath = 'https://placehold.co/80x80?text=Sin+Imagen';
+                                            if ($item->product && $item->product->images->first()) {
+                                                $imagePath = asset('storage/' . $item->product->images->first()->image_path);
+                                            } elseif (isset($item->attributes['image']) && $item->attributes['image']) {
+                                                $imagePath = asset('storage/' . $item->attributes['image']);
+                                            }
+                                            $name = $item->product ? $item->product->name : ($item->attributes['name'] ?? 'Pedido Personalizado');
+                                        @endphp
                                         
-                                            <div class="flex-shrink-0">
-                                            <div class="flex-shrink-0">
-                                                @php
-                                                    $imagePath = 'https://placehold.co/100x100?text=Sin+Imagen';
-                                                    if ($item->product && $item->product->images->first()) {
-                                                        $imagePath = asset('storage/' . $item->product->images->first()->image_path);
-                                                    } elseif (isset($item->attributes['image']) && $item->attributes['image']) {
-                                                        $imagePath = asset('storage/' . $item->attributes['image']);
-                                                    }
-                                                    $name = $item->product ? $item->product->name : ($item->attributes['name'] ?? 'Custom Order');
-                                                @endphp
-                                                <img src="{{ $imagePath }}" class="rounded" width="50" height="50"
-                                                    alt="{{ $name }}">
+                                        <div class="order-item border rounded p-3 mb-3 bg-white position-relative">
+                                            <div class="d-flex gap-3">
+                                                <!-- Imagen del producto -->
+                                                <div class="flex-shrink-0">
+                                                    <div class="position-relative">
+                                                        <img src="{{ $imagePath }}" 
+                                                             class="rounded" 
+                                                             width="80" 
+                                                             height="80"
+                                                             style="object-fit: cover;"
+                                                             alt="{{ $name }}">
+                                                        <!-- Badge de cantidad -->
+                                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                                                            {{ $item->quantity }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Información del producto -->
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1 fw-bold text-dark">{{ $name }}</h6>
+                                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                                        <small class="text-muted">
+                                                            {{ $item->quantity }} × ${{ number_format($item->price, 2) }}
+                                                        </small>
+                                                        <span class="fw-bold text-primary">
+                                                            ${{ number_format($item->price * $item->quantity, 2) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="mb-0 text-dark">{{ $name }}</h6>
-                                                <small class="text-muted">{{ $item->quantity }} x
-                                                    ${{ number_format($item->price, 2) }}</small>
-                                            </div>
-                                            <div class="fw-bold">
-                                                ${{ number_format($item->price * $item->quantity, 2) }}
-                                            </div>
-                                            @endforeach
                                         </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- Resumen de Totales -->
+                                <div class="order-summary">
+                                    <hr class="my-3">
                                     
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Subtotal ({{ count($cartItems) }} {{ count($cartItems) == 1 ? 'artículo' : 'artículos' }})</span>
+                                        <span class="fw-semibold">${{ number_format($total, 2) }}</span>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="text-muted">Envío</span>
+                                        <span class="text-success fw-bold">
+                                            <i class="ti ti-truck-delivery me-1"></i>Gratis
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-2">
+                                        <span class="h5 fw-bold mb-0">Total</span>
+                                        <span class="h4 fw-bold text-primary mb-0">${{ number_format($total, 2) }}</span>
+                                    </div>
                                 </div>
 
-                                <hr>
-
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Subtotal</span>
-                                    <span class="fw-bold">${{ number_format($total, 2) }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Envío</span>
-                                    <span class="text-success fw-bold">Gratis</span>
-                                </div>
-                                <div class="d-flex justify-content-between mt-3 pt-3 border-top">
-                                    <span class="h5 fw-bold mb-0">Total</span>
-                                    <span class="h4 fw-bold text-primary mb-0">${{ number_format($total, 2) }}</span>
-                                </div>
-
-                                <!-- Botón que envía el formulario -->
-                                <button type="submit" class="btn btn-primary w-100 py-3 mt-4 shadow-lg pulse-button"
-                                    id="submitBtn">
+                                <!-- Botón de Confirmación -->
+                                <button type="submit" 
+                                        class="btn btn-primary w-100 py-3 mt-4 shadow-lg pulse-button"
+                                        id="submitBtn">
                                     <i class="ti ti-check me-2"></i> Confirmar Pedido
                                 </button>
 
+                                <!-- Información de Seguridad -->
+                                <div class="d-flex justify-content-center mt-3">
+                                    <span class="badge bg-light-primary text-primary border border-primary px-3 py-2 rounded-pill">
+                                        <i class="ti ti-lock me-1"></i> Transacción 100% segura
+                                    </span>
+                                </div>
+
                                 <p class="text-center text-muted small mt-3 mb-0">
-                                    Al confirmar, aceptas nuestros <a href="#" class="text-decoration-none">Términos
-                                        y Condiciones</a>.
+                                    Al confirmar, aceptas nuestros <a href="#" class="text-decoration-none text-primary">Términos y Condiciones</a>.
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-
         </div>
     </section>
 @endsection
 
+@push('styles')
+<style>
+    /* Estilos personalizados para el checkout */
+    .order-items-container {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+
+    .order-items-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .order-items-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .order-items-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .order-item {
+        transition: all 0.3s ease;
+    }
+
+    .order-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+    }
+
+    .pulse-button {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0);
+        }
+    }
+
+    .form-control:focus {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.15);
+    }
+
+    .is-invalid {
+        border: 2px solid #dc3545 !important;
+    }
+</style>
+@endpush
+
 @push('scripts')
-    <script>
-        // Validación básica del formulario antes de enviar
-        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-            const submitBtn = document.getElementById('submitBtn');
+<script>
+    // Validación mejorada del formulario
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        const submitBtn = document.getElementById('submitBtn');
 
-            // Deshabilitar el botón para evitar doble clic
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="ti ti-loader me-2"></i> Procesando...';
+        // Deshabilitar el botón para evitar doble envío
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Procesando...';
 
-            // Validación simple de campos requeridos
-            const requiredFields = this.querySelectorAll('[required]');
-            let isValid = true;
+        // Validación de campos requeridos
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+        let firstInvalidField = null;
 
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.classList.add('is-invalid');
-                } else {
-                    field.classList.remove('is-invalid');
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('is-invalid');
+                
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
                 }
-            });
-
-            if (!isValid) {
-                e.preventDefault();
-                alert('Por favor, completa todos los campos obligatorios (*)');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="ti ti-check me-2"></i> Confirmar Pedido';
+                
+                // Agregar evento para remover el error al escribir
+                field.addEventListener('input', function() {
+                    this.classList.remove('is-invalid');
+                }, { once: true });
+            } else {
+                field.classList.remove('is-invalid');
             }
         });
-    </script>
+
+        if (!isValid) {
+            e.preventDefault();
+            
+            // Scroll al primer campo inválido
+            if (firstInvalidField) {
+                firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalidField.focus();
+            }
+            
+            // Mostrar mensaje de error
+            const alertHtml = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="ti ti-alert-circle me-2"></i>
+                    Por favor, completa todos los campos obligatorios marcados con (*).
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            const form = document.getElementById('checkoutForm');
+            form.insertAdjacentHTML('afterbegin', alertHtml);
+            
+            // Restaurar el botón
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="ti ti-check me-2"></i> Confirmar Pedido';
+            
+            // Scroll al mensaje de error
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+
+    // Validación en tiempo real para email
+    const emailField = document.getElementById('customer_email');
+    if (emailField) {
+        emailField.addEventListener('blur', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (this.value && !emailRegex.test(this.value)) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+
+    // Validación en tiempo real para teléfono
+    const phoneField = document.getElementById('customer_phone');
+    if (phoneField) {
+        phoneField.addEventListener('input', function() {
+            this.value = this.value.replace(/[^\d\s\-\+\(\)]/g, '');
+        });
+    }
+</script>
 @endpush

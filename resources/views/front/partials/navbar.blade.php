@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
         <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{ asset('Logo.png') }}" alt="EliCrochet" width="55" height="58" class="d-inline-block align-middle" fetchpriority="high" decoding="async">
+            <img src="{{ asset('Logo.webp') }}" alt="EliCrochet" width="55" height="58" class="d-inline-block align-middle" fetchpriority="high" decoding="async">
         </a>
         
         <button class="navbar-toggler border-0 shadow-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-label="Toggle navigation">
