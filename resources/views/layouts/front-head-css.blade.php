@@ -16,7 +16,7 @@
 @include('layouts.critical-css')
 
 <!-- [Bootstrap] 5.3.2 CDN -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ asset('assets/css/libs/bootstrap.min.css') }}">
 
 <!-- [Template CSS] Main Modern -->
 <link rel="stylesheet" href="{{ asset('css/main-modern.css') }}">

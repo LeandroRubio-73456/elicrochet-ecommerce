@@ -12,14 +12,17 @@
 <!-- WOW.js (Animations) -->
 <script src="{{ asset('assets/js/libs/wow.min.js') }}" defer></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        new WOW().init();
+    // Defer animations until everything is loaded to prioritize LCP/TBT
+    window.addEventListener('load', function() {
+        if (typeof WOW === 'function') {
+             new WOW().init();
+        }
     });
 </script>
 
 <script>
-    // Global Toast Notification System
-    document.addEventListener('DOMContentLoaded', function() {
+    // Global Toast Notification System - Deferred
+    window.addEventListener('load', function() {
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',

@@ -145,7 +145,7 @@
                                                     }
                                                     $name = $item->product ? $item->product->name : ($item->attributes['name'] ?? 'Custom Order');
                                                 @endphp
-                                                <img src="{{ $imagePath }}" class="rounded" width="50"
+                                                <img src="{{ $imagePath }}" class="rounded" width="50" height="50"
                                                     alt="{{ $name }}">
                                             </div>
                                             <div class="flex-grow-1 ms-3">
