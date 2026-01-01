@@ -56,7 +56,7 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/libs/sweetalert2.all.min.js') }}"></script>
     <script type="module">
         $(document).ready(function() {
             var table = $('#users-table').DataTable({

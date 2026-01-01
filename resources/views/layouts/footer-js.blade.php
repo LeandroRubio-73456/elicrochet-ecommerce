@@ -7,16 +7,17 @@
 <script src="{{ asset('assets/js/plugins/feather.min.js') }}" defer></script>
 
 <!-- jQuery and DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" defer></script>
+<!-- jQuery and DataTables -->
+<script src="{{ asset('assets/js/libs/jquery-3.7.1.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/libs/jquery.dataTables.min.js') }}" defer></script>
 
 <!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/libs/sweetalert2.all.min.js') }}"></script>
 
 
 
 <!-- WOW.js for scrolling animations -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" defer></script>
+<script src="{{ asset('assets/js/libs/wow.min.js') }}" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         new WOW().init();

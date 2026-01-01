@@ -3,13 +3,14 @@
 <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}" defer></script>
 
 <!-- jQuery (Required for many plugins) -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+<!-- jQuery (Required for many plugins) -->
+<script src="{{ asset('assets/js/libs/jquery-3.7.1.min.js') }}" defer></script>
 
 <!-- SweetAlert2 (Notifications) -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+<script src="{{ asset('assets/js/libs/sweetalert2.all.min.js') }}" defer></script>
 
 <!-- WOW.js (Animations) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js" defer></script>
+<script src="{{ asset('assets/js/libs/wow.min.js') }}" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         new WOW().init();
