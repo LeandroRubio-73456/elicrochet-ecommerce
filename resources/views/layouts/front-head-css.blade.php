@@ -6,20 +6,15 @@
 <!-- [Google Font] Family - REMOVED FOR PERFORMANCE -->
 
 
-<!-- [Critical CSS] Inline for FCP & Visual Stability -->
-@include('layouts.critical-css')
 
-<!-- [Tabler Icons] Local - Deferred -->
-<link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}"></noscript>
+<!-- [Tabler Icons] Local with font-display: swap -->
+<link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}">
 
-<!-- [Bootstrap] 5.3.2 Local - Deferred -->
-<link rel="stylesheet" href="{{ asset('assets/css/libs/bootstrap.min.css') }}" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="{{ asset('assets/css/libs/bootstrap.min.css') }}"></noscript>
+<!-- [Bootstrap] 5.3.2 Local -->
+<link rel="stylesheet" href="{{ asset('assets/css/libs/bootstrap.min.css') }}">
 
-<!-- [Template CSS] Main Modern - Deferred -->
-<link rel="stylesheet" href="{{ asset('css/main-modern.css') }}" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="{{ asset('css/main-modern.css') }}"></noscript>
+<!-- [Template CSS] Main Modern -->
+<link rel="stylesheet" href="{{ asset('css/main-modern.css') }}">
 
 
 
