@@ -1,0 +1,9 @@
+name: "CodeQL Config"
+
+disable-default-queries: false
+
+paths-ignore:
+  - 'public/assets/js/libs/**'
+  - 'public/build/**'
+  - 'node_modules/**'
+  - 'vendor/**'
