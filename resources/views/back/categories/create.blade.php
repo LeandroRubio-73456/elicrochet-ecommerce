@@ -29,7 +29,6 @@
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
-
                                 <div class="mb-3">
                                     <label for="slug" class="form-label fw-bold">URL amigable (slug)</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
@@ -38,12 +37,10 @@
                                     @error('slug')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
-                                </div>
                             </div>
-
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Estado de la Categoría</label>
+                                    <span class="form-label fw-bold d-block mb-2">Estado de la Categoría</span>
                                     <div class="row g-3">
                                         @foreach (['active' => ['Activa', 'Visible en la tienda', 'success', 'ti ti-eye'], 'inactive' => ['Inactiva', 'No visible en la tienda', 'warning', 'ti ti-power'], 'archived' => ['Archivada', 'Oculta del sistema', 'secondary', 'ti ti-archive']] as $value => [$label, $description, $color, $icon])
                                             <div class="col-md-6">
@@ -66,13 +63,8 @@
                                     @error('status')
                                         <div class="text-danger small mt-2">{{ $message }}</div>
                                     @enderror
-                                </div>
-
-                                <!-- Icon Picker Component -->
-                                <x-icon-picker />
                             </div>
                         </div>
-
                         <div class="mb-3">
                             <label for="description" class="form-label fw-bold">Descripción
                                 <span class="text-danger">*</span>
@@ -182,9 +174,8 @@
                                 });
                             });
                         </script>
+                        </script>
                         @endpush
-
-
                         <hr class="my-4">
 
                         <div class="d-flex gap-2 justify-content-end">

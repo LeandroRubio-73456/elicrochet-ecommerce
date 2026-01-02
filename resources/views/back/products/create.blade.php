@@ -72,7 +72,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Estado</label>
+                            <span class="form-label fw-bold d-block mb-2">Estado</span>
                             <div class="row g-3">
                                 @foreach (['draft' => ['Borrador', 'warning', 'pencil'], 'active' => ['Activo', 'success', 'eye']] as $val => [$label, $color, $icon])
                                     <div class="col-6">

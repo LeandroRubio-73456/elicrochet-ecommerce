@@ -118,7 +118,7 @@
                             <div class="quantity-cart-wrapper">
                                 <!-- Quantity Selector -->
                                 <div class="quantity-selector">
-                                    <label class="quantity-label">Cantidad</label>
+                                    <label for="quantityInput" class="quantity-label">Cantidad</label>
                                     <div class="quantity-controls">
                                         <button type="button" class="qty-btn" onclick="updateQuantity(-1)">
                                             <i class="ti ti-minus"></i>

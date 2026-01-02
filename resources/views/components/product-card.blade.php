@@ -1,5 +1,4 @@
 @props(['product'])
-
 <div class="product-card-modern h-100">
     <a href="{{ route('product.show', $product->slug) }}" class="product-image-wrapper">
         @if($product->images->first())
@@ -14,7 +13,6 @@
                 </svg>
             </div>
         @endif
-
         <div class="position-absolute top-0 start-0 m-2">
             @if($product->is_on_sale)
                 <span class="product-badge bg-danger">OFF</span>
@@ -22,7 +20,6 @@
                 <span class="product-badge bg-success">Nuevo</span>
             @endif
         </div>
-
         @if($product->is_featured && !$product->is_on_sale && !$product->is_new)
             <span class="product-badge">Destacado</span>
         @endif
@@ -34,7 +31,6 @@
         <p class="product-description">{{ Str::limit($product->description, 60) }}</p>
         <div class="product-footer">
             <div class="product-price">${{ number_format($product->price, 0, ',', '.') }}</div>
-            
             <form action="{{ route('cart.add', $product->slug ?? $product->id) }}" method="POST" class="d-inline">
                 @csrf
                 <input type="hidden" name="quantity" value="1">

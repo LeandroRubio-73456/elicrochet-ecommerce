@@ -19,7 +19,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
     Route::any('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
@@ -52,7 +51,6 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
 
-        // Eliminar imagen producto
         // Eliminar imagen producto
         Route::delete('/products/images/{productImage}', [\App\Http\Controllers\ProductImageController::class, 'destroy'])->name('products.images.destroy');
 

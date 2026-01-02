@@ -150,7 +150,6 @@ class HomeController extends Controller
         // 4. Paginar
         $products = $query->paginate(12)->withQueryString();
 
-        // 5. Devolver la vista de la tienda pasando todo
         return view('front.shop', compact('category', 'categories', 'products'));
     }
 }

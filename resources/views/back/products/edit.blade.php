@@ -88,7 +88,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Estado</label>
+                                    <span class="form-label fw-bold d-block mb-2">Estado</span>
                                     <div class="row g-2">
                                         @foreach (['draft' => ['Borrador','warning','pencil'], 'active' => ['Activo','success','eye'], 'discontinued' => ['Descontinuado','secondary','na'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
                                             <div class="col-6">
@@ -105,12 +105,12 @@
 
                                 @if ($product->images->count() > 0)
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Imágenes Actuales</label>
+                                        <span class="form-label fw-bold d-block mb-2">Imágenes Actuales</span>
                                         <div class="row g-2">
                                             @foreach ($product->images as $image)
                                                 <div class="col-4 image-thumbnail-container">
                                                     <div class="border rounded p-1 text-center">
-                                                        <img src="{{ asset('storage/' . $image->image_path) }}" class="img-fluid rounded mb-1" style="height: 60px; object-fit: cover;">
+                                                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Imagen del producto" class="img-fluid rounded mb-1" style="height: 60px; object-fit: cover;">
                                                         <button type="button" class="btn btn-sm btn-danger p-0 px-1 remove-image-btn" data-image-id="{{ $image->id }}"><i class="ti ti-trash"></i></button>
                                                     </div>
                                                 </div>

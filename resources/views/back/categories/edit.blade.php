@@ -44,7 +44,7 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Estado de la Categoría</label>
+                                    <span class="form-label fw-bold d-block mb-2">Estado de la Categoría</span>
                                     <div class="row g-3">
                                         @foreach (['active' => ['Activa', 'Visible en la tienda', 'success', 'ti ti-eye'], 'inactive' => ['Inactiva', 'No visible en la tienda', 'warning', 'ti ti-power'], 'archived' => ['Archivada', 'Oculta del sistema', 'secondary', 'ti ti-archive']] as $value => [$label, $description, $color, $icon])
                                             <div class="col-md-6 col-lg-6">

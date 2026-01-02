@@ -35,7 +35,7 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-4">
-                            <label class="form-label fw-bold">Tipo de Producto <span class="text-danger">*</span></label>
+                            <label for="categorySelect" class="form-label fw-bold">Tipo de Producto <span class="text-danger">*</span></label>
                             <select name="category_id" id="categorySelect" class="form-select @error('category_id') is-invalid @enderror" required>
                                 <option value="" disabled selected>Selecciona una opción...</option>
                                 @foreach($categories as $cat)
@@ -57,8 +57,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Describe tu idea</label>
-                        <textarea name="description" rows="5" class="form-control" placeholder="Ej: Quiero un diseño especial con detalles dorados..." required>{{ old('description') }}</textarea>
+                        <label for="description" class="form-label fw-bold">Describe tu idea</label>
+                        <textarea name="description" id="description" rows="5" class="form-control" placeholder="Ej: Quiero un diseño especial con detalles dorados..." required>{{ old('description') }}</textarea>
                         <small class="text-muted">Incluye detalles adicionales no cubiertos arriba.</small>
                     </div>
 
@@ -108,10 +108,10 @@
                     @endpush
 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Imágenes de Referencia (Opcional)</label>
+                        <label for="images" class="form-label fw-bold">Imágenes de Referencia (Opcional)</label>
                         <div class="input-group">
-                            <input type="file" name="images[]" class="form-control" multiple accept="image/*">
-                            <label class="input-group-text"><i class="ti ti-upload"></i></label>
+                            <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+                            <span class="input-group-text"><i class="ti ti-upload"></i></span>
                         </div>
                         <small class="text-muted">Puedes subir múltiples imágenes para ayudarnos a entender tu idea.</small>
                     </div>

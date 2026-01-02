@@ -31,7 +31,6 @@
                         <div class="col-md-6">
                             <div>
                                 @if ($product->images->count() > 0)
-
                                     {{-- 2. SOLUCIÓN ALTURA FIJA Y SIN SALTO (Aspect Ratio Trick) --}}
                                     <div class="bg-light rounded overflow-hidden"
                                         style="position: relative; padding-top: 75%; height: 0;">
@@ -69,7 +68,6 @@
                                             @endif
                                         </div>
                                     </div> {{-- Fin del Contenedor de Altura Fija --}}
-
                                     @if ($product->images->count() > 1)
                                         {{-- Las miniaturas siempre estarán directamente debajo del contenedor principal --}}
                                         <div

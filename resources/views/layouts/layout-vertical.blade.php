@@ -192,7 +192,7 @@
                         </ul>
                         <div class="tab-content" id="mysrpTabContent">
                             <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel"
-                                aria-labelledby="drp-t1" tabindex="0">
+                                aria-labelledby="drp-t1">
                                 <a href="#!" class="dropdown-item">
                                     <i class="ti ti-edit-circle"></i>
                                     <span>Editar Perfil</span>
@@ -208,8 +208,7 @@
                                     @csrf
                                 </form>
                             </div>
-                            <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2"
-                                tabindex="0">
+                            <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2">
                                 <a href="#!" class="dropdown-item">
                                     <i class="ti ti-settings"></i>
                                     <span>Configuración de Cuenta</span>

@@ -11,11 +11,9 @@
     <div>
         <div class="d-flex align-items-center justify-content-between mb-3">
             <h4 class="m-0">Lista de Usuarios</h4>
-            <a href="{{ route('admin.users.create') }}">
-                <button type="button" class="btn btn-primary d-flex align-items-center gap-2">
-                    <i class="ti ti-plus"></i>
-                    Agregar Usuario
-                </button>
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary d-flex align-items-center gap-2">
+                <i class="ti ti-plus"></i>
+                Agregar Usuario
             </a>
         </div>
 

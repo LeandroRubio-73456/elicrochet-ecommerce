@@ -126,7 +126,7 @@
                     @method('PUT')
                     
                     <div class="mb-3">
-                        <label class="form-label">Estado Actual</label>
+                        <label for="statusSelect" class="form-label">Estado Actual</label>
                         <select name="status" id="statusSelect" class="form-select @error('status') is-invalid @enderror">
                             @php
                                 $statuses = [
@@ -194,8 +194,8 @@
 
                     @if($order->type === 'custom' && $order->status === 'quotation')
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-primary">Cotizar Valor Total ($)</label>
-                            <input type="number" step="0.01" name="total_amount" class="form-control" value="{{ $order->total_amount > 0 ? $order->total_amount : '' }}" placeholder="0.00">
+                            <label for="total_amount_input" class="form-label fw-bold text-primary">Cotizar Valor Total ($)</label>
+                            <input type="number" step="0.01" name="total_amount" id="total_amount_input" class="form-control" value="{{ $order->total_amount > 0 ? $order->total_amount : '' }}" placeholder="0.00">
                             <small class="text-muted">Al cambiar a 'Pendiente de Pago', este será el valor a cobrar.</small>
                         </div>
                     @endif
