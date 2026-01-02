@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     @include('layouts.head-page-meta', ['title' => 'Iniciar Sesión'])
     @include('layouts.front-head-css')

@@ -174,7 +174,6 @@
                                 });
                             });
                         </script>
-                        </script>
                         @endpush
                         <hr class="my-4">
 
