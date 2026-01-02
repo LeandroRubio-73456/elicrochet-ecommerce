@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
-<!-- [Head] start -->
 <head>
   @include('layouts.head-page-meta', ['title' => 'Recuperar Contraseña'])
   @include('layouts.front-head-css')
 </head>
-<!-- [Head] end -->
-<!-- [Body] Start -->
 <body class="landing-page">
   @include('layouts.loader')
   
@@ -15,24 +12,24 @@
       <div class="auth-form">
         <div class="auth-header">
           <a href="{{ route('home') }}">
-            <img src="{{ asset('Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;">
+            <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;">
           </a>
         </div>
         
         <div class="card my-5">
           <div class="card-body">
-            <div class="d-flex justify-content-between align-items-end mb-4">
-              <h3 class="mb-0"><b>Recuperar Contraseña</b></h3>
-              <a href="{{ route('login') }}" class="link-primary">Volver al Login</a>
-            </div>
-
-            <div class="mb-3 text-muted">
-                {{ __('¿Olvidaste tu contraseña? No hay problema. Simplemente haznos saber tu dirección de correo electrónico y te enviaremos un enlace para restablecerla.') }}
-            </div>
+            <div class="text-center mb-4">
+                <div class="avatar-lg bg-light-warning text-warning mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 60px; height: 60px;">
+                   <i class="ti ti-lock-question fs-2"></i>
+                </div>
+                <h3 class="mb-2"><b>Recuperar Contraseña</b></h3>
+                <p class="text-muted small">Ingresa tu correo para recibir las instrucciones.</p>
+             </div>
 
             @if (session('status'))
-                <div class="alert alert-success mb-3" role="alert">
-                    {{ session('status') }}
+                <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                    <i class="ti ti-circle-check fs-4 me-2"></i>
+                     <div>{{ session('status') }}</div>
                 </div>
             @endif
             
@@ -54,10 +51,16 @@
                 @enderror
               </div>
               
-              <div class="d-grid mt-3">
+              <div class="d-grid mt-4">
                 <button type="submit" class="btn btn-primary">
                   Enviar Enlace de Recuperación
                 </button>
+              </div>
+
+              <div class="text-center mt-3">
+                  <a href="{{ route('login') }}" class="link-secondary text-decoration-none">
+                      <i class="ti ti-arrow-left me-1"></i> Volver al inicio de sesión
+                  </a>
               </div>
             </form>
           </div>

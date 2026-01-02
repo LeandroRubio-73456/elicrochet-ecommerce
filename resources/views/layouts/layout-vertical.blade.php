@@ -10,49 +10,48 @@
     <div class="navbar-wrapper">
         <div class="m-header">
             <a href="{{ route('admin.dashboard') }}" class="b-brand">
-                <img src="{{ asset('Logo.webp') }}" class="img-fluid " alt="EliCrochet" style="height: 50px;">
+                <img src="{{ asset('assets/images/Logo.webp') }}" class="img-fluid " alt="EliCrochet" style="height: 50px;">
             </a>
         </div>
         <div class="navbar-content">
             <ul class="pc-navbar">
                 <li class="pc-item">
                     <a href="{{ route('admin.dashboard') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti-dashboard"></i></span>
+                        <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                         <span class="pc-mtext">Dashboard</span>
                     </a>
                 </li>
 
                 <li class="pc-item pc-caption">
                     <span>Gestión</span>
-                    <i class="ti ti-dashboard"></i>
                 </li>
                 <li class="pc-item">
                     <a href="{{ route('admin.products.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti-package"></i></span>
+                        <span class="pc-micon"><i class="ti ti-package"></i></span>
                         <span class="pc-mtext">Productos</span>
                     </a>
                 </li>
                 <li class="pc-item">
                     <a href="{{ route('admin.categories.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti-tag"></i></span>
+                        <span class="pc-micon"><i class="ti ti-tag"></i></span>
                         <span class="pc-mtext">Categorias</span>
                     </a>
                 </li>
                 <li class="pc-item">
                     <a href="{{ route('admin.users.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti-user"></i></span>
+                        <span class="pc-micon"><i class="ti ti-users"></i></span>
                         <span class="pc-mtext">Usuarios</span>
                     </a>
                 </li>
                 <li class="pc-item">
                     <a href="{{ route('admin.orders.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti-clipboard"></i></span>
+                        <span class="pc-micon"><i class="ti ti-clipboard"></i></span>
                         <span class="pc-mtext">Órdenes</span>
                     </a>
                 </li>
                 <li class="pc-item">
                     <a href="{{ route('admin.finance.index') }}" class="pc-link">
-                        <span class="pc-micon"><i class="ti-bar-chart"></i></span>
+                        <span class="pc-micon"><i class="ti ti-chart-bar"></i></span>
                         <span class="pc-mtext">Finanzas</span>
                     </a>
                 </li>
@@ -76,27 +75,7 @@
                         <i class="ti ti-menu-2"></i>
                     </a>
                 </li>
-                <li class="dropdown pc-h-item d-inline-flex d-md-none">
-                    <button class="pc-head-link dropdown-toggle arrow-none m-0 btn btn-link" data-bs-toggle="dropdown"
-                         aria-haspopup="false" aria-expanded="false" type="button">
-                        <i class="ti ti-search"></i>
-                    </button>
-                    <div class="dropdown-menu pc-h-dropdown drp-search">
-                        <form class="px-3">
-                            <div class="form-group mb-0 d-flex align-items-center">
-                                <i data-feather="search"></i>
-                                <input type="search" class="form-control border-0 shadow-none"
-                                    placeholder="Search here. . .">
-                            </div>
-                        </form>
-                    </div>
-                </li>
-                <li class="pc-h-item d-none d-md-inline-flex">
-                    <form class="header-search">
-                        <i data-feather="search" class="icon-search"></i>
-                        <input type="search" class="form-control" placeholder="Search here. . .">
-                    </form>
-                </li>
+
             </ul>
         </div>
         <!-- [Mobile Media Block end] -->
@@ -120,7 +99,7 @@
                                 <a class="list-group-item list-group-item-action">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/user/avatar-2.jpg" alt="User"
+                                            <img src="https://ui-avatars.com/api/?name=Cristina+Danny&background=random" alt="User"
                                                 class="user-avtar">
                                         </div>
                                         <div class="flex-grow-1 ms-1">
@@ -133,7 +112,7 @@
                                 <a class="list-group-item list-group-item-action">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/user/avatar-1.jpg" alt="User"
+                                            <img src="https://ui-avatars.com/api/?name=Aida+Burg&background=random" alt="User"
                                                 class="user-avtar">
                                         </div>
                                         <div class="flex-grow-1 ms-1">
@@ -146,7 +125,7 @@
                                 <a class="list-group-item list-group-item-action">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/user/avatar-3.jpg" alt="User"
+                                            <img src="https://ui-avatars.com/api/?name=System+Alert&background=random" alt="User"
                                                 class="user-avtar">
                                         </div>
                                         <div class="flex-grow-1 ms-1">
@@ -159,7 +138,7 @@
                                 <a class="list-group-item list-group-item-action">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
-                                            <img src="../assets/images/user/avatar-4.jpg" alt="User"
+                                            <img src="https://ui-avatars.com/api/?name=Cristina+Danny&background=random" alt="User"
                                                 class="user-avtar">
                                         </div>
                                         <div class="flex-grow-1 ms-1">
@@ -195,8 +174,6 @@
                                     <h6 class="mb-1">{{ Auth::user()->name }}</h6>
                                     <span>{{ Auth::user()->email }}</span>
                                 </div>
-                                <a href="#!" class="pc-head-link bg-transparent"><i
-                                        class="ti ti-power text-danger"></i></a>
                             </div>
                         </div>
                         <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
@@ -204,13 +181,13 @@
                                 <button class="nav-link active" id="drp-t1" data-bs-toggle="tab"
                                     data-bs-target="#drp-tab-1" type="button" role="tab"
                                     aria-controls="drp-tab-1" aria-selected="true"><i class="ti ti-user"></i>
-                                    Profile</button>
+                                    Perfil</button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="drp-t2" data-bs-toggle="tab"
                                     data-bs-target="#drp-tab-2" type="button" role="tab"
                                     aria-controls="drp-tab-2" aria-selected="false"><i class="ti ti-settings"></i>
-                                    Setting</button>
+                                    Ajustes</button>
                             </li>
                         </ul>
                         <div class="tab-content" id="mysrpTabContent">
@@ -218,27 +195,14 @@
                                 aria-labelledby="drp-t1" tabindex="0">
                                 <a href="#!" class="dropdown-item">
                                     <i class="ti ti-edit-circle"></i>
-                                    <span>Edit Profile</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-user"></i>
-                                    <span>View Profile</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-clipboard-list"></i>
-                                    <span>Social Profile</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-wallet"></i>
-                                    <span>Billing</span>
+                                    <span>Editar Perfil</span>
                                 </a>
                                 <button
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                     class="dropdown-item" type="button">
                                     <i class="ti ti-power"></i>
-                                    <span>Logout</span>
+                                    <span>Cerrar Sesión</span>
                                 </button>
-
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                     style="display: none;">
                                     @csrf
@@ -247,24 +211,8 @@
                             <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2"
                                 tabindex="0">
                                 <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-help"></i>
-                                    <span>Support</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-user"></i>
-                                    <span>Account Settings</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-lock"></i>
-                                    <span>Privacy Center</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-messages"></i>
-                                    <span>Feedback</span>
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-list"></i>
-                                    <span>History</span>
+                                    <i class="ti ti-settings"></i>
+                                    <span>Configuración de Cuenta</span>
                                 </a>
                             </div>
                         </div>
@@ -272,6 +220,7 @@
                 </li>
             </ul>
         </div>
+    </div>
     </div>
 </header>
 <!-- [ Header ] end -->

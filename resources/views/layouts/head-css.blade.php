@@ -1,14 +1,13 @@
 <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
-<!-- [Tabler Icons] https://tablericons.com -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<!-- [Feather Icons] https://feathericons.com -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}">
-<!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/fontawesome.css') }}">
-<!-- [Material Icons] https://fonts.google.com/icons -->
-<link rel="stylesheet" href="{{ asset('assets/fonts/material.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/fonts/themify-icons.css') }}">
+<!-- [Tabler Icons] Local -->
+<link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}">
+<!-- [Feather Icons] CDN Fallback -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css">
+<!-- [Font Awesome Icons] CDN Fallback -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<!-- [Material Icons] CDN Fallback -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <!-- Animate.css -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -82,5 +81,26 @@
     .landing-page .btn-outline-primary:hover {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-color: transparent;
+    }
+    /* Force Tabler Icons Font Family and Define it */
+    @font-face {
+        font-family: 'Lexend';
+        src: url("{{ asset('assets/css/libs/fonts/Lexend-VariableFont_wght.ttf') }}") format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'tabler-icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url('{{ asset('assets/css/libs/fonts/tabler-icons.woff2') }}') format('woff2'),
+             url('{{ asset('assets/css/libs/fonts/tabler-icons.woff') }}') format('woff'),
+             url('{{ asset('assets/css/libs/fonts/tabler-icons.ttf') }}') format('truetype');
+    }
+
+    .ti { 
+        font-family: 'tabler-icons' !important; 
     }
 </style>

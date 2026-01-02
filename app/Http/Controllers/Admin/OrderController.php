@@ -203,7 +203,7 @@ class OrderController extends Controller
 
         // Actions
         $showUrl = route('admin.orders.show', $order);
-        $actions = '<a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>';
+        $actions = '<a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti ti-eye"></i></a>';
 
         // Type Badge (Spanish)
         $typeBadge = match ($order->type) {

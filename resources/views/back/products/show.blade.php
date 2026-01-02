@@ -11,15 +11,15 @@
     <!-- [ sample-page ] start -->
     <div class="row">
         <div class="col-sm-12">
-            <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex align-items-center justify-content-between mb-3">
                 <h4 class="m-0">Detalle del Producto</h4>
-                <div class="card-body">
-                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-primary ">
-                        <i class="ti ti-edit"></i>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-primary">
+                        <i class="ti ti-edit me-1"></i>
                         Editar
                     </a>
                     <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
-                        <i class="ti ti-arrow-left"></i>
+                        <i class="ti ti-arrow-left me-1"></i>
                         Volver
                     </a>
                 </div>
@@ -91,7 +91,7 @@
                                         style="position: relative; padding-top: 75%; height: 0;">
                                         <div class="text-center"
                                             style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                            <i class="ti-package f-48 text-muted"></i>
+                                            <i class="ti ti-package f-48 text-muted"></i>
                                             <p class="text-muted mt-2">Sin imágenes cargadas</p>
                                         </div>
                                     </div>
@@ -105,7 +105,7 @@
                                 {!! $product->status_badge !!}
                                 @if ($product->status === 'active' && $product->stock <= 0)
                                     <span class="badge bg-danger mt-1 fs-6">
-                                        <i class="ti-exclamation-triangle me-1"></i> Sin Stock
+                                        <i class="ti ti-alert-triangle me-1"></i> Sin Stock
                                     </span>
                                 @endif
                             </div>

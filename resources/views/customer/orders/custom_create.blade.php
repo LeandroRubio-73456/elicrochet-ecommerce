@@ -4,11 +4,11 @@
 
 @section('customer_content')
 <div class="row justify-content-center">
-    <div class="col-lg-10">
+    <div class="col-12">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white border-bottom-0 py-3">
                 <div class="d-flex align-items-center">
-                    <div class="rounded-circle bg-light-primary p-3 me-3">
+                    <div class="rounded-circle bg-light-primary px-2 py-1 me-3">
                         <i class="ti ti-wand fs-4 text-primary"></i>
                     </div>
                     <div>

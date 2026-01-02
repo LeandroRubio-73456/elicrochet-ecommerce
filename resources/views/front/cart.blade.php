@@ -42,11 +42,11 @@
                             <div class="d-inline-flex align-items-center mb-2 mb-md-0">
                                 <div class="input-group input-group-sm border rounded" style="width: auto;">
                                     <button type="button" class="btn btn-light btn-sm" onclick="updateQuantity({{ $item->product_id }}, -1)">
-                                        <i class="ti-minus"></i>
+                                        <i class="ti ti-minus"></i>
                                     </button>
                                     <input type="text" id="quantity-{{ $item->product_id }}" value="{{ $item->quantity }}" class="form-control text-center border-0" min="1" max="{{ $item->product->stock }}" readonly style="width: 50px;">
                                     <button type="button" class="btn btn-light btn-sm" onclick="updateQuantity({{ $item->product_id }}, 1)">
-                                        <i class="ti-plus"></i>
+                                        <i class="ti ti-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar producto">
-                                <i class="ti-trash"></i>
+                                <i class="ti ti-trash"></i>
                             </button>
                         </form>
                     </div>
@@ -136,7 +136,7 @@ function updateCartBadge(count) {
 @endpush
     @else
         <div class="text-center py-5">
-            <i class="ti-shopping-cart text-muted mb-3" style="font-size: 3rem;"></i>
+            <i class="ti ti-shopping-cart text-muted mb-3" style="font-size: 3rem;"></i>
             <h3>Tu carrito está vacío</h3>
             <p class="text-muted">¡Agrega algunos productos hermosos!</p>
             <a href="{{ route('shop') }}" class="btn btn-primary mt-3">Ir a la Tienda</a>

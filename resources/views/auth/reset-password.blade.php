@@ -8,20 +8,20 @@
   @include('layouts.loader')
   
   <div class="auth-main">
-    <div class="auth-wrapper v3">
-      <div class="auth-form">
-        <div class="auth-header">
-          <a href="{{ route('home') }}">
-            <img src="{{ asset('Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;">
-          </a>
-        </div>
-        
-        <div class="card my-5">
-          <div class="card-body">
-            <div class="mb-4">
-              <h3 class="mb-0"><b>Restablecer Contraseña</b></h3>
-              <p class="text-muted small mt-2">Crea una nueva contraseña para tu cuenta.</p>
-            </div>
+    <div class="auth-wrapper v3 d-flex justify-content-center align-items-center min-vh-100 py-5">
+      <div class="auth-form col-12 col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <a href="{{ route('home') }}" class="d-block mb-4">
+                    <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 60px;">
+                </a>
+                <div class="avatar-lg bg-light-info text-info mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 60px; height: 60px;">
+                   <i class="ti ti-key fs-2"></i>
+                </div>
+                <h3 class="mb-2"><b>Nueva Contraseña</b></h3>
+                <p class="text-muted small">Por favor ingresa tu nueva contraseña.</p>
+             </div>
             
             <form method="POST" action="{{ route('password.store') }}">
               @csrf
@@ -29,14 +29,14 @@
               
               <!-- Email -->
               <div class="form-group mb-3">
-                <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+                <label for="email" class="form-label">Correo Electrónico</label>
                 <input type="email"
-                       class="form-control @error('email') is-invalid @enderror"
+                       class="form-control form-control-lg @error('email') is-invalid @enderror"
                        id="email"
                        name="email"
                        value="{{ old('email', $request->email) }}"
                        required
-                       autofocus>
+                       readonly>
                 @error('email')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -44,13 +44,14 @@
 
               <!-- Password -->
               <div class="form-group mb-3">
-                <label for="password" class="form-label">Nueva Contraseña <span class="text-danger">*</span></label>
-                <input type="password"
-                       class="form-control @error('password') is-invalid @enderror"
-                       id="password"
-                       name="password"
-                       required
-                       autocomplete="new-password">
+                <label for="password" class="form-label">Nueva Contraseña</label>
+                <div class="input-group">
+                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password" placeholder="••••••••">
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="ti ti-eye"></i>
+                    </button>
+                </div>
+                <small class="text-muted mt-1 d-block">Mínimo 8 caracteres.</small>
                 @error('password')
                   <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -58,20 +59,17 @@
 
               <!-- Confirm Password -->
               <div class="form-group mb-3">
-                <label for="password_confirmation" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                <input type="password"
-                       class="form-control @error('password_confirmation') is-invalid @enderror"
-                       id="password_confirmation"
-                       name="password_confirmation"
-                       required
-                       autocomplete="new-password">
-                @error('password_confirmation')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
+                <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                <div class="input-group">
+                    <input type="password" class="form-control form-control-lg" id="password_confirmation" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleConfirm">
+                        <i class="ti ti-eye"></i>
+                    </button>
+                </div>
               </div>
               
               <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill">
                   Restablecer Contraseña
                 </button>
               </div>
@@ -79,22 +77,33 @@
           </div>
         </div>
         
-        <div class="auth-footer row">
-            <div class="col my-1">
-              <p class="m-0">© {{ date('Y') }} <a href="#">{{ config('app.name', 'Laravel') }}</a></p>
-            </div>
-            <div class="col-auto my-1">
-              <ul class="list-inline footer-link mb-0">
-                <li class="list-inline-item"><a href="{{ route('home') }}">Inicio</a></li>
-                <li class="list-inline-item"><a href="#">Privacidad</a></li>
-                <li class="list-inline-item"><a href="{{ route('contact') }}">Contacto</a></li>
-              </ul>
-            </div>
-          </div>
+        <div class="text-center mt-4 text-muted small">
+            <p class="mb-0">© {{ date('Y') }} {{ config('app.name', 'EliCrochet') }}. Todos los derechos reservados.</p>
+        </div>
       </div>
     </div>
   </div>
   
   @include('layouts.footer-js')
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle Password Visibility
+        const setupToggle = (btnId, inputId) => {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            if(btn && input) {
+                btn.addEventListener('click', () => {
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    btn.querySelector('i').className = type === 'text' ? 'ti ti-eye-off' : 'ti ti-eye';
+                });
+            }
+        };
+
+        setupToggle('togglePassword', 'password');
+        setupToggle('toggleConfirm', 'password_confirmation');
+    });
+  </script>
 </body>
 </html>

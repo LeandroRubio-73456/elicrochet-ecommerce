@@ -21,7 +21,7 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Estado</span>
                                         <button class="dropdown border-0 bg-transparent p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
-                                            <i class="ti-filter text-muted cursor-pointer"></i>
+                                            <i class="ti ti-filter text-muted cursor-pointer"></i>
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
@@ -79,19 +79,19 @@
                 buttons: [
                     {
                         extend: 'collection',
-                        text: '<i class="ti-download me-1"></i> Exportar',
+                        text: '<i class="ti ti-download me-1"></i> Exportar',
                         className: 'btn btn-primary btn-sm',
                         buttons: [
                             {
                                 extend: 'excelHtml5',
-                                text: '<i class="ti-file me-1"></i> Excel',
+                                text: '<i class="ti ti-file-spreadsheet me-1"></i> Excel',
                                 exportOptions: {
                                     columns: [0, 1, 2, 3, 4]
                                 }
                             },
                             {
                                 extend: 'pdfHtml5',
-                                text: '<i class="ti-file me-1"></i> PDF',
+                                text: '<i class="ti ti-file-text me-1"></i> PDF',
                                 exportOptions: {
                                     columns: [0, 1, 2, 3, 4]
                                 }

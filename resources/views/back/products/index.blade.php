@@ -10,7 +10,7 @@
             <h4 class="m-0">Lista de Productos</h4>
             <a href="{{ route('admin.products.create') }}">
                 <button type="button" class="btn btn-primary d-flex align-items-center gap-2">
-                    <i class="ti-plus"></i>
+                    <i class="ti ti-plus"></i>
                     Agregar Producto
                 </button>
             </a>
@@ -30,7 +30,7 @@
                                         <span>Categoría</span>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
-                                                <i class="ti-filter text-muted cursor-pointer" style="cursor: pointer;"></i>
+                                                <i class="ti ti-filter text-muted cursor-pointer" style="cursor: pointer;"></i>
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="3" data-value="">Todas</a></li>
@@ -48,7 +48,7 @@
                                         <span>Estado</span>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
-                                                <i class="ti-filter text-muted cursor-pointer" style="cursor: pointer;"></i>
+                                                <i class="ti ti-filter text-muted cursor-pointer" style="cursor: pointer;"></i>
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="">Todos</a></li>
@@ -103,19 +103,19 @@
                 buttons: [
                     {
                         extend: 'collection',
-                        text: '<i class="ti-download me-1"></i> Exportar',
+                        text: '<i class="ti ti-download me-1"></i> Exportar',
                         className: 'btn btn-primary btn-sm',
                         buttons: [
                             {
                                 extend: 'excelHtml5',
-                                text: '<i class="ti-file-spreadsheet me-1"></i> Excel',
+                                text: '<i class="ti ti-file-spreadsheet me-1"></i> Excel',
                                 exportOptions: {
                                     columns: [0, 2, 3, 4, 5, 6]
                                 }
                             },
                             {
                                 extend: 'pdfHtml5',
-                                text: '<i class="ti-file-text me-1"></i> PDF',
+                                text: '<i class="ti ti-file-text me-1"></i> PDF',
                                 exportOptions: {
                                     columns: [0, 2, 3, 4, 5, 6]
                                 }

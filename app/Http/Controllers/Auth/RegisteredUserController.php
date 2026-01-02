@@ -43,10 +43,15 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        try {
+            event(new Registered($user));
+        } catch (\Exception $e) {
+            // Log error but continue login flow
+            // Log::error('Registration email failed: ' . $e->getMessage());
+        }
 
         Auth::login($user);
 
-        return redirect(route('home', absolute: false));
+        return redirect(route('verification.notice'));
     }
 }

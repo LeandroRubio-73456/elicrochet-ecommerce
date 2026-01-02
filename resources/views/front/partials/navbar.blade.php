@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">
-            <img src="{{ asset('Logo.webp') }}" alt="EliCrochet" width="55" height="58" class="d-inline-block align-middle" fetchpriority="high" decoding="async">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
+            <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet Logo" width="55" height="58" class="d-inline-block align-middle" fetchpriority="high" decoding="async">
+            <img src="{{ asset('assets/images/EliCrochet.webp') }}" alt="EliCrochet" height="32" class="d-inline-block align-middle">
         </a>
         
         <button class="navbar-toggler border-0 shadow-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-label="Toggle navigation">
@@ -55,33 +56,40 @@
                                  class="rounded-circle">
                             <span class="d-none d-lg-inline ms-2">{{ Str::limit(Auth::user()->name, 12) }}</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-modern shadow border-0 mt-2" aria-labelledby="userMenu">
-                            @if(Auth::user()->isAdmin())
-                                <li>
-                                    <a class="dropdown-item dropdown-item-modern" href="{{ route('admin.dashboard') }}">
-                                        <i class="ti ti-layout-dashboard me-2 fs-5"></i>
-                                        Panel Admin
+                        <div class="dropdown-menu dropdown-user-profile dropdown-menu-end dropdown-modern shadow border-0 mt-2" aria-labelledby="userMenu">
+                            <div class="dropdown-header">
+                                <div class="d-flex mb-1 align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=C16244&color=fff" alt="User" class="user-avtar wid-35">
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1 fw-bold text-dark">{{ Auth::user()->name }}</h6>
+                                        <span class="text-muted small">{{ Auth::user()->email }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                @if(Auth::user()->isAdmin())
+                                    <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                                        <i class="ti ti-layout-dashboard"></i>
+                                        <span>Panel Admin</span>
                                     </a>
-                                </li>
-                            @else
-                                <li>
-                                    <a class="dropdown-item dropdown-item-modern" href="{{ route('customer.dashboard') }}">
-                                        <i class="ti ti-user me-2"></i>
-                                        Mi Cuenta
+                                @else
+                                    <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
+                                        <i class="ti ti-layout-dashboard"></i>
+                                        <span>Mi Cuenta</span>
                                     </a>
-                                </li>
-                            @endif
-                            <li><hr class="dropdown-divider my-2"></li>
-                            <li>
+                                @endif
+                                
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="dropdown-item dropdown-item-modern text-danger">
-                                        <i class="ti ti-logout me-2"></i>
-                                        Cerrar Sesión
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="ti ti-power"></i>
+                                        <span>Cerrar Sesión</span>
                                     </button>
                                 </form>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
@@ -267,6 +275,60 @@
         .navbar {
             padding: 1rem 0;
         }
+    }
+
+    /* Backend-style Dropdown Styles */
+    .dropdown-user-profile .dropdown-header {
+        padding: 16px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        border-radius: 12px 12px 0 0;
+    }
+    .dropdown-user-profile .nav-tabs {
+        border-bottom: 1px solid #e9ecef;
+        padding: 0 16px;
+    }
+    .dropdown-user-profile .nav-link {
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: #6c757d;
+        padding: 12px 16px;
+        font-weight: 500;
+    }
+    .dropdown-user-profile .nav-link.active {
+        color: var(--color-primary, #C16244);
+        border-bottom-color: var(--color-primary, #C16244);
+        background: transparent;
+    }
+    .dropdown-user-profile .tab-content {
+        padding: 16px;
+        min-width: 280px;
+    }
+    .dropdown-user-profile .dropdown-item {
+        padding: 10px 12px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #495057;
+        margin-bottom: 4px;
+    }
+    .dropdown-user-profile .dropdown-item:hover {
+        background: #f8f9fa;
+        color: var(--color-primary, #C16244);
+    }
+    .dropdown-user-profile .user-avtar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+    .dropdown-user-profile .wid-35 {
+        width: 35px;
+        height: 35px;
+    }
+    .dropdown-modern {
+        padding: 0; /* Override padding for this complex dropdown */
+        overflow: hidden;
     }
 </style>
 

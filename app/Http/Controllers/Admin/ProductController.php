@@ -248,7 +248,7 @@ class ProductController extends Controller
         };
 
         if ($product->status === 'active' && $product->stock <= 0) {
-            $statusBadge .= '<span class="badge bg-danger mt-1 f-12"><i class="ti-exclamation-triangle me-1"></i> Sin Stock</span>';
+            $statusBadge .= '<span class="badge bg-danger mt-1 f-12"><i class="ti ti-alert-triangle me-1"></i> Sin Stock</span>';
         }
 
         // Acciones (Updated Routes to admin.)
@@ -258,11 +258,11 @@ class ProductController extends Controller
 
         $actions = '
             <div class="d-flex gap-2 justify-content-center">
-                <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
-                <a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti-eye"></i></a>
+                <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti ti-pencil"></i></a>
+                <a href="'.$showUrl.'" class="btn btn-outline-info"><i class="ti ti-eye"></i></a>
                 <button type="button" class="btn btn-outline-danger delete-product-btn" data-product-id="'.$product->id.'"
                     data-action-url="'.$deleteUrl.'">
-                    <i class="ti-trash"></i>
+                    <i class="ti ti-trash"></i>
                 </button>
             </div>';
 

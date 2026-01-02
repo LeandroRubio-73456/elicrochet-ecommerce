@@ -18,7 +18,7 @@
                         </ol>
                     </nav>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h1 class="mb-0 fw-bold">Finalizar Compra</h1>
+                        <h1 class="mb-0 fw-bold pe-2">Finalizar Compra</h1>
                         <span class="badge bg-light-primary text-primary border border-primary px-3 py-2 rounded-pill">
                             <i class="ti ti-shield-check me-1"></i> Checkout Seguro
                         </span>

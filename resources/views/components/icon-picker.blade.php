@@ -3,39 +3,39 @@
 @php
     $icons = [
         // Animales
-        'ti-heart',          // Para "Animales Adorables" o "Favoritos"
-        'ti-face-smile',     // Para "Animales Divertidos" o "Personajes"
-        'ti-shine',          // Para "Animales Mágicos" o "Especiales"
+        'ti ti-heart',          // Para "Animales Adorables" o "Favoritos"
+        'ti ti-mood-smile',     // Para "Animales Divertidos" (face-smile -> mood-smile in v2)
+        'ti ti-sparkles',       // Para "Animales Mágicos" (shine -> sparkles)
         
         // Personajes/Creaturas
-        'ti-crown',          // Para "Princesas", "Reyes" o "Personajes Reales"
-        'ti-music',          // Para "Músicos" o "Personajes Musicales"
+        'ti ti-crown',          // Para "Princesas", "Reyes"
+        'ti ti-music',          // Para "Músicos"
         
         // Accesorios/Decoración
-        'ti-gift',           // Para "Regalos" o "Accesorios Especiales"
-        'ti-tag',            // Para "Ofertas" o "Accesorios con Descuento"
-        'ti-star',           // Para "Destacados" o "Accesorios Premium"
-        'ti-bell',           // Para "Navidad" o "Accesorios Festivos"
+        'ti ti-gift',           // Para "Regalos"
+        'ti ti-tag',            // Para "Ofertas"
+        'ti ti-star',           // Para "Destacados"
+        'ti ti-bell',           // Para "Navidad"
         
         // Herramientas/Materiales
-        'ti-palette',        // Para "Colores" o "Mezclas de Lana"
-        'ti-cut',            // Para "Herramientas" o "Corte"
-        'ti-ruler-pencil',   // Para "Patrones" o "Diseños"
-        'ti-paint-bucket',   // Para "Tintes" o "Coloración"
+        'ti ti-palette',        // Para "Colores"
+        'ti ti-cut',            // Para "Herramientas"
+        'ti ti-ruler-2',        // Para "Patrones" (ruler-pencil -> ruler-2)
+        'ti ti-bucket',         // Para "Tintes" (paint-bucket -> bucket)
         
         // Kits/Paquetes
-        'ti-home',           // Para "Kits Hogar" o "Kits Básicos"
-        'ti-cup',            // Para "Kits Premio" o "Kits Especiales"
+        'ti ti-home',           // Para "Kits Hogar"
+        'ti ti-trophy',         // Para "Kits Premio" (cup -> trophy)
         
         // Estilos/Técnicas
-        'ti-camera',         // Para "Fotografía" o "Kits para Fotos"
-        'ti-image',          // Para "Diseños" o "Ilustraciones"
-        'ti-wand',           // Para "Mágico" o "Técnicas Avanzadas"
-        'ti-world',          // Para "Internacional" o "Estilos del Mundo"
+        'ti ti-camera',         // Para "Fotografía"
+        'ti ti-photo',          // Para "Diseños" (image -> photo)
+        'ti ti-wand',           // Para "Mágico"
+        'ti ti-world',          // Para "Internacional"
         
         // Temporalidad
-        'ti-thought',        // Para "Personalizados" o "Por Encargo"
-        'ti-pin',            // Para "Colección" o "Edición Limitada"
+        'ti ti-brain',          // Para "Personalizados" (thought -> brain)
+        'ti ti-pinned',         // Para "Colección" (pin -> pinned)
     ];
 @endphp
 

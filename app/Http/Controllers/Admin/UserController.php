@@ -183,7 +183,7 @@ class UserController extends Controller
 
         $actions = '
             <div class="d-flex gap-2 justify-content-center">
-                <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>';
+                <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti ti-pencil"></i></a>';
 
         if ($user->id !== auth()->id()) {
             $actions .= '
@@ -191,7 +191,7 @@ class UserController extends Controller
                     data-user-id="'.$user->id.'"
                     data-action-url="'.$deleteUrl.'"
                     data-user-name="'.$user->name.'">
-                    <i class="ti-trash"></i>
+                    <i class="ti ti-trash"></i>
                 </button>';
         }
 

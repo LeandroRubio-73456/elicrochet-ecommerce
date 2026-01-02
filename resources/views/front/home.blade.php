@@ -4,28 +4,28 @@
 <!-- Hero Section - Minimalista y Moderno -->
 <section class="hero-modern">
     <div class="container">
-        <div class="row align-items-center min-vh-90 py-5">
+        <div class="row align-items-center min-vh-80 py-5">
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <div class="hero-content">
                     <span class="badge-custom mb-4">
-                        <i class="ti-heart"></i>
+                        <i class="ti ti-heart"></i>
                         Hecho con amor
                     </span>
-                    <h1 class="hero-title mb-4">
+                    <h1 class="hero-title mb-2">
                         Tejidos únicos<br>
                         <span class="text-gradient">con alma artesanal</span>
                     </h1>
-                    <p class="hero-subtitle mb-5">
+                    <p class="hero-subtitle mb-4">
                         Cada pieza cuenta una historia. Descubre amigurumis y accesorios tejidos a mano con dedicación y los mejores materiales.
                     </p>
                     <div class="hero-actions">
                         <a href="#featured" class="btn-modern btn-primary">
                             Explorar colección
-                            <i class="ti-arrow-right"></i>
+                            <i class="ti ti-arrow-right"></i>
                         </a>
                         <a href="#categories" class="btn-modern btn-ghost">Ver categorías</a>
                     </div>
-                    <div class="hero-stats mt-5">
+                    <div class="hero-stats mt-4">
                         <div class="stat-item">
                             <div class="stat-number">500+</div>
                             <div class="stat-label">Clientes felices</div>
@@ -99,27 +99,32 @@
 <!-- Custom Orders CTA - Minimalista -->
 <section class="section-padding bg-soft">
     <div class="container">
-        <div class="cta-card-modern">
-            <div class="cta-content">
-                <span class="cta-badge">Pedidos personalizados</span>
-                <h2 class="cta-title">¿Tienes algo en mente?</h2>
-                <p class="cta-text">
-                    Creamos piezas únicas según tu visión. Desde diseños personalizados hasta colores específicos, hacemos realidad tus ideas.
-                </p>
-                <div class="cta-actions">
-                    <a href="{{ route('customer.custom.create') }}" class="btn-modern btn-primary">
-                        Solicitar diseño personalizado
-                    </a>
-                    <a href="{{ route('contact') }}" class="btn-modern btn-ghost">Contactar</a>
+        <div class="cta-card-modern p-5">
+            <div class="row align-items-center">
+                <div class="col-lg-2 col-md-3 text-center mb-4 mb-md-0">
+                     <img src="{{ asset('assets/images/PedidoPersonalizado.webp') }}"
+                          alt="Personalización"
+                          width="120"
+                          height="120"
+                          loading="lazy"
+                          class="img-fluid">
                 </div>
-            </div>
-            <div class="cta-image">
-                <img src="https://images.unsplash.com/photo-1618354691373-85154177d6db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=450&q=80"
-                     alt="Personalización"
-                     width="600"
-                     height="450"
-                     loading="lazy"
-                     class="img-fluid rounded shadow">
+                <div class="col-lg-10 col-md-10">
+                    <div class="cta-content text-center text-md-start">
+                        <span class="cta-badge mb-3">Pedidos personalizados</span>
+                        <h2 class="cta-title mb-3">¿Tienes algo en mente?</h2>
+                        <p class="cta-text text-black mb-4">
+                            Creamos piezas únicas según tu visión. Desde diseños personalizados hasta colores específicos, hacemos realidad tus ideas.
+                        </p>
+                        <div class="d-flex align-items-center gap-4 flex-wrap justify-content-center justify-content-md-start">
+                            <a href="{{ route('customer.custom.create') }}" class="btn-modern btn-primary">
+                                Solicitar ahora
+                                <i class="ti ti-arrow-right"></i>
+                            </a>
+                            <a href="{{ route('contact') }}" class="btn-modern btn-ghost">Contactar</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -131,21 +136,21 @@
         <div class="features-grid">
             <div class="feature-modern">
                 <div class="feature-icon">
-                    <i class="ti-check"></i>
+                    <i class="ti ti-check"></i>
                 </div>
                 <h3 class="feature-title">Calidad garantizada</h3>
                 <p class="feature-text">Materiales premium seleccionados cuidadosamente para cada pieza</p>
             </div>
             <div class="feature-modern">
                 <div class="feature-icon">
-                    <i class="ti-heart"></i>
+                    <i class="ti ti-heart"></i>
                 </div>
                 <h3 class="feature-title">Hecho con amor</h3>
                 <p class="feature-text">Cada puntada lleva dedicación y atención a los detalles</p>
             </div>
             <div class="feature-modern">
                 <div class="feature-icon">
-                    <i class="ti-truck"></i>
+                    <i class="ti ti-truck"></i>
                 </div>
                 <h3 class="feature-title">Envío seguro</h3>
                 <p class="feature-text">Empaque cuidadoso y seguimiento en cada entrega</p>

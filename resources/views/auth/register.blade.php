@@ -1,249 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
-<!-- [Head] start -->
-
+<html lang="es">
 <head>
   @include('layouts.head-page-meta', ['title' => 'Registro'])
   @include('layouts.front-head-css')
 </head>
-<!-- [Body] Start -->
 
 <body class="landing-page">
   @include('layouts.loader')
   
-  <div class="auth-main">
-    <div class="auth-wrapper v3">
-      <div class="auth-form">
-        <div class="auth-header">
-          <a href="{{ route('home') }}"><img src="{{ asset('Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;"></a>
-        </div>
-        
-        <div class="card my-5">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-end mb-4">
-              <h3 class="mb-0"><b>Crear Cuenta</b></h3>
-              <a href="{{ route('login') }}" class="link-primary">¿Ya tienes una cuenta?</a>
-            </div>
+    <div class="auth-main">
+        <div class="auth-wrapper v3 d-flex justify-content-center align-items-center min-vh-100 py-5">
+            <div class="auth-form col-12 col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <a href="{{ route('home') }}" class="d-block mb-4">
+                                <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 60px;">
+                            </a>
+                            <h3 class="mb-2"><b>Crear Cuenta</b></h3>
+                            <p class="text-muted">¿Ya tienes una cuenta? <a href="{{ route('login') }}" class="link-primary fw-bold">Inicia Sesión</a></p>
+                        </div>
             
-            <form method="POST" action="{{ route('register') }}">
-              @csrf
+                        <form method="POST" action="{{ route('register') }}">
+                            @csrf
               
-              <!-- Nombre -->
-              <div class="form-group mb-3">
-                <label for="name" class="form-label">Nombres <span class="text-danger">*</span></label>
-                <input type="text"
-                       id="name"
-                       name="name"
-                       class="form-control @error('name') is-invalid @enderror"
-                       placeholder="Tus nombres"
-                       value="{{ old('name') }}"
-                       required
-                       autofocus
-                       autocomplete="given-name">
-                @error('name')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-              </div>
+                            <div class="row">
+                                <!-- Nombre -->
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="name" class="form-label">Nombres</label>
+                                        <input type="text" id="name" name="name" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="María" value="{{ old('name') }}" required autofocus autocomplete="given-name">
+                                        @error('name')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <!-- Apellidos -->
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="lastname" class="form-label">Apellidos</label>
+                                        <input type="text" id="lastname" name="lastname" class="form-control form-control-lg @error('lastname') is-invalid @enderror" placeholder="Pérez" value="{{ old('lastname') }}" required autocomplete="family-name">
+                                        @error('lastname')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+              
+                            <!-- Email -->
+                            <div class="form-group mb-3">
+                                <label for="email" class="form-label">Correo Electrónico</label>
+                                <input type="email" id="email" name="email" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="correo@ejemplo.com" value="{{ old('email') }}" required autocomplete="username">
+                                @error('email')
+                                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+              
+                            <!-- Password -->
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <div class="input-group">
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="••••••••" required autocomplete="new-password">
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="ti ti-eye"></i>
+                                    </button>
+                                </div>
+                                <!-- Password strength indicator placeholder -->
+                                <div id="password-strength" class="mt-1 small"></div>
+                                @error('password')
+                                  <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+              
+                            <!-- Confirm Password -->
+                            <div class="form-group mb-3">
+                                <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-control-lg" placeholder="••••••••" required autocomplete="new-password">
+                            </div>
+              
+                            <!-- Términos -->
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" required>
+                                <label class="form-check-label text-muted small" for="flexCheckChecked">
+                                    Acepto los <a href="#" class="text-primary">Términos</a> y <a href="#" class="text-primary">Política de Privacidad</a>
+                                </label>
+                            </div>
+              
+                            <!-- Botón -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                    Crear Cuenta
+                                </button>
+                            </div>
+              
+                            <!-- Social Login -->
+                            <div class="position-relative text-center my-4">
+                                <hr class="border-secondary opacity-25">
+                                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">O regístrate con</span>
+                            </div>
 
-              <!-- Apellidos -->
-              <div class="form-group mb-3">
-                <label for="lastname" class="form-label">Apellidos <span class="text-danger">*</span></label>
-                <input type="text"
-                       id="lastname"
-                       name="lastname"
-                       class="form-control @error('lastname') is-invalid @enderror"
-                       placeholder="Tus apellidos"
-                       value="{{ old('lastname') }}"
-                       required
-                       autocomplete="family-name">
-                @error('lastname')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-              </div>
-              
-              <!-- Email -->
-              <div class="form-group mb-3">
-                <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
-                <input type="email"
-                       id="email"
-                       name="email"
-                       class="form-control @error('email') is-invalid @enderror"
-                       placeholder="correo@ejemplo.com"
-                       value="{{ old('email') }}"
-                       required
-                       autocomplete="username">
-                @error('email')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-              </div>
-              
-              <!-- Password -->
-              <div class="form-group mb-3">
-                <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
-                <input type="password"
-                       id="password"
-                       name="password"
-                       class="form-control @error('password') is-invalid @enderror"
-                       placeholder="••••••••"
-                       required
-                       autocomplete="new-password">
-                <small class="text-muted">Mínimo 8 caracteres</small>
-                @error('password')
-                  <div class="invalid-feedback d-block">{{ $message }}</div>
-                @enderror
-              </div>
-              
-              <!-- Confirm Password -->
-              <div class="form-group mb-3">
-                <label for="password_confirmation" class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                <input type="password"
-                       id="password_confirmation"
-                       name="password_confirmation"
-                       class="form-control"
-                       placeholder="••••••••"
-                       required
-                       autocomplete="new-password">
-              </div>
-              
-              <!-- Términos y condiciones -->
-              <p class="mt-4 text-sm text-muted">
-                Al registrarte, aceptas nuestros
-                <a href="#" class="text-primary">Términos de Servicio</a>
-                y
-                <a href="#" class="text-primary">Política de Privacidad</a>
-              </p>
-              
-              <!-- Botón de registro -->
-              <div class="d-grid mt-3">
-                <button type="submit" class="btn btn-primary">
-                  Crear Cuenta
-                </button>
-              </div>
-              
-              <!-- Separador -->
-              <div class="saprator mt-3">
-                <span>O regístrate con</span>
-              </div>
-              
-              <!-- Login social -->
-              <div class="row">
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('assets/images/authentication/google.svg') }}" alt="Google">
-                      <span class="d-none d-sm-inline-block"> Google</span>
-                    </button>
-                  </div>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="ti ti-brand-google fs-4"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="ti ti-brand-x fs-4"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="ti ti-brand-facebook fs-4"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('assets/images/authentication/twitter.svg') }}" alt="Twitter">
-                      <span class="d-none d-sm-inline-block"> Twitter</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div class="d-grid">
-                    <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                      <img src="{{ asset('assets/images/authentication/facebook.svg') }}" alt="Facebook">
-                      <span class="d-none d-sm-inline-block"> Facebook</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-            </form>
-          </div>
-        </div>
         
-        <!-- Footer -->
-        <div class="auth-footer row">
-          <div class="col my-1">
-            <p class="m-0">© {{ date('Y') }} <a href="#">{{ config('app.name', 'Laravel') }}</a></p>
-          </div>
-          <div class="col-auto my-1">
-            <ul class="list-inline footer-link mb-0">
-              <li class="list-inline-item"><a href="{{ route('home') }}">Inicio</a></li>
-              <li class="list-inline-item"><a href="#">Política de Privacidad</a></li>
-              <li class="list-inline-item"><a href="{{ route('contact') }}">Contacto</a></li>
-            </ul>
-          </div>
+                <!-- Footer -->
+                <div class="text-center mt-4 text-muted small">
+                    <p class="mb-0">© {{ date('Y') }} {{ config('app.name', 'EliCrochet') }}. Todos los derechos reservados.</p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
   
-  <!-- [ Main Content ] end -->
   @include('layouts.footer-js')
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Validación de contraseña en tiempo real
-      const passwordInput = document.getElementById('password');
+      // Toggle Password
+      const toggle = document.getElementById('togglePassword');
+      const input = document.getElementById('password');
+      if(toggle && input){
+          toggle.addEventListener('click', () => {
+              const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+              input.setAttribute('type', type);
+              toggle.querySelector('i').className = type === 'text' ? 'ti ti-eye-off' : 'ti ti-eye';
+          });
+      }
+
+      // Password Match Validation
       const confirmInput = document.getElementById('password_confirmation');
+      const validateMatch = () => {
+          if(input.value !== confirmInput.value) {
+              confirmInput.classList.add('is-invalid');
+              confirmInput.classList.remove('is-valid');
+          } else if(confirmInput.value !== '') {
+              confirmInput.classList.remove('is-invalid');
+              confirmInput.classList.add('is-valid');
+          }
+      };
+      input.addEventListener('input', validateMatch);
+      confirmInput.addEventListener('input', validateMatch);
       
-      function validatePassword() {
-        if (passwordInput.value !== confirmInput.value) {
-          confirmInput.classList.add('is-invalid');
-          confirmInput.classList.remove('is-valid');
-        } else {
-          confirmInput.classList.remove('is-invalid');
-          confirmInput.classList.add('is-valid');
-        }
-      }
-      
-      if (passwordInput && confirmInput) {
-        passwordInput.addEventListener('input', validatePassword);
-        confirmInput.addEventListener('input', validatePassword);
-      }
-      
-      // Validación de fortaleza de contraseña (opcional)
-      passwordInput.addEventListener('input', function() {
-        const password = this.value;
-        const strengthText = document.getElementById('password-strength');
-        
-        if (!strengthText) {
-          const strengthDiv = document.createElement('div');
-          strengthDiv.id = 'password-strength';
-          strengthDiv.className = 'text-sm mt-1';
-          this.parentNode.appendChild(strengthDiv);
-        }
-        
+      // Strength
+      input.addEventListener('input', function() {
+        const val = this.value;
+        const container = document.getElementById('password-strength');
         let strength = 0;
-        let message = '';
-        let color = 'text-danger';
+        if(val.length >= 8) strength++;
+        if(/[A-Z]/.test(val)) strength++;
+        if(/[0-9]/.test(val)) strength++;
+        if(/[^A-Za-z0-9]/.test(val)) strength++;
         
-        if (password.length >= 8) strength++;
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[0-9]/.test(password)) strength++;
-        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        let msg = ''; let cls = '';
+        if(val.length === 0) { msg = ''; }
+        else if(val.length < 8) { msg = 'Muy corta'; cls = 'text-danger'; }
+        else if(strength < 2) { msg = 'Débil'; cls = 'text-danger'; }
+        else if(strength === 2) { msg = 'Media'; cls = 'text-warning'; }
+        else { msg = 'Fuerte'; cls = 'text-success'; }
         
-        switch(strength) {
-          case 0:
-          case 1:
-            message = 'Contraseña débil';
-            color = 'text-danger';
-            break;
-          case 2:
-            message = 'Contraseña media';
-            color = 'text-warning';
-            break;
-          case 3:
-            message = 'Contraseña fuerte';
-            color = 'text-success';
-            break;
-          case 4:
-            message = 'Contraseña muy fuerte';
-            color = 'text-success';
-            break;
-        }
-        
-        document.getElementById('password-strength').innerHTML = 
-          `<span class="${color}">${message}</span>`;
+        container.innerHTML = `<span class="${cls}">${msg}</span>`;
       });
     });
   </script>
 </body>
-<!-- [Body] end -->
 </html>

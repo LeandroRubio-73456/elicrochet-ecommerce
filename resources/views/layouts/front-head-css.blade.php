@@ -1,18 +1,38 @@
 <!-- [LCP Optimization] Preload Logo & Hero -->
-<link rel="preload" href="{{ asset('Logo.webp') }}" as="image" fetchpriority="high">
+<link rel="preload" href="{{ asset('assets/images/Logo.webp') }}" as="image" fetchpriority="high">
+@if(Route::is('home'))
 <link rel="preload" as="image" href="{{ asset('assets/images/banner-mobile.avif') }}" media="(max-width: 450px)" fetchpriority="high">
 <link rel="preload" as="image" href="{{ asset('assets/images/banner.avif') }}" media="(min-width: 451px)" fetchpriority="high">
+@endif
 
 <!-- [Google Font] Family - REMOVED FOR PERFORMANCE -->
 
 
 
-<!-- [Preload] Critical Assets -->
-<link rel="preload" href="{{ asset('assets/css/libs/bootstrap.min.css') }}" as="style">
-<link rel="preload" href="{{ asset('css/main-modern.css') }}" as="style">
+<!-- [Preload] Tabler Icons Font -->
 <link rel="preload" href="{{ asset('assets/css/libs/fonts/tabler-icons.woff2') }}" as="font" type="font/woff2" crossorigin>
 
-<!-- [Tabler Icons] Local with font-display: swap -->
+<style>
+    @font-face {
+        font-family: 'Lexend';
+        src: url("{{ asset('assets/css/libs/fonts/Lexend-VariableFont_wght.ttf') }}") format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'tabler-icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url("{{ asset('assets/css/libs/fonts/tabler-icons.woff2') }}") format('woff2'),
+             url("{{ asset('assets/css/libs/fonts/tabler-icons.woff') }}") format('woff'),
+             url("{{ asset('assets/css/libs/fonts/tabler-icons.ttf') }}") format('truetype');
+        font-display: swap; 
+    }
+</style>
+
+<!-- [Tabler Icons] Local with font-display: block -->
 <link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}">
 
 <!-- [Bootstrap] 5.3.2 Local -->

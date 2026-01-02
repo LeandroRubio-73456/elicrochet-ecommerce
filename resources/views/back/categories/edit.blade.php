@@ -46,7 +46,7 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Estado de la Categoría</label>
                                     <div class="row g-3">
-                                        @foreach (['active' => ['Activa', 'Visible en la tienda', 'success', 'ti-eye'], 'inactive' => ['Inactiva', 'No visible en la tienda', 'warning', 'ti-power-off'], 'archived' => ['Archivada', 'Oculta del sistema', 'secondary', 'ti-archive']] as $value => [$label, $description, $color, $icon])
+                                        @foreach (['active' => ['Activa', 'Visible en la tienda', 'success', 'ti ti-eye'], 'inactive' => ['Inactiva', 'No visible en la tienda', 'warning', 'ti ti-power'], 'archived' => ['Archivada', 'Oculta del sistema', 'secondary', 'ti ti-archive']] as $value => [$label, $description, $color, $icon])
                                             <div class="col-md-6 col-lg-6">
                                                 <div class="form-check card-radio">
                                                     <input class="form-check-input" type="radio" name="status"
@@ -196,10 +196,10 @@
 
                         <div class="d-flex gap-2 justify-content-end">
                             <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">
-                                <i class="ti-x me-2"></i>Cancelar
+                                <i class="ti ti-x me-2"></i>Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti-device-floppy me-2"></i>Actualizar Categoría
+                                <i class="ti ti-device-floppy me-2"></i>Actualizar Categoría
                             </button>
                         </div>
                     </form>

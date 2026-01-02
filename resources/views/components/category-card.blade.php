@@ -2,7 +2,7 @@
 
 <a href="{{ route('category.show', $category->slug) }}" class="category-card-modern">
     <div class="category-icon">
-        <i class="{{ $category->icon ?? 'ti ti-layout-grid' }}"></i>
+        <i class="ti ti-{{ isset($category->icon) ? preg_replace('/^(ti-?|ti\s)/', '', $category->icon) : 'layout-grid' }}"></i>
     </div>
     <h3 class="category-name">{{ $category->name }}</h3>
     <p class="category-desc">{{ Str::limit($category->description, 50) }}</p>

@@ -30,7 +30,11 @@ class CategoryController extends Controller
             // 5. Transformación
             $data = $categories->map(function ($category) {
                 // Icono
-                $iconHtml = '<i class="'.($category->icon ?? 'ti-folder').' text-primary f-14 bg-light-primary p-2 rounded"></i>';
+                $iconClass = $category->icon ?? 'ti ti-folder';
+                if (!str_contains($iconClass, 'ti ')) {
+                    $iconClass = str_replace('ti-', 'ti ti-', $iconClass);
+                }
+                $iconHtml = '<i class="'.$iconClass.' text-primary f-14 bg-light-primary p-2 rounded"></i>';
 
                 // Productos link
                 $productsLink = $category->products_count > 0
@@ -51,12 +55,12 @@ class CategoryController extends Controller
 
                 $actions = '
                     <div class="d-flex gap-2 justify-content-center">
-                        <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti-pencil"></i></a>
+                        <a href="'.$editUrl.'" class="btn btn-outline-primary"><i class="ti ti-pencil"></i></a>
                         <button type="button" class="btn btn-outline-danger delete-category-btn"
                             data-category-id="'.$category->id.'"
                             data-action-url="'.$deleteUrl.'"
                             data-category-name="'.$category->name.'">
-                            <i class="ti-trash"></i>
+                            <i class="ti ti-trash"></i>
                         </button>
                     </div>';
 

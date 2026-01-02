@@ -49,69 +49,22 @@
         <div class="row g-4">
             
             <!-- Sidebar Filters -->
-            <aside class="col-lg-3">
-                <form action="{{ isset($category) ? route('category.show', $category->slug) : route('shop') }}" method="GET" id="shopFilters">
+            <!-- Mobile Filter Button -->
+            <div class="col-12 d-lg-none mb-3">
+                <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#shopFiltersOffcanvas" aria-controls="shopFiltersOffcanvas">
+                    <i class="ti ti-filter"></i> Filtrar Productos
+                </button>
+            </div>
+
+            <!-- Sidebar Filters (Desktop) -->
+            <aside class="col-lg-3 d-none d-lg-block">
+                <form action="{{ isset($category) ? route('category.show', $category->slug) : route('shop') }}" method="GET" id="shopFiltersDesktop">
                     <!-- Maintain sort if set -->
                     @if(request('sort'))
                         <input type="hidden" name="sort" value="{{ request('sort') }}">
                     @endif
 
-                    <div class="filters-wrapper">
-                        
-                        <!-- Categories Filter -->
-                        <div class="filter-card">
-                            <h3 class="filter-title">Categorías</h3>
-                            <div class="filter-content">
-                                <a href="{{ route('shop') }}"
-                                   class="category-item {{ !isset($category) ? 'active' : '' }}">
-                                    <span class="category-name">Ver Todo</span>
-                                    <i class="ti ti-layers-union"></i>
-                                </a>
-                                @forelse($categories as $cat)
-                                <a href="{{ route('category.show', $cat->slug) }}"
-                                   class="category-item {{ (isset($category) && $category->id == $cat->id) ? 'active' : '' }}">
-                                    <span class="category-name">{{ $cat->name }}</span>
-                                    <span class="category-count">{{ $cat->products_count }}</span>
-                                </a>
-                                @empty
-                                <div class="text-muted small text-center py-3">No hay categorías</div>
-                                @endforelse
-                            </div>
-                        </div>
-
-                        <!-- Price Range Filter -->
-                        <div class="filter-card">
-                            <h3 class="filter-title">Filtrar por Precio</h3>
-                            <div class="filter-content p-3">
-                                <div class="d-flex align-items-center gap-2 mb-3">
-                                    <div class="form-floating flex-grow-1">
-                                        <input type="number" class="form-control form-control-sm" id="min_price" name="min_price" placeholder="Min" value="{{ request('min_price') }}">
-                                        <label for="min_price">Mín</label>
-                                    </div>
-                                    <span class="text-muted">-</span>
-                                    <div class="form-floating flex-grow-1">
-                                        <input type="number" class="form-control form-control-sm" id="max_price" name="max_price" placeholder="Max" value="{{ request('max_price') }}">
-                                        <label for="max_price">Máx</label>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 btn-sm">Aplicar Filtro</button>
-                            </div>
-                        </div>
-
-                        <!-- Custom Order CTA -->
-                        <div class="cta-card-mini mt-2">
-                            <div class="cta-icon">
-                                <i class="ti-wand fs-4"></i>
-                            </div>
-                            <h4 class="cta-title">¿Buscas algo único?</h4>
-                            <p class="cta-text">Creamos diseños exclusivos a tu medida</p>
-                            <a href="{{ route('customer.custom.create') }}" class="btn-cta-mini">
-                                Solicitar ahora
-                                <i class="ti ti-arrow-right"></i>
-                            </a>
-                        </div>
-
-                    </div>
+                    @include('front.partials.shop-filters')
                 </form>
             </aside>
 
@@ -126,7 +79,7 @@
                         </span>
                     </div>
                     <div class="toolbar-actions">
-                        <select class="sort-select" name="sort" onchange="document.getElementById('shopFilters').submit();">
+                        <select class="sort-select" name="sort" onchange="submitShopFilters(this.value)">
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Más Recientes</option>
                             <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
                             <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
@@ -166,7 +119,51 @@
     </div>
 </section>
 
+<!-- Offcanvas Filters (Mobile) - Moved outside container for better z-index handling -->
+<div class="offcanvas offcanvas-start border-0" tabindex="-1" id="shopFiltersOffcanvas" aria-labelledby="shopFiltersOffcanvasLabel" style="z-index: 1050;">
+    <div class="offcanvas-header bg-light border-bottom">
+        <h5 class="offcanvas-title fw-bold" id="shopFiltersOffcanvasLabel">
+            <i class="ti ti-filter me-2 text-primary"></i>Filtros
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="p-4">
+            <form action="{{ isset($category) ? route('category.show', $category->slug) : route('shop') }}" method="GET" id="shopFiltersMobile">
+                <!-- Maintain sort if set -->
+                @if(request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                @endif
+
+                @include('front.partials.shop-filters')
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
-@push('css')
+@push('scripts')
+<script>
+    function submitShopFilters(sortValue) {
+        // Determine which form is currently applicable (desktop or mobile)
+        const isMobile = window.innerWidth < 992; 
+        const formId = isMobile ? 'shopFiltersMobile' : 'shopFiltersDesktop';
+        const form = document.getElementById(formId);
+        
+        if (form) {
+            // Ensure the sort input exists in the form
+            let sortInput = form.querySelector('input[name="sort"]');
+            if (!sortInput) {
+                sortInput = document.createElement('input');
+                sortInput.type = 'hidden';
+                sortInput.name = 'sort';
+                form.appendChild(sortInput);
+            }
+            sortInput.value = sortValue;
+            
+            form.submit();
+        }
+    }
+</script>
 @endpush

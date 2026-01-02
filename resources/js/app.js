@@ -13,8 +13,17 @@ import pdfmake from 'pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 // Configurar JSZip y pdfMake para DataTables Buttons
+// Configurar JSZip y pdfMake para DataTables Buttons
 window.JSZip = jszip;
-pdfmake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake vfs fix
+// When utilizing Vite, imports are modules. 'pdfmake/build/vfs_fonts' often assigns to global pdfMake.vfs
+if (pdfFonts && pdfFonts.pdfMake && pdfFonts.pdfMake.vfs) {
+    pdfmake.vfs = pdfFonts.pdfMake.vfs;
+} else if (window.pdfMake && window.pdfMake.vfs) {
+    pdfmake.vfs = window.pdfMake.vfs;
+} else if (pdfFonts) {
+    pdfmake.vfs = pdfFonts;
+}
 window.pdfMake = pdfmake;
 
 import 'datatables.net-buttons/js/buttons.html5.js';

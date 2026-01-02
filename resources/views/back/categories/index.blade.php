@@ -14,7 +14,7 @@
             <h4 class="m-0">Lista de Categorías</h4>
             <a href="{{ route('admin.categories.create') }}">
                 <button type="button" class="btn btn-primary d-flex align-items-center gap-2">
-                    <i class="ti-plus"></i>
+                    <i class="ti ti-plus"></i>
                     Agregar Categoría
                 </button>
             </a>
@@ -35,7 +35,7 @@
                                     <div class="d-flex align-items-center justify-content-center gap-2">
                                         <span>Estado</span>
                                         <button class="dropdown border-0 bg-transparent p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ti-filter text-muted cursor-pointer"></i>
+                                            <i class="ti ti-filter text-muted cursor-pointer"></i>
                                         </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="">Todos</a></li>
@@ -87,19 +87,19 @@
                 buttons: [
                     {
                         extend: 'collection',
-                        text: '<i class="ti-download me-1"></i> Exportar',
+                        text: '<i class="ti ti-download me-1"></i> Exportar',
                         className: 'btn btn-primary btn-sm',
                         buttons: [
                             {
                                 extend: 'excelHtml5',
-                                text: '<i class="ti-file-spreadsheet me-1"></i> Excel',
+                                text: '<i class="ti ti-file-spreadsheet me-1"></i> Excel',
                                 exportOptions: {
                                     columns: [0, 2, 3, 4, 5]
                                 }
                             },
                             {
                                 extend: 'pdfHtml5',
-                                text: '<i class="ti-file-text me-1"></i> PDF',
+                                text: '<i class="ti ti-file-text me-1"></i> PDF',
                                 exportOptions: {
                                     columns: [0, 2, 3, 4, 5]
                                 }
@@ -126,7 +126,7 @@
                     title: '¿Estás seguro?',
                     html: `¿Eliminar la categoría <strong>${categoryName}</strong>?<br><br>
                            <small class="text-danger">
-                               <i class="ti-alert-circle me-1"></i>
+                               <i class="ti ti-alert-circle me-1"></i>
                                Esta acción eliminará la categoría PERMANENTEMENTE.
                            </small>`,
                     icon: 'warning',

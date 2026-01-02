@@ -1,33 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- [Head] start -->
-
 <head>
     @include('layouts.head-page-meta', ['title' => 'Iniciar Sesión'])
     @include('layouts.front-head-css')
 </head>
-<!-- [Head] end -->
-<!-- [Body] Start -->
 
 <body class="landing-page">
     @include('layouts.loader')
     
     <div class="auth-main">
-        <div class="auth-wrapper v3">
-            <div class="auth-form">
-                <div class="auth-header">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ asset('Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;">
-                    </a>
-                </div>
-                
-                <div class="card my-5">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-end mb-4">
-                            <h3 class="mb-0"><b>Iniciar Sesión</b></h3>
-                            <a href="{{ route('register') }}" class="link-primary">
-                                ¿No tienes una cuenta?
+        <div class="auth-wrapper v3 d-flex justify-content-center align-items-center min-vh-100 py-5">
+            <div class="auth-form col-12 col-md-6 col-lg-4">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <a href="{{ route('home') }}" class="d-block mb-4">
+                                <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 60px;">
                             </a>
+                            <h3 class="kb-2"><b>Bienvenido de nuevo</b></h3>
+                            <p class="text-muted">¿No tienes una cuenta? <a href="{{ route('register') }}" class="link-primary fw-bold">Regístrate</a></p>
                         </div>
                         
                         <form method="POST" action="{{ route('login') }}">
@@ -35,17 +26,8 @@
 
                             <!-- Email -->
                             <div class="form-group mb-3">
-                                <label for="email" class="form-label">
-                                    Correo Electrónico <span class="text-danger">*</span>
-                                </label>
-                                <input type="email"
-                                       class="form-control @error('email') is-invalid @enderror"
-                                       id="email"
-                                       name="email"
-                                       placeholder="correo@ejemplo.com"
-                                       value="{{ old('email') }}"
-                                       required
-                                       autofocus>
+                                <label for="email" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email" placeholder="correo@ejemplo.com" value="{{ old('email') }}" required autofocus autocomplete="username">
                                 @error('email')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -53,16 +35,9 @@
 
                             <!-- Password -->
                             <div class="form-group mb-3">
-                                <label for="password" class="form-label">
-                                    Contraseña <span class="text-danger">*</span>
-                                </label>
+                                <label for="password" class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password"
-                                           class="form-control @error('password') is-invalid @enderror"
-                                           id="password"
-                                           name="password"
-                                           placeholder="••••••••" 
-                                           required>
+                                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="ti ti-eye"></i>
                                     </button>
@@ -72,180 +47,66 @@
                                 @enderror
                             </div>
 
-                            <!-- Remember me & Forgot password -->
-                            <div class="d-flex mt-1 justify-content-between align-items-center">
+                            <!-- Remember & Forgot -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
                                 <div class="form-check">
-                                    <input class="form-check-input input-primary"
-                                           type="checkbox"
-                                           id="remember"
-                                           name="remember"
-                                           {{ old('remember') ? 'checked' : '' }}>
-                                    <label class="form-check-label text-muted" for="remember">
-                                        Mantener sesión iniciada
-                                    </label>
+                                    <input class="form-check-input" type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <label class="form-check-label text-muted" for="remember">Recuérdame</label>
                                 </div>
-                                <a href="{{ route('password.request') }}" class="text-primary">
-                                    ¿Olvidaste tu contraseña?
-                                </a>
+                                <a href="{{ route('password.request') }}" class="text-primary small fw-bold">¿Olvidaste tu contraseña?</a>
                             </div>
 
-                            <!-- Submit button -->
-                            <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="ti ti-login me-2"></i> Iniciar Sesión
+                            <!-- Submit -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                    Iniciar Sesión
                                 </button>
                             </div>
 
-                            <!-- Separator -->
-                            <div class="saprator mt-3">
-                                <span>O inicia sesión con</span>
+                            <!-- Social Login -->
+                            <div class="position-relative text-center my-4">
+                                <hr class="border-secondary opacity-25">
+                                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">O inicia con</span>
                             </div>
 
-                            <!-- Social login -->
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="d-grid">
-                                        <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                                            <img src="{{ asset('assets/images/authentication/google.svg') }}" alt="Google">
-                                            <span class="d-none d-sm-inline-block"> Google</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="d-grid">
-                                        <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                                            <img src="{{ asset('assets/images/authentication/twitter.svg') }}" alt="Twitter">
-                                            <span class="d-none d-sm-inline-block"> Twitter</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="d-grid">
-                                        <button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-                                            <img src="{{ asset('assets/images/authentication/facebook.svg') }}" alt="Facebook">
-                                            <span class="d-none d-sm-inline-block"> Facebook</span>
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="ti ti-brand-google fs-4"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="ti ti-brand-x fs-4"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="ti ti-brand-facebook fs-4"></i>
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
                 
                 <!-- Footer -->
-                <div class="auth-footer row">
-                    <div class="col my-1">
-                        <p class="m-0">
-                            Copyright © {{ date('Y') }} 
-                            <a href="#">{{ config('app.name', 'Laravel') }}</a>
-                        </p>
-                    </div>
-                    <div class="col-auto my-1">
-                        <ul class="list-inline footer-link mb-0">
-                            <li class="list-inline-item"><a href="{{ route('home') }}">Inicio</a></li>
-                            <li class="list-inline-item"><a href="#">Política de Privacidad</a></li>
-                            <li class="list-inline-item"><a href="{{ route('contact') }}">Contacto</a></li>
-                        </ul>
-                    </div>
+                <div class="text-center mt-4 text-muted small">
+                    <p class="mb-0">© {{ date('Y') }} {{ config('app.name', 'EliCrochet') }}. Todos los derechos reservados.</p>
                 </div>
             </div>
         </div>
     </div>
-    <!-- [ Main Content ] end -->
     
     @include('layouts.footer-js')
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar/ocultar contraseña
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('password');
-            
-            if (togglePassword && passwordInput) {
-                togglePassword.addEventListener('click', function() {
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    
-                    // Cambiar ícono
-                    const icon = this.querySelector('i');
-                    if (type === 'text') {
-                        icon.classList.remove('ti-eye');
-                        icon.classList.add('ti-eye-off');
-                        this.setAttribute('aria-label', 'Ocultar contraseña');
-                    } else {
-                        icon.classList.remove('ti-eye-off');
-                        icon.classList.add('ti-eye');
-                        this.setAttribute('aria-label', 'Mostrar contraseña');
-                    }
+            // Toggle Password
+            const toggle = document.getElementById('togglePassword');
+            const input = document.getElementById('password');
+            if(toggle && input){
+                toggle.addEventListener('click', () => {
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    toggle.querySelector('i').className = type === 'text' ? 'ti ti-eye-off' : 'ti ti-eye';
                 });
             }
-            
-            // Validación de formulario en tiempo real
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            
-            function validateEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
-            
-            if (emailInput) {
-                emailInput.addEventListener('blur', function() {
-                    if (this.value && !validateEmail(this.value)) {
-                        this.classList.add('is-invalid');
-                        this.classList.remove('is-valid');
-                    } else if (this.value) {
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
-                    }
-                });
-            }
-            
-            if (passwordInput) {
-                passwordInput.addEventListener('input', function() {
-                    if (this.value.length >= 8) {
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
-                    } else if (this.value.length > 0) {
-                        this.classList.add('is-invalid');
-                        this.classList.remove('is-valid');
-                    }
-                });
-            }
-            
-            // Mostrar mensajes de error de Laravel como toast
-            @if ($errors->any())
-                setTimeout(function() {
-                    @foreach ($errors->all() as $error)
-                        const toast = document.createElement('div');
-                        toast.className = 'toast align-items-center text-bg-danger border-0 position-fixed top-0 end-0 m-3';
-                        toast.setAttribute('role', 'alert');
-                        toast.setAttribute('aria-live', 'assertive');
-                        toast.setAttribute('aria-atomic', 'true');
-                        
-                        toast.innerHTML = `
-                            <div class="d-flex">
-                                <div class="toast-body">
-                                    <i class="ti ti-alert-circle me-2"></i>
-                                    {{ $error }}
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                            </div>
-                        `;
-                        
-                        document.body.appendChild(toast);
-                        const bsToast = new bootstrap.Toast(toast);
-                        bsToast.show();
-                        
-                        // Eliminar toast después de 5 segundos
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 5000);
-                    @endforeach
-                }, 500);
-            @endif
         });
     </script>
 </body>
-<!-- [Body] end -->
 </html>

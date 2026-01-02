@@ -44,12 +44,12 @@
                             <td>
                                 @php
                                     $badgeClass = match($order->status) {
-                                        'paid', 'completed', 'shipped' => 'bg-success',
-                                        'pending_payment', 'quotation' => 'bg-warning text-dark',
-                                        'working', 'processing' => 'bg-info',
-                                        'cancelled' => 'bg-danger',
-                                        'ready_to_ship' => 'bg-primary',
-                                        default => 'bg-secondary'
+                                        'paid', 'completed', 'shipped' => 'bg-light-success text-success',
+                                        'pending_payment', 'quotation' => 'bg-light-warning text-warning',
+                                        'working', 'processing' => 'bg-light-info text-info',
+                                        'cancelled' => 'bg-light-danger text-danger',
+                                        'ready_to_ship' => 'bg-light-primary text-primary',
+                                        default => 'bg-light-secondary text-secondary'
                                     };
                                     
                                     $statusLabel = match($order->status) {

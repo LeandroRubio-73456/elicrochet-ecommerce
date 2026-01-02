@@ -61,10 +61,10 @@
                                                 default => 'text-primary'
                                             };
                                             $icon = match($order->status) {
-                                                 'paid', 'completed', 'shipped' => 'ti-check',
-                                                 'pending_payment', 'quotation' => 'ti-clock',
-                                                 'cancelled' => 'ti-x',
-                                                 default => 'ti-info-circle'
+                                                 'paid', 'completed', 'shipped' => 'check',
+                                                 'pending_payment', 'quotation' => 'clock',
+                                                 'cancelled' => 'x',
+                                                 default => 'info-circle'
                                             };
                                         @endphp
                                         <span class="d-block"><i class="ti ti-{{ $icon }} {{ $badgeClass }} f-10 m-r-5"></i> {{ ucfirst($order->status) }}</span>

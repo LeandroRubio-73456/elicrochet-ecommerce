@@ -4,12 +4,12 @@
 <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}" defer></script>
 <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
 <script src="{{ asset('assets/js/pcoded.js') }}"></script>
-<script src="{{ asset('assets/js/plugins/feather.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
 
 <!-- jQuery and DataTables -->
-<!-- jQuery and DataTables -->
-<script src="{{ asset('assets/js/libs/jquery-3.7.1.min.js') }}" defer></script>
-<script src="{{ asset('assets/js/libs/jquery.dataTables.min.js') }}" defer></script>
+<script src="{{ asset('assets/js/libs/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins/dataTables.bootstrap5.min.js') }}"></script>
 
 <!-- SweetAlert2 -->
 <script src="{{ asset('assets/js/libs/sweetalert2.all.min.js') }}"></script>
