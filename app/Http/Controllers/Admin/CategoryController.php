@@ -31,7 +31,7 @@ class CategoryController extends Controller
             $data = $categories->map(function ($category) {
                 // Icono
                 $iconClass = $category->icon ?? 'ti ti-folder';
-                if (!str_contains($iconClass, 'ti ')) {
+                if (! str_contains($iconClass, 'ti ')) {
                     $iconClass = str_replace('ti-', 'ti ti-', $iconClass);
                 }
                 $iconHtml = '<i class="'.$iconClass.' text-primary f-14 bg-light-primary p-2 rounded"></i>';
