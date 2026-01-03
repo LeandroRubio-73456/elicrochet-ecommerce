@@ -12,7 +12,8 @@ class HomeController extends Controller
     {
         // 1. Productos Destacados
         // Solo trae los que tienen is_featured = 1 (true)
-        $featuredProducts = Product::where('is_featured', true)
+        $featuredProducts = Product::with('images')
+            ->where('is_featured', true)
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get();
@@ -38,7 +39,7 @@ class HomeController extends Controller
             ->get();
 
         // 2. Query base de productos
-        $query = Product::where('status', 'active');
+        $query = Product::with('images')->where('status', 'active');
 
         // 2.1 Filtro de Precios
         if ($request->filled('min_price')) {
