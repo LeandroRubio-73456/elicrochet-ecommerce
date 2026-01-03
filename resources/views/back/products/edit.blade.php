@@ -91,7 +91,7 @@
                                 <div class="mb-3">
                                     <span class="form-label fw-bold d-block mb-2">Estado</span>
                                     <div class="row g-2">
-                                        @foreach (['draft' => ['Borrador','warning','pencil'], 'active' => ['Activo','success','eye'], 'discontinued' => ['Descontinuado','secondary','na'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
+                                        @foreach (['draft' => ['Borrador','warning','pencil'], 'active' => ['Activo','success','eye'], 'discontinued' => ['Descontinuado','secondary','circle-off'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
                                             <div class="col-6">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="status" id="status_{{ $val }}" value="{{ $val }}" {{ old('status', $product->status) == $val ? 'checked' : '' }}>

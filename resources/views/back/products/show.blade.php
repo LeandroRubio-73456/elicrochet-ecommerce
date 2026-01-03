@@ -194,6 +194,11 @@
                                         href="#metadata-content" role="tab"
                                         aria-controls="metadata-content" aria-selected="false">Metadatos</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="reviews-tab" data-bs-toggle="tab"
+                                        href="#reviews-content" role="tab"
+                                        aria-controls="reviews-content" aria-selected="false">Reseñas</a>
+                                </li>
                             </ul>
                         </div>
                         <div class="card-body">
@@ -314,6 +319,64 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+
+                                <!-- Reseñas -->
+                                <div class="tab-pane" id="reviews-content" role="tabpanel" aria-labelledby="reviews-tab">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            @if($product->reviews->count() > 0)
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover align-middle">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Usuario</th>
+                                                                <th>Puntuación</th>
+                                                                <th>Comentario</th>
+                                                                <th>Fecha</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($product->reviews as $review)
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="d-flex align-items-center">
+                                                                            <div class="avatar avatar-sm bg-light-primary text-primary me-2 rounded-circle fw-bold">
+                                                                                {{ strtoupper(substr($review->user->name, 0, 2)) }}
+                                                                            </div>
+                                                                            <div>
+                                                                                <h6 class="mb-0">{{ $review->user->name }}</h6>
+                                                                                <small class="text-muted">{{ $review->user->email }}</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="text-warning">
+                                                                            @for($i = 1; $i <= 5; $i++)
+                                                                                <i class="ti ti-star{{ $i <= $review->rating ? '-filled' : '' }}"></i>
+                                                                            @endfor
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if($review->title)
+                                                                            <h6 class="mb-1">{{ $review->title }}</h6>
+                                                                        @endif
+                                                                        <p class="mb-0 text-muted small">{{ Str::limit($review->comment, 100) }}</p>
+                                                                    </td>
+                                                                    <td>{{ $review->created_at->format('d/m/Y') }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            @else
+                                                <div class="text-center py-5">
+                                                    <i class="ti ti-message-off fs-1 text-muted mb-3"></i>
+                                                    <p class="text-muted">No hay reseñas disponibles para este producto.</p>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>

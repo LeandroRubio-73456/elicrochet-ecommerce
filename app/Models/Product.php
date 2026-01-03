@@ -55,14 +55,14 @@ class Product extends Model
             'draft' => ['warning', 'Borrador', 'ti-edit'],
             'active' => ['success', 'Activo', 'ti-eye'],
             'out_of_stock' => ['danger', 'Agotado', 'ti-box'],
-            'discontinued' => ['secondary', 'Descontinuado', 'ti-na'],
+            'discontinued' => ['secondary', 'Descontinuado', 'ti-circle-off'],
             'archived' => ['dark', 'Archivado', 'ti-archive'],
         ];
 
         [$color, $text, $icon] = $badges[$this->status] ?? ['secondary', 'Desconocido', 'fa-question'];
 
         return sprintf(
-            '<span class="f-12 badge bg-light-%s"><i class="%s me-1"></i> %s</span>',
+            '<span class="f-12 badge bg-light-%s"><i class="ti %s me-1"></i> %s</span>',
             $color,
             $icon,
             $text
