@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/assets/images/Logo.webp" width="100%" alt="EliCrochet Logo">
+  <img src="public/assets/images/Logo.webp" width="25%" alt="EliCrochet Logo">
 </p>
 
 <p align="center">
@@ -9,6 +9,10 @@
 </p>
 
 # EliCrochet Ecommerce
+
+<p align="left">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200" alt="Laravel Logo">
+</p>
 
 Este es un proyecto de comercio electrónico desarrollado con **Laravel**, diseñado para la venta y gestión de productos de crochet. El sistema incluye gestión de catálogo, carrito de compras, pedidos y un panel administrativo completo.
 
