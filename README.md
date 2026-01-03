@@ -25,7 +25,7 @@
 
 ---
 
-## 📖 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Descripción](#-descripción)
 - [Características Principales](#-características-principales)
@@ -42,7 +42,7 @@
 
 ---
 
-## 📝 Descripción
+## Descripción
 
 **EliCrochet Ecommerce** es una plataforma de comercio electrónico desarrollada con **Laravel 12**, especializada en la venta y gestión de productos artesanales de crochet. El sistema ofrece una experiencia completa tanto para clientes como para administradores, incluyendo:
 
