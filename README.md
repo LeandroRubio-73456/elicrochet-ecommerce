@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/screenshots/home.png" width="100%" alt="EliCrochet Ecommerce Banner">
+  <img src="public/assets/images/logo.png" width="100%" alt="EliCrochet Ecommerce Banner">
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@ Este proyecto forma parte del trabajo final de la asignatura **Calidad de Softwa
 
 | Vista Cliente (Catálogo) | Vista Administración |
 |:---:|:---:|
-| <img src="public/screenshots/home.png" width="400" alt="Home"> | <img src="public/screenshots/admin.png" width="400" alt="Admin Dashboard"> |
+| <img src="public/screenshots/home.jpg" width="400" alt="Home"> | <img src="public/screenshots/admin.jpg" width="400" alt="Admin Dashboard"> |
 
 *(Nota: Las imágenes se encuentran en la carpeta `public/screenshots`)*
 
