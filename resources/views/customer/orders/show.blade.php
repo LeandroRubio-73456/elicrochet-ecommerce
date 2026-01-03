@@ -13,7 +13,7 @@
             <!-- Actions -->
             <div class="d-flex gap-2">
                 @if($order->canTransitionTo('cancelled'))
-                    <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" onsubmit="return confirm('¿Estás seguro de cancelar este pedido?');">
+                    <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" onsubmit="confirmOrderCancellation(event)">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger">
                             <i class="ti ti-x me-1"></i> Cancelar Pedido
@@ -21,8 +21,8 @@
                     </form>
                 @endif
 
-                @if($order->canTransitionTo('completed'))
-                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" onsubmit="return confirm('¿Confirmas que has recibido el pedido satisfactoriamente?');">
+                @if($order->status === 'shipped')
+                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" onsubmit="confirmOrderReceipt(event)">
                         @csrf
                         <button type="submit" class="btn btn-success text-white">
                             <i class="ti ti-check me-1"></i> Confirmar Recepción
@@ -68,6 +68,22 @@
                                                     <h6 class="mb-0">{{ $item->product->name }}</h6>
                                                     @if($item->product->category)
                                                         <small class="text-muted">{{ $item->product->category->name }}</small>
+                                                    @endif
+                                                    
+                                                    @if($order->status === 'completed')
+                                                        @if(!auth()->user()->hasReviewed($item->product))
+                                                            <div class="mt-1">
+                                                                <a href="{{ route('product.show', $item->product->slug) }}#reviews-form" class="btn btn-sm btn-outline-primary py-0 px-2 small f-12">
+                                                                    <i class="ti ti-star me-1"></i>Opinar
+                                                                </a>
+                                                            </div>
+                                                        @else
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-success-subtle text-success small f-12">
+                                                                    <i class="ti ti-check me-1"></i>Opinado
+                                                                </span>
+                                                            </div>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </div>
@@ -192,4 +208,47 @@
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    function confirmOrderReceipt(event) {
+        event.preventDefault();
+        const form = event.target;
+        
+        Swal.fire({
+            title: '¿Confirmar Recepción?',
+            text: "¿Confirmas que has recibido el pedido satisfactoriamente?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+
+    function confirmOrderCancellation(event) {
+        event.preventDefault();
+        const form = event.target;
+        
+        Swal.fire({
+            title: '¿Cancelar Pedido?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No, mantener'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 @endsection

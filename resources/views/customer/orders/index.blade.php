@@ -70,6 +70,12 @@
                                 <a href="{{ route('customer.orders.show', $order) }}" class="btn btn-sm btn-outline-secondary">
                                     Ver Detalle
                                 </a>
+                                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" class="d-inline-block ms-1" onsubmit="confirmOrderReceipt(event)">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-success text-white" title="Confirmar Recepción">
+                                            <i class="ti ti-check"></i>
+                                        </button>
+                                    </form>
                             </td>
                         </tr>
                     @empty
@@ -91,4 +97,27 @@
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    function confirmOrderReceipt(event) {
+        event.preventDefault();
+        const form = event.target;
+        
+        Swal.fire({
+            title: '¿Confirmar Recepción?',
+            text: "¿Confirmas que has recibido el pedido satisfactoriamente?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 @endsection

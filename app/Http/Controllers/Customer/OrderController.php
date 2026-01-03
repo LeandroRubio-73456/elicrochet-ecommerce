@@ -43,9 +43,17 @@ class OrderController extends Controller
         }
 
         if ($order->canTransitionTo(Order::STATUS_CANCELLED)) {
+            // Restore stock if order was PAID or READY TO SHIP or WORKING
+            if (in_array($order->status, [Order::STATUS_PAID, Order::STATUS_WORKING, Order::STATUS_READY_TO_SHIP])) {
+                foreach ($order->items as $item) {
+                     if ($item->product_id && $item->product) {
+                         $item->product->increment('stock', $item->quantity);
+                     }
+                }
+            }
+
             $order->status = Order::STATUS_CANCELLED;
             $order->save();
-            // Optional: Restore stock logic here if needed (omitted for now)
 
             return redirect()->back()->with('success', 'Orden cancelada exitosamente.');
         }
@@ -62,14 +70,15 @@ class OrderController extends Controller
             abort(403);
         }
 
-        if ($order->canTransitionTo(Order::STATUS_COMPLETED)) {
+        // Fix: Explicitly check for STATUS_SHIPPED to allow confirmation even if canTransitionTo fails (e.g. type mismatch)
+        if ($order->status === Order::STATUS_SHIPPED || $order->canTransitionTo(Order::STATUS_COMPLETED)) {
             $order->status = Order::STATUS_COMPLETED;
             $order->save();
 
             return redirect()->back()->with('success', 'Recepción confirmada. ¡Gracias por tu compra!');
         }
 
-        return redirect()->back()->with('error', 'No se puede confirmar la orden antes de que sea enviada.');
+        return redirect()->back()->with('error', 'No se puede confirmar la orden. Estado actual: ' . $order->status);
     }
 
     // --- Custom Order Logic ---

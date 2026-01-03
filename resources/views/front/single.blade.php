@@ -79,13 +79,17 @@
                     <!-- Rating -->
                     <div class="product-rating">
                         <div class="stars">
-                            <i class="ti ti-star-filled text-warning"></i>
-                            <i class="ti ti-star-filled text-warning"></i>
-                            <i class="ti ti-star-filled text-warning"></i>
-                            <i class="ti ti-star-filled text-warning"></i>
-                            <i class="ti ti-star-half-filled text-warning"></i>
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= round($product->average_rating))
+                                    <i class="ti ti-star-filled text-warning"></i>
+                                @elseif($i - 0.5 == round($product->average_rating))
+                                    <i class="ti ti-star-half-filled text-warning"></i>
+                                @else
+                                    <i class="ti ti-star text-muted"></i>
+                                @endif
+                            @endfor
                         </div>
-                        <span class="rating-text"><strong>4.8</strong> (24 opiniones)</span>
+                        <span class="rating-text"><strong>{{ number_format($product->average_rating, 1) }}</strong> ({{ $product->total_reviews }} opiniones)</span>
                     </div>
                     
                     <!-- Price -->
@@ -138,7 +142,7 @@
                                 </div>
 
                                 <!-- Add to Cart Button -->
-                                <button type="submit" class="btn-add-to-cart">
+                                <button type="submit" class="btn btn-primary btn-add-to-cart">
                                     <i class="ti ti-shopping-cart-plus me-2"></i>
                                     Añadir al carrito
                                 </button>
@@ -249,70 +253,147 @@
 
                 <!-- Reviews Tab -->
                 <div class="tab-pane fade" id="reviews">
-                    <div class="reviews-notice">
-                        <i class="ti ti-message-circle me-2"></i>
-                        <span>Las opiniones mostradas son un ejemplo visual. Próximamente integración real.</span>
+                    <!-- Write Review Section -->
+                    <div class="write-review-section mb-5">
+                        @auth
+                            @if(auth()->user()->hasReviewed($product))
+                                <div class="alert alert-success d-flex align-items-center mb-4">
+                                    <i class="ti ti-circle-check fs-3 me-3"></i>
+                                    <div>
+                                        <strong>¡Gracias por tu opinión!</strong>
+                                        <p class="mb-0">Ya has compartido una reseña para este producto.</p>
+                                    </div>
+                                </div>
+                            @elseif(auth()->user()->hasPurchased($product))
+                                <div class="card border-0 shadow-sm mb-4" id="reviews-form">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title mb-4">Escribir una reseña</h5>
+                                        <form action="{{ route('reviews.store', $product->slug) }}" method="POST">
+                                            @csrf
+                                            <!-- Rating -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Calificación</label>
+                                                <div class="rating-input">
+                                                    <div class="stars-input d-flex flex-row-reverse justify-content-end">
+                                                        <input type="radio" id="star5" name="rating" value="5" class="d-none peer" required />
+                                                        <label for="star5" class="ti ti-star fs-3 text-muted cursor-pointer hover-warning peer-active-warning"></label>
+                                                        
+                                                        <input type="radio" id="star4" name="rating" value="4" class="d-none peer" />
+                                                        <label for="star4" class="ti ti-star fs-3 text-muted cursor-pointer hover-warning peer-active-warning"></label>
+                                                        
+                                                        <input type="radio" id="star3" name="rating" value="3" class="d-none peer" />
+                                                        <label for="star3" class="ti ti-star fs-3 text-muted cursor-pointer hover-warning peer-active-warning"></label>
+                                                        
+                                                        <input type="radio" id="star2" name="rating" value="2" class="d-none peer" />
+                                                        <label for="star2" class="ti ti-star fs-3 text-muted cursor-pointer hover-warning peer-active-warning"></label>
+                                                        
+                                                        <input type="radio" id="star1" name="rating" value="1" class="d-none peer" />
+                                                        <label for="star1" class="ti ti-star fs-3 text-muted cursor-pointer hover-warning peer-active-warning"></label>
+                                                    </div>
+                                                    <style>
+                                                        .stars-input input:checked ~ label,
+                                                        .stars-input label:hover,
+                                                        .stars-input label:hover ~ label {
+                                                            color: #ffc107 !important; /* warning color */
+                                                            content: "\eb5e"; /* filled star code if using tabler font directly, or just reliance on color fill if using svg based font usually checks class change. Since we use ti-icons, we rely on color mainly or changing class via JS. Let's start simple with color. */
+                                                        }
+                                                        /* Simple helper for filled state if just changing color isn't enough */
+                                                        .stars-input input:checked ~ label:before {
+                                                            content: "\eb5e"; /* ti-star-filled */
+                                                        }
+                                                        .stars-input label:hover:before,
+                                                        .stars-input label:hover ~ label:before {
+                                                            content: "\eb5e";
+                                                        }
+                                                    </style>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="title" class="form-label">Título (Opcional)</label>
+                                                <input type="text" class="form-control" id="title" name="title" placeholder="Ej: ¡Excelente calidad!">
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="comment" class="form-label">Tu opinión</label>
+                                                <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Cuéntanos más sobre tu experiencia..."></textarea>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary">Publicar Reseña</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
+                        @endauth
                     </div>
 
-                    <div class="reviews-list">
-                        <div class="review-item">
-                            <div class="review-avatar">AM</div>
-                            <div class="review-content">
-                                <div class="review-header">
-                                    <h6>Ana María</h6>
-                                    <div class="review-stars">
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
+                    @if($product->reviews->isEmpty())
+                        <div class="empty-state text-center py-5">
+                            <i class="ti ti-message-off fs-1 text-muted mb-3"></i>
+                            <p class="text-muted">Aún no hay opiniones para este producto. @auth @if(auth()->user()->hasPurchased($product)) ¡Sé el primero en compartir tu experiencia! @endif @endauth</p>
+                        </div>
+                    @else
+                        <div class="reviews-summary mb-4 p-4 bg-light rounded">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center border-end">
+                                    <h2 class="display-4 fw-bold mb-0">{{ number_format($product->average_rating, 1) }}</h2>
+                                    <div class="stars mb-2">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($product->average_rating))
+                                                <i class="ti ti-star-filled text-warning"></i>
+                                            @else
+                                                <i class="ti ti-star text-muted"></i>
+                                            @endif
+                                        @endfor
                                     </div>
+                                    <p class="text-muted mb-0">Basado en {{ $product->total_reviews }} reseñas</p>
                                 </div>
-                                <p>¡Es precioso! Mucho mejor que en las fotos. Los detalles son increíbles y la calidad del hilo se nota a simple vista.</p>
+                                <div class="col-md-8 ps-md-4">
+                                    <!-- Aquí podrías agregar barras de progreso por estrellas si lo deseas en el futuro -->
+                                    <p class="text-muted mb-0">Opiniones de clientes verificados</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="review-item">
-                            <div class="review-avatar" style="background: #e0f2fe; color: #0284c7;">CR</div>
-                            <div class="review-content">
-                                <div class="review-header">
-                                    <h6>Carlos Ruiz</h6>
-                                    <div class="review-stars">
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
-                                        <i class="ti ti-star-filled text-warning"></i>
+                        <div class="reviews-list">
+                            @foreach($product->reviews as $review)
+                            <div class="review-item border-bottom pb-4 mb-4">
+                                <div class="d-flex">
+                                    <div class="review-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; font-weight: bold; font-size: 1.2rem;">
+                                        {{ strtoupper(substr($review->user->name, 0, 2)) }}
+                                    </div>
+                                    <div class="review-content flex-grow-1">
+                                        <div class="review-header d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="mb-1">{{ $review->user->name }}
+                                                    @if($review->is_verified_purchase)
+                                                        <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.75rem;">
+                                                            <i class="ti ti-circle-check-filled me-1"></i>Compra Verificada
+                                                        </span>
+                                                    @endif
+                                                </h6>
+                                                <small class="text-muted">{{ $review->created_at->format('d M, Y') }}</small>
+                                            </div>
+                                            <div class="review-stars">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= $review->rating)
+                                                        <i class="ti ti-star-filled text-warning"></i>
+                                                    @else
+                                                        <i class="ti ti-star text-muted"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        @if($review->title)
+                                            <h6 class="review-title fw-bold mb-2">{{ $review->title }}</h6>
+                                        @endif
+                                        <p class="mb-0 text-secondary">{{ $review->comment }}</p>
                                     </div>
                                 </div>
-                                <p>¡Es precioso! Mucho mejor que en las fotos. Los detalles son increíbles y la calidad del hilo se nota a simple vista.</p>
                             </div>
+                            @endforeach
                         </div>
-
-                        <div class="review-item">
-                            <div class="review-avatar" style="background: #e0f2fe; color: #0284c7;">CR</div>
-                            <div class="review-content">
-                                <div class="review-header">
-                                    <h6>Carlos Ruiz</h6>
-                                    <div class="review-stars">
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <p>Llegó muy rápido y el envoltorio era hermoso. Ideal para regalo, mi esposa quedó encantada.</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -364,4 +445,42 @@
             input.value = newValue;
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+            Swal.fire({
+                title: '¡Excelente!',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                }
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: 'Error',
+                text: "{{ session('error') }}",
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                }
+            });
+        @endif
+        
+        @if($errors->any())
+            Swal.fire({
+                title: 'Atención',
+                html: '<ul class="text-start mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                icon: 'warning',
+                confirmButtonText: 'Revisar',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                }
+            });
+        @endif
+    });
 </script>

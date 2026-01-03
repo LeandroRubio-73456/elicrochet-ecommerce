@@ -33,7 +33,11 @@ Route::middleware(['auth'])->group(function () {
     })->name('checkout.cancel');
 
     // Pay Existing Order Route
+    // Pay Existing Order Route
     Route::post('/checkout/pay/{order}', [CheckoutController::class, 'payExisting'])->name('checkout.pay_existing');
+
+    // Reviews
+    Route::post('/products/{product:slug}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 });
 
 Route::get('/cart/login-required', [\App\Http\Controllers\CartController::class, 'showMessage'])->name('cart.login-required');

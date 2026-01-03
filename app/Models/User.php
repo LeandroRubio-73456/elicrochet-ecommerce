@@ -84,4 +84,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->addresses()->first();
     }
+
+    // Verification Logic for Reviews
+    public function hasPurchased(Product $product)
+    {
+        return $this->orders()
+            ->where('status', Order::STATUS_COMPLETED)
+            ->whereHas('items', function ($query) use ($product) {
+                $query->where('product_id', $product->id);
+            })
+            ->exists();
+    }
+
+    public function hasReviewed(Product $product)
+    {
+        return $this->hasMany(Review::class)->where('product_id', $product->id)->exists();
+    }
 }
