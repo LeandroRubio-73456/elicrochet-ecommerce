@@ -46,9 +46,9 @@ class OrderController extends Controller
             // Restore stock if order was PAID or READY TO SHIP or WORKING
             if (in_array($order->status, [Order::STATUS_PAID, Order::STATUS_WORKING, Order::STATUS_READY_TO_SHIP])) {
                 foreach ($order->items as $item) {
-                     if ($item->product_id && $item->product) {
-                         $item->product->increment('stock', $item->quantity);
-                     }
+                    if ($item->product_id && $item->product) {
+                        $item->product->increment('stock', $item->quantity);
+                    }
                 }
             }
 
@@ -78,7 +78,7 @@ class OrderController extends Controller
             return redirect()->back()->with('success', 'Recepción confirmada. ¡Gracias por tu compra!');
         }
 
-        return redirect()->back()->with('error', 'No se puede confirmar la orden. Estado actual: ' . $order->status);
+        return redirect()->back()->with('error', 'No se puede confirmar la orden. Estado actual: '.$order->status);
     }
 
     // --- Custom Order Logic ---

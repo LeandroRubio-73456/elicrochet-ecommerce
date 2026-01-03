@@ -27,12 +27,12 @@ class ReviewController extends Controller
         // 2. Check if user has verified purchase
         $isVerified = $user->hasPurchased($product);
 
-        // Optional: Block non-purchasers? 
-        // For now, let's allow it but only mark as verified if purchased, 
+        // Optional: Block non-purchasers?
+        // For now, let's allow it but only mark as verified if purchased,
         // OR strictly block as per user request (User said "verify if user has purchased ... and enable button").
         // The user request implies capability is restricted.
         if (! $isVerified) {
-             return redirect()->route('product.show', $product->slug)->with('error', 'Debes haber comprado, recibido y completado la orden de este producto para dejar una reseña.');
+            return redirect()->route('product.show', $product->slug)->with('error', 'Debes haber comprado, recibido y completado la orden de este producto para dejar una reseña.');
         }
 
         try {
@@ -46,8 +46,8 @@ class ReviewController extends Controller
             ]);
 
             return redirect()->route('product.show', $product->slug)->with('success', '¡Gracias por compartir tu opinión!');
-        } catch(\Exception $e) {
-             return redirect()->route('product.show', $product->slug)->with('error', 'Ocurrió un error al guardar tu reseña. Por favor intenta nuevamente.');
+        } catch (\Exception $e) {
+            return redirect()->route('product.show', $product->slug)->with('error', 'Ocurrió un error al guardar tu reseña. Por favor intenta nuevamente.');
         }
     }
 }

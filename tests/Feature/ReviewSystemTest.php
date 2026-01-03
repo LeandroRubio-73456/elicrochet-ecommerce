@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ReviewSystemTest extends TestCase
@@ -43,7 +42,7 @@ class ReviewSystemTest extends TestCase
         // Should return redirect back with error
         $response->assertRedirect(route('product.show', $product->slug));
         $response->assertSessionHas('error', 'Debes haber comprado, recibido y completado la orden de este producto para dejar una reseña.');
-        
+
         $this->assertDatabaseMissing('reviews', [
             'user_id' => $user->id,
             'product_id' => $product->id,
@@ -146,7 +145,7 @@ class ReviewSystemTest extends TestCase
         // Controller uses back() which might redirect to product page in test env
         // We check for error session
         $response->assertSessionHas('error'); // "Ya has enviado una reseña..." or redirect logic
-        
+
         $this->assertEquals(1, Review::where('user_id', $user->id)->where('product_id', $product->id)->count());
     }
 }

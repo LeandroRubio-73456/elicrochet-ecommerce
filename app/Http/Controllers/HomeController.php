@@ -93,7 +93,7 @@ class HomeController extends Controller
     {
         // 1. Buscar el producto por su slug. Si no existe, lanza un error 404
         $product = Product::where('slug', $slug)
-            ->with(['category', 'images', 'reviews.user' => function($query) {
+            ->with(['category', 'images', 'reviews.user' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             }])
             ->firstOrFail();
