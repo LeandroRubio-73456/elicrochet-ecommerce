@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/assets/images/Logo.webp" width="25%" alt="EliCrochet Logo">
+  <img src="public/assets/images/Logo.webp" width="15%" alt="EliCrochet Logo">
 </p>
 
 <p align="center">
