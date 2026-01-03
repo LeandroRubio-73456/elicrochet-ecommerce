@@ -37,7 +37,6 @@
 - [Credenciales de Acceso](#-credenciales-de-acceso)
 - [Tests y Calidad](#-tests-y-calidad)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Contribución](#-contribución)
 - [Licencia](#-licencia)
 - [Contacto](#-contacto)
 
@@ -47,38 +46,38 @@
 
 **EliCrochet Ecommerce** es una plataforma de comercio electrónico desarrollada con **Laravel 12**, especializada en la venta y gestión de productos artesanales de crochet. El sistema ofrece una experiencia completa tanto para clientes como para administradores, incluyendo:
 
-- 🛒 Carrito de compras interactivo
-- 📦 Gestión completa de pedidos
-- 🎨 Solicitudes de pedidos personalizados
-- 👤 Sistema de autenticación y perfiles de usuario
-- 🎯 Panel administrativo completo con estadísticas
-- 📊 Integración con herramientas de análisis de calidad de código
+- Carrito de compras interactivo
+- Gestión completa de pedidos
+- Solicitudes de pedidos personalizados
+- Sistema de autenticación y perfiles de usuario
+- Panel administrativo completo con estadísticas
+- Integración con herramientas de análisis de calidad de código
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
 ### Para Clientes
-- 🏠 Catálogo de productos con filtros y búsqueda
-- 🛍️ Carrito de compras con gestión en tiempo real
-- ✏️ Solicitud de productos personalizados
-- 📱 Diseño responsive y optimizado para móviles
-- 👤 Gestión de perfil y direcciones
-- 📦 Historial de pedidos
-- ⭐ Sistema de valoraciones y reseñas
+- Catálogo de productos con filtros y búsqueda
+- Carrito de compras con gestión en tiempo real
+- Solicitud de productos personalizados
+- Diseño responsive y optimizado para móviles
+- Gestión de perfil y direcciones
+- Historial de pedidos
+- Sistema de valoraciones y reseñas
 
 ### Para Administradores
-- 📊 Dashboard con estadísticas en tiempo real
-- 📦 Gestión completa de productos y categorías
-- 🖼️ Carga múltiple de imágenes
-- 👥 Administración de usuarios y roles
-- 📝 Gestión de pedidos y estados
-- 💬 Visualización de pedidos personalizados
-- 📈 Reportes y análisis de ventas
+- Dashboard con estadísticas en tiempo real
+- Gestión completa de productos y categorías
+- Carga múltiple de imágenes
+- Administración de usuarios y roles
+- Gestión de pedidos y estados
+- Visualización de pedidos personalizados
+- Reportes y análisis de ventas
 
 ---
 
-## 🚀 Tecnologías
+## Tecnologías
 
 <p align="left">
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200" alt="Laravel Logo">
@@ -103,18 +102,15 @@
 
 ---
 
-## 🖼️ Galería
+## Galería
 
 | Vista Cliente | Vista Administración |
 |:---:|:---:|
 | <img src="public/screenshots/home.jpg" width="400" alt="Home"> | <img src="public/screenshots/admin.jpg" width="400" alt="Admin Dashboard"> |
-| Vista principal con productos destacados | Panel de control administrativo |
-
-*(Más capturas disponibles en `public/screenshots/`)*
 
 ---
 
-## 📋 Requisitos
+## Requisitos
 
 Antes de comenzar, asegúrate de tener instalado:
 
@@ -140,7 +136,7 @@ Antes de comenzar, asegúrate de tener instalado:
 
 ---
 
-## 🔧 Instalación
+## Instalación
 
 ### Opción 1: Instalación Automática (Recomendado)
 
@@ -156,13 +152,13 @@ Antes de comenzar, asegúrate de tener instalado:
    ```
 
    Este comando ejecuta automáticamente:
-   - ✅ Instalación de dependencias PHP (`composer install`)
-   - ✅ Copia del archivo `.env.example` a `.env`
-   - ✅ Generación de key de aplicación (`php artisan key:generate`)
-   - ✅ Ejecución de migraciones (`php artisan migrate`)
-   - ✅ Seeders de datos de prueba (`php artisan db:seed`)
-   - ✅ Instalación de dependencias Node (`npm install`)
-   - ✅ Build de assets (`npm run build`)
+   - Instalación de dependencias PHP (`composer install`)
+   - Copia del archivo `.env.example` a `.env`
+   - Generación de key de aplicación (`php artisan key:generate`)
+   - Ejecución de migraciones (`php artisan migrate`)
+   - Seeders de datos de prueba (`php artisan db:seed`)
+   - Instalación de dependencias Node (`npm install`)
+   - Build de assets (`npm run build`)
 
 ### Opción 2: Instalación Manual
 
@@ -198,7 +194,7 @@ php artisan storage:link
 
 ---
 
-## ▶️ Ejecución
+## Ejecución
 
 ### Entorno de Desarrollo
 
@@ -227,41 +223,20 @@ npm run dev
 php artisan queue:work
 ```
 
-### Producción
-
-```bash
-# Build de assets optimizados
-npm run build
-
-# Optimizar configuración
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Iniciar servidor
-php artisan serve --host=0.0.0.0 --port=8000
-```
-
 ---
 
-## 🔐 Credenciales de Acceso
+## Credenciales de Acceso
 
 Para propósitos de desarrollo y prueba, se incluyen usuarios precargados:
 
 | Rol | Email | Contraseña | Permisos |
 |:----|:------|:-----------|:---------|
-| 👨‍💼 **Administrador** | `admin@elicrochet.com` | `password` | Acceso completo al sistema |
-| 👤 **Cliente** | `cliente@elicrochet.com` | `password` | Compras y gestión de perfil |
-
-> ⚠️ **Importante:** Cambia estas credenciales antes de desplegar en producción.
-
-**Rutas de acceso:**
-- Cliente: `http://localhost:8000`
-- Admin: `http://localhost:8000/admin`
+| **Administrador** | `admin@elicrochet.com` | `password` | Acceso completo al sistema |
+| **Cliente** | `cliente@elicrochet.com` | `password` | Compras y gestión de perfil |
 
 ---
 
-## 🧪 Tests y Calidad
+## Tests y Calidad
 
 ### Ejecutar Tests
 
@@ -283,11 +258,11 @@ php artisan test --verbose
 
 El proyecto está integrado con **SonarCloud** para garantizar la calidad del código:
 
-- ✅ Análisis estático de código
-- 📊 Cobertura de tests
-- 🔍 Detección de code smells
-- 🛡️ Detección de vulnerabilidades
-- 📈 Métricas de mantenibilidad
+- Análisis estático de código
+- Cobertura de tests
+- Detección de code smells
+- Detección de vulnerabilidades
+- Métricas de mantenibilidad
 
 Ver reportes en: [SonarCloud Dashboard](https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce)
 
@@ -301,7 +276,7 @@ Cada push y pull request ejecuta automáticamente:
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 elicrochet-ecommerce/
@@ -329,43 +304,25 @@ elicrochet-ecommerce/
 
 ---
 
-## 🤝 Contribución
-
-Las contribuciones son bienvenidas. Por favor, sigue estos pasos:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-### Estándares de Código
-- Sigue PSR-12 para PHP
-- Usa camelCase para métodos y variables
-- Documenta funciones complejas
-- Escribe tests para nuevas funcionalidades
-
----
-
-## 📄 Licencia
+## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ---
 
-## 📧 Contacto
+## Contacto
 
 **Leandro Rubio**
-- 🐙 GitHub: [@LeandroRubio-73456](https://github.com/LeandroRubio-73456)
-- 📧 Email: leandro.rubio@example.com
-- 🔗 LinkedIn: [Tu perfil](https://linkedin.com/in/tu-perfil)
+- GitHub: [@LeandroRubio-73456](https://github.com/LeandroRubio-73456)
+- Email: leandro.rubio@example.com
+- LinkedIn: [Tu perfil](https://linkedin.com/in/leandrorubio)
 
 **Link del Proyecto:** [https://github.com/LeandroRubio-73456/elicrochet-ecommerce](https://github.com/LeandroRubio-73456/elicrochet-ecommerce)
 
 ---
 
 <p align="center">
-  Hecho con ❤️ por <strong>Leandro Rubio</strong>
+  Hecho por <strong>Leandro Rubio</strong>
 </p>
 
 <p align="center">
