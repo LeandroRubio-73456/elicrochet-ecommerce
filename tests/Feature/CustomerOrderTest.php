@@ -94,7 +94,7 @@ class CustomerOrderTest extends TestCase
     {
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock' => 10]);
-        
+
         $order = Order::factory()->create([
             'user_id' => $user->id,
             'status' => Order::STATUS_PAID,

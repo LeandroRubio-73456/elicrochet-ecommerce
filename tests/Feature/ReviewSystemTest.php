@@ -146,7 +146,6 @@ class ReviewSystemTest extends TestCase
         // We check for error session
         $response->assertSessionHas('error'); // "Ya has enviado una reseña..." or redirect logic
 
-        
         $this->assertEquals(1, Review::where('user_id', $user->id)->where('product_id', $product->id)->count());
     }
 
@@ -158,7 +157,7 @@ class ReviewSystemTest extends TestCase
 
         // 1. First Review: 5 stars
         $this->create_verified_review($user1, $product, 5);
-        
+
         $product->refresh();
         $this->assertEquals(5.0, $product->average_rating);
         $this->assertEquals(1, $product->total_reviews);
@@ -206,7 +205,7 @@ class ReviewSystemTest extends TestCase
             'comment' => 'Test',
             'is_verified_purchase' => true,
         ]);
-        
+
         return $review;
     }
 }
