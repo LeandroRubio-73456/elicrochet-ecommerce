@@ -19,6 +19,9 @@ class DashboardController extends Controller
         // 3. Low Stock Products (Less than 5)
         $lowStockProducts = \App\Models\Product::where('stock', '<=', 5)->orderBy('stock', 'asc')->take(5)->get();
 
-        return view('back.dashboard', compact('totalUsers', 'totalOrders', 'totalSales', 'recentOrders', 'lowStockProducts'));
+        // 4. Recent Reviews (Top 5)
+        $recentReviews = \App\Models\Review::with(['user', 'product'])->orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('back.dashboard', compact('totalUsers', 'totalOrders', 'totalSales', 'recentOrders', 'lowStockProducts', 'recentReviews'));
     }
 }

@@ -123,5 +123,81 @@
             </div>
         </div>
 
+
+        <!-- Recent Reviews -->
+        <div class="col-md-12 mt-4">
+            <h5 class="mb-3">Reseñas Recientes</h5>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Usuario</th>
+                                    <th>Calificación</th>
+                                    <th>Comentario</th>
+                                    <th class="text-end">Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentReviews as $review)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if($review->product)
+                                                @if($review->product->images->isNotEmpty())
+                                                    <img src="{{ asset('storage/' . $review->product->images->first()->image_path) }}" class="rounded me-2" width="40" height="40" style="object-fit: cover;">
+                                                @else
+                                                    <div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="ti ti-photo-off text-muted"></i></div>
+                                                @endif
+                                                <div>
+                                                    <h6 class="mb-0 f-14">{{ Str::limit($review->product->name, 30) }}</h6>
+                                                    <a href="{{ route('product.show', $review->product->slug) }}" target="_blank" class="text-muted f-12"><i class="ti ti-external-link"></i> Ver</a>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">Producto Eliminado</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avtar avtar-xs rounded-circle bg-light-primary text-primary me-2">
+                                                {{ strtoupper(substr($review->user->name, 0, 1)) }}
+                                            </div>
+                                            {{ $review->user->name }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-warning">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="ti ti-star{{ $i <= $review->rating ? '-filled' : '' }} f-12"></i>
+                                            @endfor
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if($review->title)
+                                            <div class="fw-bold text-dark mb-1">{{ Str::limit($review->title, 20) }}</div>
+                                        @endif
+                                        <p class="mb-0 text-muted f-12 text-truncate" style="max-width: 250px;">{{ $review->comment }}</p>
+                                    </td>
+                                    <td class="text-end text-muted f-12">{{ $review->created_at->diffForHumans() }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="ti ti-message-off fs-2 mb-2 d-block opacity-50"></i>
+                                            No hay reseñas recientes.
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
