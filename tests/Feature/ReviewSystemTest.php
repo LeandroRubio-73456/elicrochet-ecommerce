@@ -146,6 +146,67 @@ class ReviewSystemTest extends TestCase
         // We check for error session
         $response->assertSessionHas('error'); // "Ya has enviado una reseña..." or redirect logic
 
+        
         $this->assertEquals(1, Review::where('user_id', $user->id)->where('product_id', $product->id)->count());
+    }
+
+    public function test_review_observer_updates_product_rating()
+    {
+        $product = Product::factory()->create();
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        // 1. First Review: 5 stars
+        $this->create_verified_review($user1, $product, 5);
+        
+        $product->refresh();
+        $this->assertEquals(5.0, $product->average_rating);
+        $this->assertEquals(1, $product->total_reviews);
+
+        // 2. Second Review: 1 star
+        $review2 = $this->create_verified_review($user2, $product, 1);
+
+        $product->refresh();
+        $this->assertEquals(3.0, $product->average_rating); // (5+1)/2 = 3
+        $this->assertEquals(2, $product->total_reviews);
+
+        // 3. Update Second Review: 1 -> 3 stars
+        $review2->update(['rating' => 3]);
+
+        $product->refresh();
+        $this->assertEquals(4.0, $product->average_rating); // (5+3)/2 = 4
+        $this->assertEquals(2, $product->total_reviews);
+
+        // 4. Delete First Review
+        $review1 = Review::where('user_id', $user1->id)->where('product_id', $product->id)->first();
+        $review1->delete();
+
+        $product->refresh();
+        $this->assertEquals(3.0, $product->average_rating); // Only review2 (3 stars) remains
+        $this->assertEquals(1, $product->total_reviews);
+    }
+
+    private function create_verified_review($user, $product, $rating)
+    {
+        // Setup required order
+        $order = Order::factory()->create([
+            'user_id' => $user->id,
+            'status' => Order::STATUS_COMPLETED,
+        ]);
+        OrderItem::factory()->create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+        ]);
+
+        $review = Review::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'rating' => $rating,
+            'title' => 'Test',
+            'comment' => 'Test',
+            'is_verified_purchase' => true,
+        ]);
+        
+        return $review;
     }
 }
