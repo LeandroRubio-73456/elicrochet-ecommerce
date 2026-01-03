@@ -36,7 +36,8 @@
 
                                 <div class="mb-3">
                                     <label for="slug" class="form-label fw-bold">URL amigable (slug)</label>
-                                    <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $product->slug) }}">
+                                    <input type="text" name="slug" id="slug" class="form-control" placeholder="Ej. amigurumi-foxy" value="{{ old('slug', $product->slug) }}">
+                                    <small class="text-muted">Si lo dejas vacío, se generará automáticamente</small>
                                     @error('slug') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                 </div>
 
@@ -122,6 +123,7 @@
                                 <div class="mb-3">
                                     <label for="images" class="form-label fw-bold">Nuevas Imágenes</label>
                                     <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+                                    <small class="text-muted d-block mt-1">Sube hasta 5 imágenes (máx. 5MB c/u).</small>
                                 </div>
                             </div>
                         </div>
