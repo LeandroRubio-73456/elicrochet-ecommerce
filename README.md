@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/assets/images/logo.png" width="100%" alt="EliCrochet Ecommerce Banner">
+  <img src="public/assets/images/Logo.webp" width="100%" alt="EliCrochet Logo">
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@ Este es un proyecto de comercio electrónico desarrollado con **Laravel**, dise�
 
 Este proyecto forma parte del trabajo final de la asignatura **Calidad de Software**, implementando estándares ISO/IEC 25010 y métricas de calidad SQuaRE.
 
-## 📸 Galería
+## Galería
 
 | Vista Cliente (Catálogo) | Vista Administración |
 |:---:|:---:|
@@ -22,7 +22,7 @@ Este proyecto forma parte del trabajo final de la asignatura **Calidad de Softwa
 
 *(Nota: Las imágenes se encuentran en la carpeta `public/screenshots`)*
 
-## 📋 Requisitos
+## Requisitos
 
 Asegúrate de tener instalados los siguientes componentes en tu entorno de desarrollo:
 
@@ -31,7 +31,7 @@ Asegúrate de tener instalados los siguientes componentes en tu entorno de desar
 - [Node.js](https://nodejs.org/) y NPM
 - Base de datos (MySQL/MariaDB)
 
-## 🚀 Instalación
+## Instalación
 
 Sigue estos pasos para configurar el proyecto en tu máquina local:
 
@@ -50,7 +50,7 @@ Sigue estos pasos para configurar el proyecto en tu máquina local:
 
     > **Nota:** Este comando ejecuta internamente: `composer install`, copia del `.env`, `key:generate`, `migrate --force`, `db:seed` (datos de prueba), `npm install` y `npm run build`.
 
-## 💻 Ejecución
+## Ejecución
 
 Para iniciar el servidor de desarrollo y los procesos necesarios (vite, queue), utiliza el comando:
 
@@ -63,7 +63,7 @@ O si prefieres ejecutar solo el servidor de Laravel:
 php artisan serve
 ```
 
-## 🔑 Credenciales de Acceso (Entorno Local)
+## Credenciales de Acceso (Entorno Local)
 
 Para fines de prueba y evaluación de la tesis, se han generado los siguientes usuarios mediante los Seeders:
 
@@ -72,7 +72,7 @@ Para fines de prueba y evaluación de la tesis, se han generado los siguientes u
 | **Administrador** | `admin@elicrochet.com` | `password` | Acceso total al dashboard, gestión de productos y usuarios. |
 | **Cliente** | `cliente@elicrochet.com` | `password` | Acceso a compra, carrito y gestión de perfil. |
 
-## ✅ Tests y Calidad
+## Tests y Calidad
 
 Para ejecutar las pruebas automatizadas del proyecto (PHPUnit):
 
