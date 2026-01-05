@@ -105,4 +105,60 @@ class CartServiceTest extends TestCase
 
         $this->assertCount(0, $this->cartService->getCart());
     }
+
+    /** @test */
+    public function it_can_add_custom_order_to_cart()
+    {
+        $this->actingAs($this->user);
+        $order = \App\Models\Order::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => \App\Models\Order::STATUS_PENDING_PAYMENT,
+            'total_amount' => 50.00,
+            'type' => \App\Models\Order::TYPE_CUSTOM,
+        ]);
+
+        $result = $this->cartService->addCustomOrder($order);
+
+        $this->assertTrue($result);
+        $this->assertDatabaseHas('cart_items', [
+            'user_id' => $this->user->id,
+            'custom_order_id' => $order->id,
+            'price' => 50.00,
+        ]);
+
+        $this->assertEquals(\App\Models\Order::STATUS_IN_CART, $order->fresh()->status);
+    }
+
+    /** @test */
+    public function it_prevents_adding_duplicate_custom_order()
+    {
+        $this->actingAs($this->user);
+        $order = \App\Models\Order::factory()->create([
+            'user_id' => $this->user->id,
+            'type' => \App\Models\Order::TYPE_CUSTOM,
+        ]);
+
+        $this->cartService->addCustomOrder($order);
+
+        $this->expectException(\App\Exceptions\BusinessLogicException::class);
+        $this->cartService->addCustomOrder($order);
+    }
+
+    /** @test */
+    public function it_reverts_order_status_when_removing_from_cart()
+    {
+        $this->actingAs($this->user);
+        $order = \App\Models\Order::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => \App\Models\Order::STATUS_PENDING_PAYMENT,
+            'type' => \App\Models\Order::TYPE_CUSTOM,
+        ]);
+
+        $this->cartService->addCustomOrder($order);
+        $this->assertEquals(\App\Models\Order::STATUS_IN_CART, $order->fresh()->status);
+
+        $this->cartService->removeFromCart($order->id);
+
+        $this->assertEquals(\App\Models\Order::STATUS_PENDING_PAYMENT, $order->fresh()->status);
+    }
 }
