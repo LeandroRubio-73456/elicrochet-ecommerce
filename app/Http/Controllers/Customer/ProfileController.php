@@ -30,8 +30,8 @@ class ProfileController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'shipping_address' => ['nullable', 'string', 'max:255'],
             'shipping_city' => ['nullable', 'string', 'max:100'],
-            'shipping_province' => ['nullable', 'string', 'max:100'], 
-            'shipping_reference' => ['nullable', 'string', 'max:255'], 
+            'shipping_province' => ['nullable', 'string', 'max:100'],
+            'shipping_reference' => ['nullable', 'string', 'max:255'],
             'shipping_zip' => ['nullable', 'string', 'max:20'],
             'password' => ['nullable', 'confirmed', 'min:8'],
         ]);

@@ -42,8 +42,9 @@ class CheckoutController extends Controller
         foreach ($cartItems as $cItem) {
             if ($cItem->custom_order_id) {
                 $cOrder = \App\Models\Order::find($cItem->custom_order_id);
-                if (!$cOrder || $cOrder->status === 'cancelled') {
+                if (! $cOrder || $cOrder->status === 'cancelled') {
                     $this->cartService->removeFromCart($cItem->product_id ?? $cItem->custom_order_id);
+
                     return redirect()->route('cart')->with('error', 'Se detectó un pedido cancelado en tu carrito y fue eliminado.');
                 }
             }
@@ -145,9 +146,10 @@ class CheckoutController extends Controller
         foreach ($cartItems as $cItem) {
             if ($cItem->custom_order_id) {
                 $cOrder = \App\Models\Order::find($cItem->custom_order_id);
-                if (!$cOrder || $cOrder->status === 'cancelled') {
+                if (! $cOrder || $cOrder->status === 'cancelled') {
                     // Auto-remove invalid item
                     $this->cartService->removeFromCart($cItem->product_id ?? $cItem->custom_order_id);
+
                     return redirect()->route('cart')->with('error', 'Un pedido personalizado en tu carrito ya no es válido o fue cancelado. Se ha eliminado automáticamente.');
                 }
             }
@@ -288,7 +290,7 @@ class CheckoutController extends Controller
         // Also update legacy user columns
         $user->update([
             'phone' => $validated['customer_phone'],
-            'cedula' => $validated['customer_cedula'] ?? $user->cedula // Update only if provided
+            'cedula' => $validated['customer_cedula'] ?? $user->cedula, // Update only if provided
         ]);
 
         return $address;
@@ -308,7 +310,7 @@ class CheckoutController extends Controller
             // Update the existing order with latest contact/address info
             $existingOrder->update([
                 'address_id' => $address->id,
-                'customer_name' => $validated['customer_name'] . ' ' . $validated['customer_lastname'],
+                'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
                 'customer_email' => $validated['customer_email'],
                 'customer_phone' => $validated['customer_phone'],
                 'shipping_address' => $validated['shipping_address'],
@@ -319,10 +321,10 @@ class CheckoutController extends Controller
 
             // CLEAR previous items so we can re-populate with current Cart state
             // This ensures if the user changed the cart, the order reflects it.
-            // Custom Orders linked to this are NOT deleted (they are separate entities), 
+            // Custom Orders linked to this are NOT deleted (they are separate entities),
             // but the 'OrderItem' linking them is deleted here.
-            $existingOrder->items()->delete(); 
-            
+            $existingOrder->items()->delete();
+
             // Recalculate Shipping
             $shippingCost = $this->calculateShippingCost($validated['shipping_city']);
             $existingOrder->update(['shipping_cost' => $shippingCost]);
@@ -337,7 +339,7 @@ class CheckoutController extends Controller
             'user_id' => $user->id,
             'address_id' => $address->id,
             'status' => Order::STATUS_PENDING_PAYMENT,
-            'customer_name' => $validated['customer_name'] . ' ' . $validated['customer_lastname'],
+            'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
             'customer_email' => $validated['customer_email'],
             'customer_phone' => $validated['customer_phone'],
             'shipping_address' => $validated['shipping_address'],
@@ -346,10 +348,10 @@ class CheckoutController extends Controller
             'shipping_zip' => $validated['shipping_zip'],
             'total_amount' => 0,
             'shipping_cost' => $this->calculateShippingCost($validated['shipping_city']),
-            'type' => 'stock', 
+            'type' => 'stock',
         ]);
 
-        return [$order, null]; 
+        return [$order, null];
     }
 
     private function processCartItems($order, $cartItems, $masterOriginalItem)
@@ -357,6 +359,7 @@ class CheckoutController extends Controller
         foreach ($cartItems as $cartItem) {
             if ($cartItem->custom_order_id) {
                 $this->processCustomOrderItem($order, $cartItem);
+
                 continue;
             }
 
@@ -374,7 +377,7 @@ class CheckoutController extends Controller
     private function processCustomOrderItem($order, $cartItem)
     {
         $customOrder = Order::find($cartItem->custom_order_id);
-        
+
         if ($customOrder) {
             // Get the main item from the custom order to copy details
             $customItem = $customOrder->items()->whereNull('product_id')->first();
@@ -382,9 +385,9 @@ class CheckoutController extends Controller
             // Link the Custom Order to the new Master Order
             OrderItem::create([
                 'order_id' => $order->id,
-                'product_id' => null, 
+                'product_id' => null,
                 'custom_order_id' => $customOrder->id, // LINK: Parent -> Child
-                'custom_description' => $customItem ? $customItem->custom_description : 'Pedido Personalizado #' . $customOrder->id,
+                'custom_description' => $customItem ? $customItem->custom_description : 'Pedido Personalizado #'.$customOrder->id,
                 'price' => $cartItem->price,
                 'quantity' => 1,
                 'images' => $customItem ? $customItem->images : [],
@@ -394,7 +397,7 @@ class CheckoutController extends Controller
             // Update Child Order Status to indicate it's linked
             // Do NOT cancel it. Keep it locked.
             $customOrder->update([
-                'status' => Order::STATUS_LINKED, 
+                'status' => Order::STATUS_LINKED,
             ]);
         }
     }
@@ -410,8 +413,8 @@ class CheckoutController extends Controller
 
         // Combine status check with result
         $result = $response->json();
-        if (!$response->successful()) {
-            Log::error('PayPhone Confirm Failed: ' . $response->body());
+        if (! $response->successful()) {
+            Log::error('PayPhone Confirm Failed: '.$response->body());
         }
 
         return $result;
@@ -546,7 +549,7 @@ class CheckoutController extends Controller
     {
         // Normalize city string for comparison
         $normalizedCity = strtolower(trim($city));
-        
+
         // Logic: Quito = $3, Others = $5
         if ($normalizedCity === 'quito') {
             return 3.00;

@@ -73,10 +73,10 @@ class FinancialController extends Controller
 
         $callback = function () use ($orders, $columns) {
             $file = fopen('php://output', 'w');
-            
+
             // Add BOM for Excel UTF-8 compatibility
-            fputs($file, "\xEF\xBB\xBF");
-            
+            fwrite($file, "\xEF\xBB\xBF");
+
             // Title Row
             fputcsv($file, ['Reporte Financiero - EliCrochet'], ';');
             fputcsv($file, [], ';'); // Empty row

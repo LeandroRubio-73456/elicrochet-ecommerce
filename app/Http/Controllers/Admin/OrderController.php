@@ -52,6 +52,7 @@ class OrderController extends Controller
     public function generateLabel(Order $order)
     {
         $order->load(['user', 'address']);
+
         return view('back.orders.label', compact('order'));
     }
 

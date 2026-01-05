@@ -46,9 +46,9 @@ class HomeController extends Controller
         // 2.0 Búsqueda
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -113,7 +113,7 @@ class HomeController extends Controller
             'policy_check' => 'accepted',
         ]);
 
-        // Here you would typically send an email. 
+        // Here you would typically send an email.
         // Mail::to('admin@elicrochet.com')->send(new ContactFormMail($request->validated()));
 
         return back()->with('success', '¡Gracias por contactarnos! Tu mensaje ha sido enviado correctamente.');
@@ -158,9 +158,9 @@ class HomeController extends Controller
         // 3.0 Búsqueda dentro de categoría
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
