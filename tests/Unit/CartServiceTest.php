@@ -70,7 +70,7 @@ class CartServiceTest extends TestCase
     public function it_can_remove_item_from_cart()
     {
         $this->actingAs($this->user);
-        $product = Product::factory()->create();
+        $product = Product::factory()->create(['stock' => 10]);
         $this->cartService->addToCart($product, 1);
 
         $this->assertCount(1, $this->cartService->getCart());
@@ -98,7 +98,7 @@ class CartServiceTest extends TestCase
     public function it_can_clear_cart()
     {
         $this->actingAs($this->user);
-        $product = Product::factory()->create();
+        $product = Product::factory()->create(['stock' => 10]);
         $this->cartService->addToCart($product, 1);
 
         $this->cartService->clearCart();
