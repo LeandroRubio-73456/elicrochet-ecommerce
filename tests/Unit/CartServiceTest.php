@@ -85,8 +85,8 @@ class CartServiceTest extends TestCase
     public function it_can_get_cart_total()
     {
         $this->actingAs($this->user);
-        $product1 = Product::factory()->create(['price' => 100]);
-        $product2 = Product::factory()->create(['price' => 50]);
+        $product1 = Product::factory()->create(['price' => 100, 'stock' => 10]);
+        $product2 = Product::factory()->create(['price' => 50, 'stock' => 10]);
 
         $this->cartService->addToCart($product1, 2); // 200
         $this->cartService->addToCart($product2, 1); // 50
