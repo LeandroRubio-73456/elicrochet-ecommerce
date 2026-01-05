@@ -31,7 +31,7 @@ class FinanceTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewIs('back.finance.index');
-        $response->assertViewHas(['totalIncome', 'paidCount']);
+        $response->assertViewHas(['totalIncome', 'ordersLast30Days']);
     }
 
     /** @test */
@@ -42,6 +42,6 @@ class FinanceTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.finance.export'));
 
         $response->assertStatus(200);
-        $response->assertHeader('Content-Disposition', 'attachment; filename=financial_report_'.date('Y-m-d').'_'.date('H-i').'.csv');
+        $response->assertHeader('Content-Disposition', 'attachment; filename=elicrochet_ventas_'.date('Y-m-d_H-i').'.csv');
     }
 }

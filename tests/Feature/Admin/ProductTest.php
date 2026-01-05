@@ -102,7 +102,7 @@ class ProductTest extends TestCase
             'description' => 'Updated description',
             'price' => 200,
             'stock' => 5,
-            'status' => 'out_of_stock',
+            'status' => 'draft',
         ];
 
         $response = $this->actingAs($this->admin)->put(route('admin.products.update', $product), $data);

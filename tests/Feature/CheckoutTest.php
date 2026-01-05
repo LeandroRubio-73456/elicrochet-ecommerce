@@ -94,6 +94,7 @@ class CheckoutTest extends TestCase
             'shipping_address' => '123 Street',
             'shipping_city' => 'City',
             'shipping_province' => 'Prov',
+            'customer_cedula' => '1712345678', // Added
             'shipping_zip' => '12345',
         ];
 
