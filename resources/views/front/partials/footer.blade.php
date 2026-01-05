@@ -3,7 +3,7 @@
         <!-- Main Footer Content -->
         <div class="row g-4 pb-5">
             <!-- Brand Section -->
-            <div class="col-lg-4 col-md-6">
+            <div class="col-12 col-lg-4 text-center text-lg-start">
                 <div class="footer-brand mb-4">
                     <img src="{{asset('assets/images/Logo.webp')}}" alt="EliCrochet" width="55" height="60" class="mb-3 img-fluid" loading="lazy">
                     <p class="footer-description">
@@ -11,17 +11,20 @@
                     </p>
                 </div>
                 <div class="social-links">
-                    <a href="#" class="social-link" aria-label="Instagram">
-                        <i class="ti ti-brand-instagram"></i>
+                    <a href="https://www.tiktok.com/@eli_crochet?_r=1&_t=ZM-92p46ZwJDRb" class="social-link" target="_blank" aria-label="TikTok">
+                        <i class="ti ti-brand-tiktok"></i>
                     </a>
-                    <a href="#" class="social-link" aria-label="Facebook">
+                    <a href="https://www.facebook.com/share/1BgNvYRw8x/" class="social-link" target="_blank" aria-label="Facebook">
                         <i class="ti ti-brand-facebook"></i>
+                    </a>
+                    <a href="https://www.instagram.com/_e.l.i_crochet_?igsh=cGhlcmVyaWRtdTli" class="social-link" target="_blank" aria-label="Instagram">
+                        <i class="ti ti-brand-instagram"></i>
                     </a>
                 </div>
             </div>
 
             <!-- Quick Links -->
-            <div class="col-lg-2 col-md-6">
+            <div class="col-12 col-lg-2 text-center text-lg-start">
                 <h4 class="footer-title">Enlaces</h4>
                 <ul class="footer-links">
                     <li><a href="{{ route('home') }}">Inicio</a></li>
@@ -32,18 +35,17 @@
             </div>
 
             <!-- Customer Service -->
-            <div class="col-lg-3 col-md-6">
+            <div class="col-12 col-lg-3 text-center text-lg-start">
                 <h4 class="footer-title">Ayuda</h4>
                 <ul class="footer-links">
-                    <li><a href="#">Seguimiento de pedido</a></li>
-                    <li><a href="#">Política de devolución</a></li>
-                    <li><a href="#">Preguntas frecuentes</a></li>
-                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="{{ route('legal.returns') }}">Política de devolución</a></li>
+                    <li><a href="{{ route('contact') }}#faq">Preguntas frecuentes</a></li>
+                    <li><a href="{{ route('legal.terms') }}">Términos y condiciones</a></li>
                 </ul>
             </div>
 
             <!-- Contact Info -->
-            <div class="col-lg-3 col-md-6">
+            <div class="col-12 col-lg-3 text-center text-lg-start">
                 <h4 class="footer-title">Contacto</h4>
                 <ul class="footer-contact">
                     <li>
@@ -235,6 +237,15 @@
 
         .footer-brand {
             text-align: center;
+        }
+
+        .footer-title::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .footer-contact li {
+            justify-content: center;
         }
 
         .footer-bottom {

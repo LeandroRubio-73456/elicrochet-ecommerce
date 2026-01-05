@@ -10,7 +10,7 @@
     <div class="navbar-wrapper">
         <div class="m-header">
             <a href="{{ route('admin.dashboard') }}" class="b-brand">
-                <img src="{{ asset('assets/images/Logo.webp') }}" class="img-fluid " alt="EliCrochet" style="height: 50px;">
+                <img src="{{ asset('assets/images/Logo.webp') }}" class="img-fluid " alt="EliCrochet" width="50" height="50" style="height: 50px;">
             </a>
         </div>
         <div class="navbar-content">
@@ -52,7 +52,7 @@
                 <li class="pc-item">
                     <a href="{{ route('admin.finance.index') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-chart-bar"></i></span>
-                        <span class="pc-mtext">Finanzas</span>
+                        <span class="pc-mtext">Ventas</span>
                     </a>
                 </li>
             </ul>

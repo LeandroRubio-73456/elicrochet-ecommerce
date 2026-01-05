@@ -12,7 +12,7 @@
             <h3>Pedido #{{ $order->order_number }}</h3>
             <!-- Actions -->
             <div class="d-flex gap-2">
-                @if($order->canTransitionTo('cancelled'))
+                @if($order->canTransitionTo('cancelled') && $order->status !== \App\Models\Order::STATUS_LINKED)
                     <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" onsubmit="confirmOrderCancellation(event)">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger">
@@ -124,6 +124,18 @@
                         </tbody>
                         <tfoot class="bg-light">
                             <tr>
+                                <td colspan="2" class="text-end text-muted pt-3">Subtotal:</td>
+                                <td class="text-end pe-4 pt-3">
+                                    ${{ number_format($order->items->sum(fn($i) => $i->price * $i->quantity), 2) }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end text-muted">Envío (Servientrega):</td>
+                                <td class="text-end pe-4">
+                                    ${{ number_format($order->shipping_cost, 2) }}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="2" class="text-end fw-bold pt-3">Total:</td>
                                 <td class="text-end fw-bold pe-4 pt-3 fs-5">
                                     @if($order->total_amount == 0 && $order->status === 'quotation')
@@ -150,6 +162,7 @@
                     $badgeClass = match($order->status) {
                         'paid', 'completed', 'shipped' => 'bg-success',
                         'pending_payment', 'quotation' => 'bg-warning text-dark',
+                        'in_cart', \App\Models\Order::STATUS_LINKED => 'bg-light-primary text-primary',
                         'working' => 'bg-info',
                         'cancelled' => 'bg-danger',
                         default => 'bg-secondary'
@@ -163,6 +176,8 @@
                         'shipped' => 'Enviado',
                         'completed' => 'Completado',
                         'cancelled' => 'Cancelado',
+                        'in_cart' => 'En Carrito',
+                        \App\Models\Order::STATUS_LINKED => 'Vinculado a Orden Principal #' . ($order->parentItem->order_id ?? '?'),
                         default => $order->status
                     };
                     
@@ -175,12 +190,21 @@
                         'shipped' => 'Tu pedido ha sido enviado a la dirección proporcionada.',
                         'completed' => 'Has confirmado la recepción. ¡Gracias!',
                         'cancelled' => 'Este pedido ha sido cancelado.',
+                        \App\Models\Order::STATUS_LINKED => 'Este pedido es parte de una orden principal. Revisa la orden #' . ($order->parentItem->order_id ?? '?') . ' para ver el estado del envío.',
                         default => ''
                     };
                 @endphp
                 <div class="text-center py-3">
                     <span class="badge {{ $badgeClass }} fs-6 mb-3 px-3 py-2">{{ $statusLabel }}</span>
                     <p class="text-muted small mb-0">{{ $statusDesc }}</p>
+
+                    @if($order->status === \App\Models\Order::STATUS_LINKED && $order->parentItem)
+                        <div class="mt-3">
+                            <a href="{{ route('customer.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="ti ti-external-link me-2"></i> Ver Orden Principal #{{ $order->parentItem->order_id }}
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
                 @if($order->status === 'pending_payment')

@@ -16,7 +16,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())
-            ->with('items.product')
+            ->with(['items.product', 'parentItem.order'])
             ->orderBy('id', 'desc') // Explicitly enforce ID desc
             ->paginate(10);
 
@@ -148,9 +148,9 @@ class OrderController extends Controller
 
         // Send Email
         try {
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\CustomOrderReceived($order));
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->queue(new \App\Mail\CustomOrderReceived($order));
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error sending CustomOrderReceived email: '.$e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error queuing CustomOrderReceived email: '.$e->getMessage());
         }
 
         // Notify Admin
@@ -158,9 +158,9 @@ class OrderController extends Controller
             $admin = \App\Models\User::where('role', 'admin')->first();
             if ($admin) {
                 \Illuminate\Support\Facades\Log::info("Found admin for notification: {$admin->email}");
-                sleep(11); // Increased to 11s based on user plan
-                \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
-                \Illuminate\Support\Facades\Log::info("Admin notification sent to {$admin->email}");
+                // Used to have sleep(11) here - removed for performance
+                \Illuminate\Support\Facades\Mail::to($admin->email)->queue(new \App\Mail\NewOrderAdminNotification($order));
+                \Illuminate\Support\Facades\Log::info("Admin notification queued for {$admin->email}");
             } else {
                 \Illuminate\Support\Facades\Log::warning('No admin user found to send notification.');
             }

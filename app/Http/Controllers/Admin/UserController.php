@@ -55,6 +55,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
             'role' => ['required', 'in:admin,customer'],
@@ -62,6 +63,7 @@ class UserController extends Controller
 
         \App\Models\User::create([
             'name' => $validated['name'],
+            'lastname' => $validated['lastname'],
             'email' => $validated['email'],
             'password' => $validated['password'],
             'role' => $validated['role'],
@@ -97,12 +99,14 @@ class UserController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'role' => ['required', 'in:admin,customer'],
             'password' => ['nullable', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ]);
 
         $user->name = $validated['name'];
+        $user->lastname = $validated['lastname'];
         $user->email = $validated['email'];
         $user->role = $validated['role'];
 
@@ -139,6 +143,7 @@ class UserController extends Controller
             $searchValue = $request->input('search.value');
             $query->where(function ($q) use ($searchValue) {
                 $q->where('name', 'like', "%{$searchValue}%")
+                    ->orWhere('lastname', 'like', "%{$searchValue}%")
                     ->orWhere('email', 'like', "%{$searchValue}%");
             });
         }
@@ -172,8 +177,8 @@ class UserController extends Controller
 
         // Rol Badge
         $roleBadge = match ($user->role) {
-            'admin' => '<span class="badge bg-light-danger f-12">Admin</span>',
-            'customer' => '<span class="badge bg-light-success f-12">Cliente</span>',
+            'admin' => '<span class="badge bg-light-danger f-12"><i class="ti ti-shield-check me-1"></i>Admin</span>',
+            'customer' => '<span class="badge bg-light-success f-12"><i class="ti ti-user me-1"></i>Cliente</span>',
             default => '<span class="badge bg-light-secondary f-12">'.$user->role.'</span>',
         };
 
@@ -190,7 +195,7 @@ class UserController extends Controller
                 <button type="button" class="btn btn-outline-danger delete-user-btn"
                     data-user-id="'.$user->id.'"
                     data-action-url="'.$deleteUrl.'"
-                    data-user-name="'.$user->name.'">
+                    data-user-name="'.$user->name.' '.$user->lastname.'">
                     <i class="ti ti-trash"></i>
                 </button>';
         }
@@ -200,7 +205,7 @@ class UserController extends Controller
         return [
             'id' => $user->id,
             'avatar' => $avatar,
-            'name' => '<h6 class="mb-0">'.$user->name.'</h6>',
+            'name' => '<h6 class="mb-0">'.$user->name.' '.$user->lastname.'</h6>',
             'email' => $user->email,
             'role' => $roleBadge,
             'created_at' => $user->created_at->format('d/m/Y'),

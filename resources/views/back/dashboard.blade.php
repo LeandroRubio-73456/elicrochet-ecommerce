@@ -6,7 +6,7 @@
 
     <div class="row">
         <!-- KPIs -->
-        <div class="col-md-6 col-xl-4">
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Usuarios Totales</h6>
@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-4">
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Total Órdenes</h6>
@@ -22,11 +22,36 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-4">
+        <div class="col-md-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Ventas Totales</h6>
                     <h4 class="mb-0">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti ti-currency-dollar text-success float-end opacity-50"></i></h4>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Balance -->
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="mb-2 f-w-400 text-muted">Balance de Estados</h6>
+                    <div class="d-flex justify-content-between text-center mt-3">
+                        <div>
+                            <h5 class="fw-bold text-warning mb-0">{{ $pendingCount }}</h5>
+                            <small class="text-muted f-10">Pendientes</small>
+                        </div>
+                        <div class="vr opacity-25"></div>
+                        <div>
+                            <h5 class="fw-bold text-info mb-0">{{ $workingCount }}</h5>
+                            <small class="text-muted f-10">Proceso</small>
+                        </div>
+                        <div class="vr opacity-25"></div>
+                        <div>
+                            <h5 class="fw-bold text-success mb-0">{{ $paidCount }}</h5>
+                            <small class="text-muted f-10">Listos</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

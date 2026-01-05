@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('custom-order.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('custom-order.store') }}" method="POST" enctype="multipart/form-data" id="customOrderForm">
                         @csrf
 
                         <!-- Datos del Cliente -->
@@ -79,10 +79,33 @@
                             <div class="form-text">Puedes subir fotos, bocetos o ejemplos de internet.</div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5">
-                            <i class="ti ti-send me-2"></i> Enviar Solicitud
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5" id="btnSubmit">
+                            <span class="d-none spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span id="btnText"><i class="ti ti-send me-2"></i> Enviar Solicitud</span>
                         </button>
                     </form>
+
+                    <script>
+                        document.getElementById('customOrderForm').addEventListener('submit', function(e) {
+                            var btn = document.getElementById('btnSubmit');
+                            // Prevent double submission if already disabled
+                            if (btn.disabled) {
+                                e.preventDefault();
+                                return;
+                            }
+                            
+                            var spinner = btn.querySelector('.spinner-border');
+                            var text = document.getElementById('btnText');
+                            
+                            // Disable immediately
+                            btn.disabled = true;
+                            btn.style.pointerEvents = 'none'; // Extra safety
+                            btn.classList.add('opacity-75');
+
+                            spinner.classList.remove('d-none');
+                            text.textContent = 'Enviando...';
+                        });
+                    </script>
                 </div>
             </div>
         </div>

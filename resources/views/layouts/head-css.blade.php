@@ -1,23 +1,17 @@
 <!-- [Google Font] Family -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
-<!-- [Tabler Icons] Local -->
+<!-- [Tabler Icons] Preload & Local -->
+<link rel="preload" href="{{ asset('assets/css/libs/fonts/tabler-icons.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ asset('assets/css/libs/tabler-icons.min.css') }}">
-<!-- [Feather Icons] CDN Fallback -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.css">
-<!-- [Font Awesome Icons] CDN Fallback -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<!-- [Material Icons] CDN Fallback -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <!-- Animate.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
+<link rel="stylesheet" href="{{ asset('assets/css/plugins/animate.min.css') }}"/>
 
 <!-- [Template CSS Files] -->
-<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link">
+<link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}" id="main-style-link">
 <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
 <!-- DataTables Bootstrap 5 CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="{{ asset('assets/css/plugins/dataTables.bootstrap5.min.css') }}">
 
 <style>
     /* Custom Design Tweaks */
@@ -98,6 +92,7 @@
         src: url('{{ asset('assets/css/libs/fonts/tabler-icons.woff2') }}') format('woff2'),
              url('{{ asset('assets/css/libs/fonts/tabler-icons.woff') }}') format('woff'),
              url('{{ asset('assets/css/libs/fonts/tabler-icons.ttf') }}') format('truetype');
+        font-display: swap;
     }
 
     .ti { 

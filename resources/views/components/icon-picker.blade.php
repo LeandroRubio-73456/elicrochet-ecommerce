@@ -2,64 +2,77 @@
 
 @php
     $icons = [
-        // Animales
-        'ti ti-heart',          // Para "Animales Adorables" o "Favoritos"
-        'ti ti-mood-smile',     // Para "Animales Divertidos" (face-smile -> mood-smile in v2)
-        'ti ti-sparkles',       // Para "Animales Mágicos" (shine -> sparkles)
+        // Muñecos / Infantil
+        'ti ti-horse-toy' => 'Juguete / Caballito',
+        'ti ti-robot' => 'Robot / Muñeco',
+        'ti ti-alien' => 'Alien / Fantasía',
+        'ti ti-ghost' => 'Fantasma / Halloween',
+        'ti ti-cat' => 'Gato / Animales',
+        'ti ti-mood-smile' => 'Carita Feliz',
+        'ti ti-baby-carriage' => 'Bebés',
         
-        // Personajes/Creaturas
-        'ti ti-crown',          // Para "Princesas", "Reyes"
-        'ti ti-music',          // Para "Músicos"
+        // Tejido / Costura
+        'ti ti-brand-yarn' => 'Ovillo / Lana',
+        'ti ti-needle-thread' => 'Aguja e Hilo',
+        'ti ti-needle' => 'Aguja de Tejer',
+        'ti ti-cut' => 'Tijeras',
+        'ti ti-ruler-2' => 'Medidas / Regla',
+        'ti ti-palette' => 'Colores',
+        'ti ti-hanger' => 'Ropa / Vestuario',
+        'ti ti-shirt' => 'Prenda Tejida',
         
-        // Accesorios/Decoración
-        'ti ti-gift',           // Para "Regalos"
-        'ti ti-tag',            // Para "Ofertas"
-        'ti ti-star',           // Para "Destacados"
-        'ti ti-bell',           // Para "Navidad"
-        
-        // Herramientas/Materiales
-        'ti ti-palette',        // Para "Colores"
-        'ti ti-cut',            // Para "Herramientas"
-        'ti ti-ruler-2',        // Para "Patrones" (ruler-pencil -> ruler-2)
-        'ti ti-bucket',         // Para "Tintes" (paint-bucket -> bucket)
-        
-        // Kits/Paquetes
-        'ti ti-home',           // Para "Kits Hogar"
-        'ti ti-trophy',         // Para "Kits Premio" (cup -> trophy)
-        
-        // Estilos/Técnicas
-        'ti ti-camera',         // Para "Fotografía"
-        'ti ti-photo',          // Para "Diseños" (image -> photo)
-        'ti ti-wand',           // Para "Mágico"
-        'ti ti-world',          // Para "Internacional"
-        
-        // Temporalidad
-        'ti ti-brain',          // Para "Personalizados" (thought -> brain)
-        'ti ti-pinned',         // Para "Colección" (pin -> pinned)
+        // Destacados / Otros
+        'ti ti-star' => 'Estrella / Destacado',
+        'ti ti-heart' => 'Corazón / Amor',
+        'ti ti-gift' => 'Regalo',
+        'ti ti-shopping-cart' => 'Venta / Pedido',
+        'ti ti-truck-delivery' => 'Envío',
+        'ti ti-package' => 'Paquete'
     ];
 @endphp
 
-<fieldset class="mb-3">
-    <legend class="form-label fw-bold p-0 mb-2 border-0" style="font-size: 1rem;">{{ $label }}</legend>
-    <div class="d-flex flex-wrap gap-2">
-        @foreach($icons as $icon)
-            <div class="icon-option">
+<fieldset class="mb-4">
+    <legend class="form-label fw-bold p-0 mb-3 border-0">{{ $label }}</legend>
+    
+    <div class="d-flex flex-wrap gap-3">
+        @foreach($icons as $icon => $title)
+            <div class="icon-option position-relative" title="{{ $title }}">
                 <input type="radio"
                        name="{{ $name }}"
-                       id="icon_{{ $icon }}"
+                       id="icon_{{ str_replace(' ', '_', $icon) }}"
                        value="{{ $icon }}"
                        class="btn-check"
                        {{ old($name, $value) == $icon ? 'checked' : '' }}>
                 <label class="btn btn-outline-primary d-flex align-items-center justify-content-center"
-                       for="icon_{{ $icon }}" 
-                       style="width: 45px; height: 45px; font-size: 1.25rem;">
+                       for="icon_{{ str_replace(' ', '_', $icon) }}" 
+                       style="width: 50px; height: 50px; font-size: 1.4rem; cursor: pointer;"
+                       data-bs-toggle="tooltip" 
+                       data-bs-placement="top"
+                       title="{{ $title }}">
                     <i class="{{ $icon }}"></i>
                 </label>
             </div>
         @endforeach
     </div>
-    <div class="form-text">Selecciona un icono que represente visualmente esta categoría en la tienda.</div>
+    
+    <div class="form-text mt-2">
+        <i class="ti ti-{{ $value ?: 'help-circle' }} me-1"></i>
+        {{ $value ? "Seleccionado: " . ($icons[$value] ?? $value) : "Selecciona un icono para esta categoría" }}
+    </div>
+    
     @error($name)
         <div class="text-danger small mt-1">{{ $message }}</div>
     @enderror
 </fieldset>
+
+@push('scripts')
+<script>
+    // Inicializar tooltips de Bootstrap si los usas
+    if (typeof bootstrap !== 'undefined') {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }
+</script>
+@endpush

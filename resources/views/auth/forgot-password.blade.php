@@ -8,17 +8,14 @@
   @include('layouts.loader')
   
   <div class="auth-main">
-    <div class="auth-wrapper v3">
-      <div class="auth-form">
-        <div class="auth-header">
-          <a href="{{ route('home') }}">
-            <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 50px;">
-          </a>
-        </div>
-        
-        <div class="card my-5">
-          <div class="card-body">
+    <div class="auth-wrapper v3 d-flex justify-content-center align-items-center min-vh-100 py-5">
+      <div class="auth-form col-12 col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5">
             <div class="text-center mb-4">
+                <a href="{{ route('home') }}" class="d-block mb-4">
+                    <img src="{{ asset('assets/images/Logo.webp') }}" alt="EliCrochet" class="img-fluid" style="height: 60px;">
+                </a>
                 <div class="avatar-lg bg-light-warning text-warning mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 60px; height: 60px;">
                    <i class="ti ti-lock-question fs-2"></i>
                 </div>
@@ -66,18 +63,10 @@
           </div>
         </div>
         
-        <div class="auth-footer row">
-            <div class="col my-1">
-              <p class="m-0">© {{ date('Y') }} <a href="#">{{ config('app.name', 'Laravel') }}</a></p>
-            </div>
-            <div class="col-auto my-1">
-              <ul class="list-inline footer-link mb-0">
-                <li class="list-inline-item"><a href="{{ route('home') }}">Inicio</a></li>
-                <li class="list-inline-item"><a href="#">Privacidad</a></li>
-                <li class="list-inline-item"><a href="{{ route('contact') }}">Contacto</a></li>
-              </ul>
-            </div>
-          </div>
+        <!-- Footer -->
+        <div class="text-center mt-4 text-muted small">
+            <p class="mb-0">© {{ date('Y') }} {{ config('app.name', 'EliCrochet') }}. Todos los derechos reservados.</p>
+        </div>
       </div>
     </div>
   </div>

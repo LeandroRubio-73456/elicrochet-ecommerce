@@ -21,6 +21,21 @@
                         </div>
                     @endif
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="ti ti-alert-circle me-2 f-18"></i>
+                                <strong class="f-16">Por favor, corrige los siguientes errores:</strong>
+                            </div>
+                            <ul class="mb-0 mt-2">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -91,7 +106,7 @@
                                 <div class="mb-3">
                                     <span class="form-label fw-bold d-block mb-2">Estado</span>
                                     <div class="row g-2">
-                                        @foreach (['draft' => ['Borrador','warning','pencil'], 'active' => ['Activo','success','eye'], 'discontinued' => ['Descontinuado','secondary','circle-off'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
+                                        @foreach (['active' => ['Activo','success','eye'], 'draft' => ['Inactivo','secondary','toggle-left'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
                                             <div class="col-6">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="status" id="status_{{ $val }}" value="{{ $val }}" {{ old('status', $product->status) == $val ? 'checked' : '' }}>

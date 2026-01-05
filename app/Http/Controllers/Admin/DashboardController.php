@@ -22,6 +22,25 @@ class DashboardController extends Controller
         // 4. Recent Reviews (Top 5)
         $recentReviews = \App\Models\Review::with(['user', 'product'])->orderBy('created_at', 'desc')->take(5)->get();
 
-        return view('back.dashboard', compact('totalUsers', 'totalOrders', 'totalSales', 'recentOrders', 'lowStockProducts', 'recentReviews'));
+        // Status Balance (KPI)
+        $statusCounts = \App\Models\Order::select('status', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $pendingCount = $statusCounts['pending_payment'] ?? 0;
+        $workingCount = ($statusCounts['working'] ?? 0) + ($statusCounts['ready_to_ship'] ?? 0);
+        $paidCount = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0) + ($statusCounts['delivered'] ?? 0);
+
+        return view('back.dashboard', compact(
+            'totalUsers', 
+            'totalOrders', 
+            'totalSales', 
+            'recentOrders', 
+            'lowStockProducts', 
+            'recentReviews',
+            'pendingCount',
+            'workingCount',
+            'paidCount'
+        ));
     }
 }

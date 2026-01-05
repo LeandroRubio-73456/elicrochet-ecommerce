@@ -6,6 +6,9 @@
     @include('layouts.breadcrumb', [
         'item' => 'Dashboard',
         'active' => 'Usuarios',
+        'item_url' => route('admin.dashboard'),
+        'item_icon' => 'ti ti-smart-home',
+        'active_icon' => 'ti ti-users'
     ])
 
     <div>
@@ -24,8 +27,8 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Usuario</th>
-                                <th>Email</th>
+                                <th><i class="ti ti-user me-1"></i> Usuario</th>
+                                <th><i class="ti ti-mail me-1"></i> Email</th>
                                 <th>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>Rol</span>
@@ -33,9 +36,9 @@
                                             <i class="ti ti-filter text-muted cursor-pointer"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="admin">Admin</a></li>
-                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="customer">Cliente</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value=""><i class="ti ti-list me-1"></i> Todos</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="admin"><i class="ti ti-shield-check me-1 text-danger"></i> Admin</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="customer"><i class="ti ti-user me-1 text-success"></i> Cliente</a></li>
                                         </ul>
                                     </div>
                                 </th>
@@ -58,6 +61,9 @@
     <script type="module">
         $(document).ready(function() {
             var table = $('#users-table').DataTable({
+                language: {
+                    url: '{{ asset("assets/json/datatables-es.json") }}'
+                },
                 processing: true,
                 serverSide: true,
                 orderCellsTop: false,

@@ -27,7 +27,7 @@
                             <!-- Email -->
                             <div class="form-group mb-3">
                                 <label for="email" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email" placeholder="correo@ejemplo.com" value="{{ old('email') }}" required autofocus autocomplete="username">
+                                <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
                                 @error('email')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -37,7 +37,7 @@
                             <div class="form-group mb-3">
                                 <label for="password" class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="current-password">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="ti ti-eye"></i>
                                     </button>

@@ -49,6 +49,12 @@ class OrderController extends Controller
         return view('back.orders.show', compact('order'));
     }
 
+    public function generateLabel(Order $order)
+    {
+        $order->load(['user', 'address']);
+        return view('back.orders.label', compact('order'));
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -68,8 +74,11 @@ class OrderController extends Controller
             $order->status = $request->status;
             $order->save();
 
+            // NOTE: We do NOT sync status to child orders anymore.
+            // Child orders remain in STATUS_LINKED forever per user request.
+
             return redirect()->route('admin.orders.show', $order)
-                ->with('success', 'Orden actualizada correctamente.');
+                ->with('success', 'Orden actualizada correctamente (y pedidos vinculados sincronizados).');
         });
     }
 
@@ -181,7 +190,7 @@ class OrderController extends Controller
                 $query->orderBy($cols[$colIdx], $dir);
             }
         } else {
-            // Default sorting: Newest first
+            // Default sorting: Newest first (by ID as requested)
             $query->orderBy('id', 'desc');
         }
     }
@@ -198,6 +207,8 @@ class OrderController extends Controller
             'shipped' => '<span class="badge bg-light-success text-success f-12">Enviado</span>',
             'completed' => '<span class="badge bg-light-success text-success f-12">Completado</span>',
             'cancelled' => '<span class="badge bg-light-danger text-danger f-12">Cancelado</span>',
+            'in_cart' => '<span class="badge bg-light-primary text-primary f-12">En Carrito</span>',
+            'linked' => '<span class="badge bg-light-info text-info f-12">Enlazado</span>',
             default => '<span class="badge bg-light-secondary text-secondary f-12">'.ucfirst($order->status).'</span>'
         };
 

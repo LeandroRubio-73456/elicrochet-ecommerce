@@ -34,12 +34,23 @@ class HomeController extends Controller
     public function shop(Request $request)
     {
         // 1. Obtener categorías
-        $categories = Category::withCount('products')
+        $categories = Category::withCount(['products' => function ($query) {
+            $query->where('status', 'active');
+        }])
             ->where('status', 'active')
             ->get();
 
         // 2. Query base de productos
         $query = Product::with('images')->where('status', 'active');
+
+        // 2.0 Búsqueda
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
 
         // 2.1 Filtro de Precios
         if ($request->filled('min_price')) {
@@ -90,6 +101,24 @@ class HomeController extends Controller
         return view('front.contact');
     }
 
+    public function storeContact(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'subject' => 'required|string|in:general,custom_order,order_status,wholesale',
+            'message' => 'required|string|max:1000',
+            'policy_check' => 'accepted',
+        ]);
+
+        // Here you would typically send an email. 
+        // Mail::to('admin@elicrochet.com')->send(new ContactFormMail($request->validated()));
+
+        return back()->with('success', '¡Gracias por contactarnos! Tu mensaje ha sido enviado correctamente.');
+    }
+
     public function single(string $slug)
     {
         // 1. Buscar el producto por su slug. Si no existe, lanza un error 404
@@ -115,7 +144,9 @@ class HomeController extends Controller
         $category = Category::where('slug', $slug)->firstOrFail();
 
         // 2. Obtener TODAS las categorías para el sidebar
-        $categories = Category::withCount('products')
+        $categories = Category::withCount(['products' => function ($query) {
+            $query->where('status', 'active');
+        }])
             ->where('status', 'active')
             ->get();
 
@@ -123,6 +154,15 @@ class HomeController extends Controller
         $query = Product::where('category_id', $category->id)
             ->with('images')
             ->where('status', 'active');
+
+        // 3.0 Búsqueda dentro de categoría
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
 
         // 3.1 Filtro de Precios
         if ($request->filled('min_price')) {

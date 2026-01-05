@@ -1,5 +1,11 @@
 <div class="filters-wrapper">
+    <!-- Preserve search query when filtering -->
+    @if(request('search'))
+        <input type="hidden" name="search" value="{{ request('search') }}">
+    @endif
     
+    <!-- Categories Filter -->
+
     <!-- Categories Filter -->
     <div class="filter-card">
         <h3 class="filter-title">Categorías</h3>

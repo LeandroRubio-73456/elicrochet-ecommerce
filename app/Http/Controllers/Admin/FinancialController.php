@@ -21,15 +21,6 @@ class FinancialController extends Controller
         // 2. Orders last 30 days
         $ordersLast30Days = Order::where('created_at', '>=', Carbon::now()->subDays(30))->count();
 
-        // 3. Status Balance (KPI)
-        $statusCounts = Order::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status');
-
-        $pendingCount = $statusCounts['pending_payment'] ?? 0;
-        $workingCount = ($statusCounts['working'] ?? 0) + ($statusCounts['ready_to_ship'] ?? 0);
-        $paidCount = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0);
-
         // 4. Chart Data (Sales per Month - Last 6 Months)
         $dateField = DB::getDriverName() === 'sqlite'
             ? "strftime('%Y-%m', created_at)"
@@ -48,14 +39,17 @@ class FinancialController extends Controller
         $chartLabels = $salesData->pluck('months');
         $chartValues = $salesData->pluck('sum');
 
+        // 5. Sales History Table (Paid/Completed Orders)
+        $salesHistory = Order::whereIn('status', ['paid', 'completed', 'shipped', 'delivered'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
         return view('back.finance.index', compact(
             'totalIncome',
             'ordersLast30Days',
-            'pendingCount',
-            'workingCount',
-            'paidCount',
             'chartLabels',
-            'chartValues'
+            'chartValues',
+            'salesHistory'
         ));
     }
 
@@ -64,7 +58,7 @@ class FinancialController extends Controller
      */
     public function export()
     {
-        $fileName = 'financial_report_'.date('Y-m-d_H-i').'.csv';
+        $fileName = 'elicrochet_ventas_'.date('Y-m-d_H-i').'.csv';
         $orders = Order::orderBy('id', 'desc')->get();
 
         $headers = [
@@ -79,7 +73,16 @@ class FinancialController extends Controller
 
         $callback = function () use ($orders, $columns) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
+            
+            // Add BOM for Excel UTF-8 compatibility
+            fputs($file, "\xEF\xBB\xBF");
+            
+            // Title Row
+            fputcsv($file, ['Reporte Financiero - EliCrochet'], ';');
+            fputcsv($file, [], ';'); // Empty row
+
+            // Headers
+            fputcsv($file, $columns, ';');
 
             foreach ($orders as $order) {
                 $row['ID'] = $order->id;
@@ -90,7 +93,7 @@ class FinancialController extends Controller
                 $row['Total'] = $order->total_amount;
                 $row['Tipo'] = ucfirst($order->type ?? 'Stock');
 
-                fputcsv($file, [$row['ID'], $row['Cliente'], $row['Email'], $row['Fecha'], $row['Estado'], $row['Total'], $row['Tipo']]);
+                fputcsv($file, [$row['ID'], $row['Cliente'], $row['Email'], $row['Fecha'], $row['Estado'], $row['Total'], $row['Tipo']], ';');
             }
 
             fclose($file);

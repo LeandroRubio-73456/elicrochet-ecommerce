@@ -29,7 +29,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label for="name" class="form-label">Nombres</label>
-                                        <input type="text" id="name" name="name" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="María" value="{{ old('name') }}" required autofocus autocomplete="given-name">
+                                        <input type="text" id="name" name="name" class="form-control form-control-lg @error('name') is-invalid @enderror" value="{{ old('name') }}" required autofocus autocomplete="given-name">
                                         @error('name')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
@@ -39,7 +39,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label for="lastname" class="form-label">Apellidos</label>
-                                        <input type="text" id="lastname" name="lastname" class="form-control form-control-lg @error('lastname') is-invalid @enderror" placeholder="Pérez" value="{{ old('lastname') }}" required autocomplete="family-name">
+                                        <input type="text" id="lastname" name="lastname" class="form-control form-control-lg @error('lastname') is-invalid @enderror" value="{{ old('lastname') }}" required autocomplete="family-name">
                                         @error('lastname')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
@@ -50,7 +50,7 @@
                             <!-- Email -->
                             <div class="form-group mb-3">
                                 <label for="email" class="form-label">Correo Electrónico</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="correo@ejemplo.com" value="{{ old('email') }}" required autocomplete="username">
+                                <input type="email" id="email" name="email" class="form-control form-control-lg @error('email') is-invalid @enderror" value="{{ old('email') }}" required autocomplete="username">
                                 @error('email')
                                   <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -60,7 +60,7 @@
                             <div class="form-group mb-3">
                                 <label for="password" class="form-label">Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" id="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="••••••••" required autocomplete="new-password">
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" required autocomplete="new-password">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="ti ti-eye"></i>
                                     </button>
@@ -75,14 +75,14 @@
                             <!-- Confirm Password -->
                             <div class="form-group mb-3">
                                 <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
-                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-control-lg" placeholder="••••••••" required autocomplete="new-password">
+                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-control-lg" required autocomplete="new-password">
                             </div>
               
                             <!-- Términos -->
                             <div class="form-check mt-3">
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" required>
                                 <label class="form-check-label text-muted small" for="flexCheckChecked">
-                                    Acepto los <a href="#" class="text-primary">Términos</a> y <a href="#" class="text-primary">Política de Privacidad</a>
+                                    Acepto los <a href="{{ route('legal.terms') }}" target="_blank" class="text-primary">Términos</a> y <a href="{{ route('legal.terms') }}#privacy" target="_blank" class="text-primary">Política de Privacidad</a>
                                 </label>
                             </div>
               

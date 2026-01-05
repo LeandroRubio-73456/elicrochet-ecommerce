@@ -5,7 +5,7 @@
 <section class="hero-modern">
     <div class="container">
         <div class="row align-items-center min-vh-80 py-5">
-            <div class="col-lg-6 mb-5 mb-lg-0">
+            <div class="col-lg-5 mb-5 mb-lg-0">
                 <div class="hero-content">
                     <span class="badge-custom mb-4">
                         <i class="ti ti-heart"></i>
@@ -41,16 +41,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-7">
                 <div class="hero-image-container">
                     <div class="hero-image-wrapper">
                         <picture>
-                            <source media="(max-width: 450px)" srcset="{{ asset('assets/images/banner-mobile.avif') }}" width="450" height="400">
-                            <source media="(min-width: 451px)" srcset="{{ asset('assets/images/banner.avif') }}" width="780" height="584">
-                            <img src="{{ asset('assets/images/banner.avif') }}"
+                            <source media="(min-width: 451px)" srcset="{{ asset('assets/images/hero-banner.webp') }}" width="780" height="584">
+                            <img src="{{ asset('assets/images/hero-banner.webp') }}"
                                  alt="Amigurumis artesanales" 
-                                 width="780"
-                                 height="584"
                                  class="hero-image img-fluid"
                                  loading="eager"
                                  fetchpriority="high">
@@ -85,8 +82,10 @@
         <x-section-header label="Destacados" title="Nuestras favoritas" :link="route('shop')" linkText="Ver todo" />
 
         <div class="products-grid">
-            @forelse($featuredProducts as $product)
-                <x-product-card :product="$product" />
+            @forelse($featuredProducts as $index => $product)
+                <div class="wow fadeInUp" data-wow-delay="{{ $index * 0.1 }}s">
+                    <x-product-card :product="$product" />
+                </div>
             @empty
             <div class="col-span-full text-center py-5">
                 <p class="text-muted">No hay productos destacados</p>
@@ -99,31 +98,37 @@
 <!-- Custom Orders CTA - Minimalista -->
 <section class="section-padding bg-soft">
     <div class="container">
-        <div class="cta-card-modern p-5">
+        <div class="cta-card-modern p-5 wow fadeInUp w-100 d-block" data-wow-delay="0.2s">
             <div class="row align-items-center">
-                <div class="col-lg-2 col-md-3 text-center mb-4 mb-md-0">
-                     <img src="{{ asset('assets/images/PedidoPersonalizado.webp') }}"
-                          alt="Personalización"
-                          width="120"
-                          height="120"
-                          loading="lazy"
-                          class="img-fluid">
-                </div>
-                <div class="col-lg-10 col-md-10">
-                    <div class="cta-content text-center text-md-start">
-                        <span class="cta-badge mb-3">Pedidos personalizados</span>
-                        <h2 class="cta-title mb-3">¿Tienes algo en mente?</h2>
-                        <p class="cta-text text-black mb-4">
-                            Creamos piezas únicas según tu visión. Desde diseños personalizados hasta colores específicos, hacemos realidad tus ideas.
-                        </p>
-                        <div class="d-flex align-items-center gap-4 flex-wrap justify-content-center justify-content-md-start">
-                            <a href="{{ route('customer.custom.create') }}" class="btn-modern btn-primary">
-                                Solicitar ahora
-                                <i class="ti ti-arrow-right"></i>
-                            </a>
-                            <a href="{{ route('contact') }}" class="btn-modern btn-ghost">Contactar</a>
+                <div class="col-lg-6 col-md-12">
+                    <div class="d-flex flex-column flex-lg-row align-items-center text-center text-lg-start mb-4 mb-lg-0">
+                        <div class="flex-shrink-0 mb-4 mb-lg-0 me-lg-4">
+                             <img src="{{ asset('assets/images/PedidoPersonalizado.webp') }}"
+                                  alt="Personalización"
+                                  class="img-fluid" style="max-height: 120px;">
+                        </div>
+                        
+                        <div class="cta-content flex-grow-1">
+                            <span class="cta-badge mb-3">Pedidos personalizados</span>
+                            <h2 class="cta-title mb-3">¿Tienes algo en mente?</h2>
+                            <p class="cta-text text-black mb-4">
+                                Creamos piezas únicas según tu visión. Desde diseños personalizados hasta colores específicos, hacemos realidad tus ideas.
+                            </p>
+                            <div class="d-flex align-items-center gap-4 flex-wrap justify-content-center justify-content-lg-start">
+                                <a href="{{ route('customer.custom.create') }}" class="btn-modern btn-primary">
+                                    Solicitar ahora
+                                    <i class="ti ti-arrow-right"></i>
+                                </a>
+                                <a href="{{ route('contact') }}" class="btn-modern btn-ghost">Contactar</a>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <img src="{{ asset('assets/images/banner-cotizacion.webp') }}" 
+                         alt="Pedido Personalizado" 
+                         class="img-fluid"
+                         style="object-fit: contain; border-radius: 10px;">
                 </div>
             </div>
         </div>

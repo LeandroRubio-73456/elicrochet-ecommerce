@@ -23,6 +23,7 @@ class Order extends Model
         'shipping_address', // If storing snapshot directly
         'shipping_city',
         'shipping_zip',
+        'shipping_cost',
     ];
 
     // Types
@@ -50,6 +51,8 @@ class Order extends Model
     const STATUS_COMPLETED = 'completed';
 
     const STATUS_CANCELLED = 'cancelled';
+
+    const STATUS_LINKED = 'linked'; // Custom order linked to a Master Parent Order
 
     protected $casts = [
         'total_amount' => 'decimal:2',
@@ -85,7 +88,12 @@ class Order extends Model
     {
         return $this->items->sum(function ($item) {
             return $item->price * $item->quantity;
-        });
+        }) + $this->shipping_cost;
+    }
+
+    public function parentItem()
+    {
+        return $this->hasOne(OrderItem::class, 'custom_order_id');
     }
 
     // --- State Machine Logic ---
@@ -95,6 +103,11 @@ class Order extends Model
      */
     public function canTransitionTo($targetStatus)
     {
+        // 0. Linked orders cannot be changed directly (they sync with parent)
+        if ($this->status === self::STATUS_LINKED) {
+            return false;
+        }
+
         // 1. Cancelled orders cannot change
         if ($this->status === self::STATUS_CANCELLED) {
             return false;

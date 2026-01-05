@@ -13,11 +13,16 @@ Route::get('/bestseller', [HomeController::class, 'bestseller'])->name('bestsell
 Route::get('/producto/{slug}', [HomeController::class, 'single'])->name('product.show');
 Route::get('/categoria/{slug}', [HomeController::class, 'categoryShow'])->name('category.show');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'storeContact'])->name('contact.store');
+
+Route::view('/devoluciones', 'front.legal.returns')->name('legal.returns');
+Route::view('/terminos-condiciones', 'front.legal.terms')->name('legal.terms');
 
 // Rutas del carrito (PROTEGIDAS por auth) - Se mantienen igual por ahora
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
@@ -54,6 +59,7 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+        Route::get('/orders/{order}/label', [\App\Http\Controllers\Admin\OrderController::class, 'generateLabel'])->name('orders.label');
 
         // Eliminar imagen producto
         Route::delete('/products/images/{productImage}', [\App\Http\Controllers\ProductImageController::class, 'destroy'])->name('products.images.destroy');

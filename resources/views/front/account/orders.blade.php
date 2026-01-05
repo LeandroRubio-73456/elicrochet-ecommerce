@@ -38,6 +38,9 @@
 <script>
     $(document).ready(function() {
         $('#users-orders-table').DataTable({
+            language: {
+                url: '{{ asset("assets/json/datatables-es.json") }}'
+            },
             processing: true,
             serverSide: true,
             ajax: "{{ route('account.orders') }}",

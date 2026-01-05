@@ -61,7 +61,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'status' => 'required|in:draft,active,out_of_stock,discontinued,archived',
+            'status' => 'required|in:draft,active,archived',
             'is_featured' => 'nullable|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5048',
             'specs' => 'nullable|array', // Basic Validation
@@ -85,6 +85,10 @@ class ProductController extends Controller
             while (Product::where('slug', $validated['slug'])->exists()) {
                 $validated['slug'] = $originalSlug.'-'.$count++;
             }
+        }
+
+        if ((int) $validated['stock'] <= 0) {
+            $validated['status'] = 'draft';
         }
 
         $product = Product::create($validated);
@@ -121,7 +125,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'status' => 'required|in:draft,active,out_of_stock,discontinued,archived',
+            'status' => 'required|in:draft,active,archived',
             'is_featured' => 'nullable|boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5048',
             'specs' => 'nullable|array',
@@ -142,6 +146,10 @@ class ProductController extends Controller
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']);
+        }
+
+        if ((int) $validated['stock'] <= 0) {
+            $validated['status'] = 'draft';
         }
 
         $product->update($validated);
@@ -239,7 +247,7 @@ class ProductController extends Controller
 
         // Estado (Badge)
         $statusBadge = match ($product->status) {
-            'draft' => '<span class="badge bg-light-secondary f-12">Borrador</span>',
+            'draft' => '<span class="badge bg-light-secondary f-12">Inactivo</span>',
             'active' => '<span class="badge bg-light-success f-12">Activo</span>',
             'out_of_stock' => '<span class="badge bg-light-danger f-12">Sin Stock</span>',
             'discontinued' => '<span class="badge bg-light-dark f-12">Descontinuado</span>',

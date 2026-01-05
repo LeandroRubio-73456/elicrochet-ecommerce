@@ -118,8 +118,9 @@
 
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a href="{{ route('customer.dashboard') }}" class="btn btn-light border">Cancelar</a>
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="ti ti-send me-2"></i> Enviar Solicitud
+                        <button type="submit" class="btn btn-primary px-4" id="btnSubmit">
+                            <span class="d-none spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span id="btnText"><i class="ti ti-send me-2"></i> Enviar Solicitud</span>
                         </button>
                     </div>
                 </form>
@@ -127,4 +128,27 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.querySelector('form[action="{{ route('customer.custom.store') }}"]').addEventListener('submit', function(e) {
+        var btn = document.getElementById('btnSubmit');
+        // Prevent double submission if already disabled
+        if (btn.disabled) {
+            e.preventDefault();
+            return;
+        }
+
+        var spinner = btn.querySelector('.spinner-border');
+        var text = document.getElementById('btnText');
+        
+        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
+        btn.classList.add('opacity-75');
+        
+        spinner.classList.remove('d-none');
+        text.textContent = 'Enviando...';
+    });
+</script>
+@endpush
 @endsection

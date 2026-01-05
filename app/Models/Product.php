@@ -52,10 +52,8 @@ class Product extends Model
     public function getStatusBadgeAttribute()
     {
         $badges = [
-            'draft' => ['warning', 'Borrador', 'ti-edit'],
+            'draft' => ['secondary', 'Inactivo', 'ti-toggle-left'],
             'active' => ['success', 'Activo', 'ti-eye'],
-            'out_of_stock' => ['danger', 'Agotado', 'ti-box'],
-            'discontinued' => ['secondary', 'Descontinuado', 'ti-circle-off'],
             'archived' => ['dark', 'Archivado', 'ti-archive'],
         ];
 

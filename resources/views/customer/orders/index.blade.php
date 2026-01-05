@@ -46,9 +46,10 @@
                                     $badgeClass = match($order->status) {
                                         'paid', 'completed', 'shipped' => 'bg-light-success text-success',
                                         'pending_payment', 'quotation' => 'bg-light-warning text-warning',
+                                        'in_cart', \App\Models\Order::STATUS_LINKED => 'bg-light-primary text-primary',
                                         'working', 'processing' => 'bg-light-info text-info',
                                         'cancelled' => 'bg-light-danger text-danger',
-                                        'ready_to_ship' => 'bg-light-primary text-primary',
+                                        'ready_to_ship' => 'bg-light-secondary text-secondary', // Changed to grey/secondary
                                         default => 'bg-light-secondary text-secondary'
                                     };
                                     
@@ -61,21 +62,23 @@
                                         'shipped' => 'Enviado',
                                         'completed' => 'Completado',
                                         'cancelled' => 'Cancelado',
+                                        'in_cart' => 'En Carrito',
+                                        \App\Models\Order::STATUS_LINKED => 'Enlazado',
                                         default => ucwords(str_replace('_', ' ', $order->status))
                                     };
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ $statusLabel }}</span>
                             </td>
                             <td class="text-end pe-4">
-                                <a href="{{ route('customer.orders.show', $order) }}" class="btn btn-sm btn-outline-secondary">
-                                    Ver Detalle
-                                </a>
-                                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" class="d-inline-block ms-1" onsubmit="confirmOrderReceipt(event)">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success text-white" title="Confirmar Recepción">
-                                            <i class="ti ti-check"></i>
-                                        </button>
-                                    </form>
+                                @if($order->status === \App\Models\Order::STATUS_LINKED && $order->parentItem)
+                                    <a href="{{ route('customer.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver Orden Padre">
+                                        <i class="ti ti-external-link"></i> Ver Orden #{{ $order->parentItem->order_id }}
+                                    </a>
+                                @else
+                                    <a href="{{ route('customer.orders.show', $order) }}" class="btn btn-sm btn-outline-secondary">
+                                        Ver Detalle
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -99,25 +102,5 @@
 </div>
 </div>
 
-<script>
-    function confirmOrderReceipt(event) {
-        event.preventDefault();
-        const form = event.target;
-        
-        Swal.fire({
-            title: '¿Confirmar Recepción?',
-            text: "¿Confirmas que has recibido el pedido satisfactoriamente?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, confirmar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
-    }
-</script>
+
 @endsection

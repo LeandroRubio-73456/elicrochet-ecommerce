@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Providers\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {

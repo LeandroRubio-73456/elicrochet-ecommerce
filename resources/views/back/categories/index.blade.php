@@ -34,9 +34,10 @@
                                 <th class="text-center">
                                     <div class="d-flex align-items-center justify-content-center gap-2">
                                         <span>Estado</span>
-                                        <button class="dropdown border-0 bg-transparent p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ti ti-filter text-muted cursor-pointer"></i>
-                                        </button>
+                                        <div class="dropdown">
+                                            <button class="btn border-0 bg-transparent p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="event.stopPropagation()">
+                                                <i class="ti ti-filter text-muted cursor-pointer"></i>
+                                            </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="">Todos</a></li>
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="5" data-value="active">Activo</a></li>
@@ -64,6 +65,9 @@
     <script type="module">
         $(document).ready(function() {
             var table = $('#categories-table').DataTable({
+                language: {
+                    url: '{{ asset("assets/json/datatables-es.json") }}'
+                },
                 processing: true,
                 serverSide: true,
                 orderCellsTop: false,

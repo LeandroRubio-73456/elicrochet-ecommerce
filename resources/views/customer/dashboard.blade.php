@@ -30,6 +30,7 @@
                                     $badgeClass = match($order->status) {
                                         'paid', 'completed', 'shipped' => 'bg-success',
                                         'pending_payment', 'quotation' => 'bg-warning text-dark',
+                                        'in_cart' => 'bg-light-primary text-primary',
                                         'cancelled' => 'bg-danger',
                                         default => 'bg-secondary'
                                     };
@@ -43,6 +44,7 @@
                                         'shipped' => 'Enviado',
                                         'completed' => 'Completado',
                                         'cancelled' => 'Cancelado',
+                                        'in_cart' => 'En Carrito',
                                         default => $order->status
                                     };
                                 @endphp
