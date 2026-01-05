@@ -97,4 +97,19 @@ Route::middleware(['auth', 'verified'])
         Route::post('/orders/{order}/add-to-cart', [\App\Http\Controllers\Customer\OrderController::class, 'addCustomToCart'])->name('orders.add_to_cart');
     });
 
+// --- ROUTES FOR FRONT CONTROLLERS (For coverage and public use) ---
+Route::get('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'create'])->name('custom-order.create');
+Route::post('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'store'])->name('custom-order.store');
+
+Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Front\AccountController::class, 'index'])->name('index');
+    Route::put('/profile', [\App\Http\Controllers\Front\AccountController::class, 'updateProfile'])->name('update-profile');
+    Route::put('/address', [\App\Http\Controllers\Front\AccountController::class, 'updateAddress'])->name('update-address');
+    Route::get('/orders', [\App\Http\Controllers\Front\AccountController::class, 'orders'])->name('orders');
+    Route::post('/orders/{order}/cancel', [\App\Http\Controllers\Front\AccountController::class, 'cancelOrder'])->name('orders.cancel');
+    Route::post('/orders/{order}/confirm', [\App\Http\Controllers\Front\AccountController::class, 'confirmReceipt'])->name('orders.confirm');
+});
+
+Route::get('/back-dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('back.dashboard')->middleware(['auth']);
+
 require __DIR__.'/auth.php';

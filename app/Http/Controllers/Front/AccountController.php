@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Address;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 
 class AccountController extends Controller
 {
@@ -45,6 +44,7 @@ class AccountController extends Controller
         $user = auth()->user();
 
         $addressData = $request->only('street', 'city', 'province', 'postal_code', 'phone', 'details');
+        $addressData['address'] = $request->street; // Legacy field
 
         // Ensure user has an address record
         $address = $user->addresses()->first();
@@ -61,55 +61,73 @@ class AccountController extends Controller
     public function orders(Request $request)
     {
         if ($request->ajax()) {
-            $query = Order::where('user_id', auth()->id())->select('orders.*');
+            $query = Order::where('user_id', auth()->id());
 
-            return DataTables::of($query)
-                ->editColumn('created_at', function ($order) {
-                    return $order->created_at->format('d M Y, H:i');
-                })
-                ->addColumn('status_badge', function ($order) {
-                    return match ($order->status) {
-                        'quotation' => '<span class="badge bg-secondary">Cotización</span>',
-                        'in_review' => '<span class="badge bg-warning">En revisión</span>',
-                        'pending_payment' => '<span class="badge bg-warning">Pend. Pago</span>',
-                        'paid' => '<span class="badge bg-success">Pagado</span>',
-                        'processing' => '<span class="badge bg-primary">Trabajando/Fabricando</span>',
-                        'ready_to_ship' => '<span class="badge bg-info">Listo para envío</span>',
-                        'shipped' => '<span class="badge bg-info">Enviado</span>',
-                        'completed' => '<span class="badge bg-success">Completado</span>',
-                        'cancelled' => '<span class="badge bg-danger">Cancelado</span>',
-                        default => '<span class="badge bg-light text-dark">'.$order->status.'</span>',
-                    };
-                })
-                ->addColumn('actions', function ($order) {
-                    $actions = '';
+            $total = Order::where('user_id', auth()->id())->count();
+            $filtered = $query->count();
 
-                    // View/Details Button (Modal trigger potentially)
-                    // $actions .= '<button class="btn btn-sm btn-icon btn-light-secondary me-2" onclick="showOrderDetails('.$order->id.')"><i class="ti ti-eye"></i></button>';
+            $start = $request->input('start', 0);
+            $length = $request->input('length', 10);
+            $orders = $query->skip($start)->take($length)->latest()->get();
 
-                    // Cancel Action: Only if pending_payment or paid
-                    if (in_array($order->status, ['pending_payment', 'paid', 'quotation'])) {
-                        $actions .= '<form action="'.route('account.orders.cancel', $order).'" method="POST" class="d-inline" onsubmit="return confirm(\'¿Estás seguro de cancelar este pedido?\')">
-                                        '.csrf_field().'
-                                        <button type="submit" class="btn btn-sm btn-danger f-12" title="Cancelar"><i class="ti ti-x"></i></button>
-                                     </form>';
-                    }
+            $data = $orders->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'total_amount' => $order->total_amount,
+                    'status' => $order->status,
+                    'created_at' => $order->created_at->format('d M Y, H:i'),
+                    'status_badge' => $this->getStatusBadge($order),
+                    'actions' => $this->getActions($order),
+                ];
+            });
 
-                    // Confirm Receipt: Only if shipped
-                    if ($order->status === 'shipped') {
-                        $actions .= '<form action="'.route('account.orders.confirm', $order).'" method="POST" class="d-inline ms-1" onsubmit="return confirm(\'¿Confirmas que recibiste el pedido?\')">
-                                        '.csrf_field().'
-                                        <button type="submit" class="btn btn-sm btn-success f-12" title="Confirmar Recepción"><i class="ti ti-check"></i> Recibido</button>
-                                     </form>';
-                    }
-
-                    return $actions;
-                })
-                ->rawColumns(['status_badge', 'actions'])
-                ->make(true);
+            return response()->json([
+                'draw' => intval($request->input('draw')),
+                'recordsTotal' => $total,
+                'recordsFiltered' => $filtered,
+                'data' => $data,
+            ]);
         }
 
         return view('front.account.orders');
+    }
+
+    private function getStatusBadge($order)
+    {
+        return match ($order->status) {
+            'quotation' => '<span class="badge bg-secondary">Cotización</span>',
+            'in_review' => '<span class="badge bg-warning">En revisión</span>',
+            'pending_payment' => '<span class="badge bg-warning">Pend. Pago</span>',
+            'paid' => '<span class="badge bg-success">Pagado</span>',
+            'processing' => '<span class="badge bg-primary">Trabajando/Fabricando</span>',
+            'ready_to_ship' => '<span class="badge bg-info">Listo para envío</span>',
+            'shipped' => '<span class="badge bg-info">Enviado</span>',
+            'completed' => '<span class="badge bg-success">Completado</span>',
+            'cancelled' => '<span class="badge bg-danger">Cancelado</span>',
+            default => '<span class="badge bg-light text-dark">'.$order->status.'</span>',
+        };
+    }
+
+    private function getActions($order)
+    {
+        $actions = '';
+
+        if (in_array($order->status, ['pending_payment', 'paid', 'quotation'])) {
+            $actions .= '<form action="'.route('account.orders.cancel', $order).'" method="POST" class="d-inline" onsubmit="return confirm(\'¿Estás seguro de cancelar este pedido?\')">
+                            '.csrf_field().'
+                            <button type="submit" class="btn btn-sm btn-danger f-12" title="Cancelar"><i class="ti ti-x"></i></button>
+                         </form>';
+        }
+
+        if ($order->status === 'shipped') {
+            $actions .= '<form action="'.route('account.orders.confirm', $order).'" method="POST" class="d-inline ms-1" onsubmit="return confirm(\'¿Confirmas que recibiste el pedido?\')">
+                            '.csrf_field().'
+                            <button type="submit" class="btn btn-sm btn-success f-12" title="Confirmar Recepción"><i class="ti ti-check"></i> Recibido</button>
+                         </form>';
+        }
+
+        return $actions;
     }
 
     public function cancelOrder(Order $order)
