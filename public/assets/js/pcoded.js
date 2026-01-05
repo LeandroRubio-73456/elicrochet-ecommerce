@@ -398,7 +398,10 @@ function font_change(name) {
     name = 'Public Sans';
     srcs = 'https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap';
   }
-  document.querySelector('#main-font-link').setAttribute('href', srcs);
+  var mainFontLink = document.querySelector('#main-font-link');
+  if (mainFontLink) {
+    mainFontLink.setAttribute('href', srcs);
+  }
   document.querySelector('body').setAttribute('style', 'font-family:"' + name + '", sans-serif');
   if (name == 'Public Sans') {
     name = 'Public-Sans';

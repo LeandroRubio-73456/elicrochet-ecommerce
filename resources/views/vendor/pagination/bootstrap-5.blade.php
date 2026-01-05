@@ -5,22 +5,22 @@
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
                     <li class="page-item disabled" aria-disabled="true">
-                        <span class="page-link">@lang('pagination.previous')</span>
+                        <span class="page-link"><i class="ti ti-chevron-left"></i></span>
                     </li>
                 @else
                     <li class="page-item">
-                        <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev">@lang('pagination.previous')</a>
+                        <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev"><i class="ti ti-chevron-left"></i></a>
                     </li>
                 @endif
 
                 {{-- Next Page Link --}}
                 @if ($paginator->hasMorePages())
                     <li class="page-item">
-                        <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next">@lang('pagination.next')</a>
+                        <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next"><i class="ti ti-chevron-right"></i></a>
                     </li>
                 @else
                     <li class="page-item disabled" aria-disabled="true">
-                        <span class="page-link">@lang('pagination.next')</span>
+                        <span class="page-link"><i class="ti ti-chevron-right"></i></span>
                     </li>
                 @endif
             </ul>

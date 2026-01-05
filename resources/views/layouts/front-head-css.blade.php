@@ -1,9 +1,6 @@
 <!-- [LCP Optimization] Preload Logo & Hero -->
 <link rel="preload" href="{{ asset('assets/images/Logo.webp') }}" as="image" fetchpriority="high">
-@if(Route::is('home'))
-<link rel="preload" as="image" href="{{ asset('assets/images/banner-mobile.avif') }}" media="(max-width: 450px)" fetchpriority="high">
-<link rel="preload" as="image" href="{{ asset('assets/images/banner.avif') }}" media="(min-width: 451px)" fetchpriority="high">
-@endif
+
 
 <!-- [Google Font] Family - REMOVED FOR PERFORMANCE -->
 
@@ -15,7 +12,7 @@
 <style>
     @font-face {
         font-family: 'Lexend';
-        src: url("{{ asset('assets/css/libs/fonts/Lexend-VariableFont_wght.ttf') }}") format('truetype');
+        src: url("{{ asset('assets/css/libs/fonts/Lexend-VariableFont_wght.woff2') }}") format('woff2');
         font-weight: 100 900;
         font-style: normal;
         font-display: swap;
@@ -58,6 +55,11 @@
     body.landing-page {
         background-color: var(--eli-bg-light);
         color: var(--eli-dark);
+        font-family: 'Lexend', sans-serif !important;
+    }
+
+    .landing-page input, .landing-page button, .landing-page select, .landing-page textarea {
+        font-family: 'Lexend', sans-serif !important;
     }
 
     /* Override Text Colors */
@@ -174,6 +176,13 @@
     .form-check-input:checked {
         background-color: var(--eli-primary);
         border-color: var(--eli-primary);
+    }
+
+    /* Animation Utility for WOW.js */
+    .fadeInUp {
+        animation-name: fadeInUp;
+        animation-duration: 0.6s;
+        animation-fill-mode: both;
     }
 
     /* Cards */

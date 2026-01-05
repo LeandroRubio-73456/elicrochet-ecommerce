@@ -171,5 +171,10 @@ class OrderTest extends TestCase
         ]);
 
         $response->assertJsonFragment(['status' => '<span class="badge bg-light-primary text-primary f-12">Listo para Envío</span>']);
+
+        // Verify Linked Status
+        $linkedOrder = Order::factory()->create(['status' => 'linked']);
+        $responseLinked = $this->actingAs($this->admin)->get(route('admin.orders.index', ['ajax' => 1, 'search' => ['value' => $linkedOrder->id]]), ['X-Requested-With' => 'XMLHttpRequest']);
+        $responseLinked->assertJsonFragment(['status' => '<span class="badge bg-light-info text-info f-12">Enlazado</span>']);
     }
 }

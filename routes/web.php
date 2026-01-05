@@ -13,11 +13,16 @@ Route::get('/bestseller', [HomeController::class, 'bestseller'])->name('bestsell
 Route::get('/producto/{slug}', [HomeController::class, 'single'])->name('product.show');
 Route::get('/categoria/{slug}', [HomeController::class, 'categoryShow'])->name('category.show');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'storeContact'])->name('contact.store');
+
+Route::view('/devoluciones', 'front.legal.returns')->name('legal.returns');
+Route::view('/terminos-condiciones', 'front.legal.terms')->name('legal.terms');
 
 // Rutas del carrito (PROTEGIDAS por auth) - Se mantienen igual por ahora
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
@@ -33,7 +38,11 @@ Route::middleware(['auth'])->group(function () {
     })->name('checkout.cancel');
 
     // Pay Existing Order Route
+    // Pay Existing Order Route
     Route::post('/checkout/pay/{order}', [CheckoutController::class, 'payExisting'])->name('checkout.pay_existing');
+
+    // Reviews
+    Route::post('/products/{product:slug}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 });
 
 Route::get('/cart/login-required', [\App\Http\Controllers\CartController::class, 'showMessage'])->name('cart.login-required');
@@ -50,6 +59,7 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
+        Route::get('/orders/{order}/label', [\App\Http\Controllers\Admin\OrderController::class, 'generateLabel'])->name('orders.label');
 
         // Eliminar imagen producto
         Route::delete('/products/images/{productImage}', [\App\Http\Controllers\ProductImageController::class, 'destroy'])->name('products.images.destroy');
@@ -86,5 +96,20 @@ Route::middleware(['auth', 'verified'])
         Route::post('/custom-order', [\App\Http\Controllers\Customer\OrderController::class, 'storeCustom'])->name('custom.store');
         Route::post('/orders/{order}/add-to-cart', [\App\Http\Controllers\Customer\OrderController::class, 'addCustomToCart'])->name('orders.add_to_cart');
     });
+
+// --- ROUTES FOR FRONT CONTROLLERS (For coverage and public use) ---
+Route::get('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'create'])->name('custom-order.create');
+Route::post('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'store'])->name('custom-order.store');
+
+Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Front\AccountController::class, 'index'])->name('index');
+    Route::put('/profile', [\App\Http\Controllers\Front\AccountController::class, 'updateProfile'])->name('update-profile');
+    Route::put('/address', [\App\Http\Controllers\Front\AccountController::class, 'updateAddress'])->name('update-address');
+    Route::get('/orders', [\App\Http\Controllers\Front\AccountController::class, 'orders'])->name('orders');
+    Route::post('/orders/{order}/cancel', [\App\Http\Controllers\Front\AccountController::class, 'cancelOrder'])->name('orders.cancel');
+    Route::post('/orders/{order}/confirm', [\App\Http\Controllers\Front\AccountController::class, 'confirmReceipt'])->name('orders.confirm');
+});
+
+Route::get('/back-dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('back.dashboard')->middleware(['auth']);
 
 require __DIR__.'/auth.php';

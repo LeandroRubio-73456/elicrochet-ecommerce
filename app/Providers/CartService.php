@@ -139,7 +139,9 @@ class CartService
             // Revert status if it's a custom order
             if ($item->custom_order_id) {
                 $order = \App\Models\Order::find($item->custom_order_id);
-                if ($order && $order->status === \App\Models\Order::STATUS_IN_CART) {
+                // Only revert to PENDING_PAYMENT if it was previously IN_CART or LINKED
+                // If it's cancelled, leave it cancelled.
+                if ($order && in_array($order->status, [\App\Models\Order::STATUS_IN_CART, \App\Models\Order::STATUS_LINKED])) {
                     $order->update(['status' => \App\Models\Order::STATUS_PENDING_PAYMENT]);
                 }
             }
@@ -162,7 +164,7 @@ class CartService
         $cartItems = CartItem::where('user_id', Auth::id())->whereNotNull('custom_order_id')->get();
         foreach ($cartItems as $item) {
             $order = \App\Models\Order::find($item->custom_order_id);
-            if ($order && $order->status === \App\Models\Order::STATUS_IN_CART) {
+            if ($order && in_array($order->status, [\App\Models\Order::STATUS_IN_CART, \App\Models\Order::STATUS_LINKED])) {
                 $order->update(['status' => \App\Models\Order::STATUS_PENDING_PAYMENT]);
             }
         }

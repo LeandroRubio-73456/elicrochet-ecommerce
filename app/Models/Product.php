@@ -11,6 +11,11 @@ class Product extends Model
 {
     use HasFactory;
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     protected $fillable = [
         'name',
         'slug',
@@ -21,6 +26,8 @@ class Product extends Model
         'status',
         'is_featured',
         'specs', // JSON of concrete values
+        'average_rating',
+        'total_reviews',
     ];
 
     protected $casts = [
@@ -28,6 +35,8 @@ class Product extends Model
         'stock' => 'integer',
         'is_featured' => 'boolean',
         'specs' => 'array',
+        'average_rating' => 'decimal:2',
+        'total_reviews' => 'integer',
     ];
 
     protected function shortDescription(): Attribute
@@ -43,17 +52,15 @@ class Product extends Model
     public function getStatusBadgeAttribute()
     {
         $badges = [
-            'draft' => ['warning', 'Borrador', 'ti-edit'],
+            'draft' => ['secondary', 'Inactivo', 'ti-toggle-left'],
             'active' => ['success', 'Activo', 'ti-eye'],
-            'out_of_stock' => ['danger', 'Agotado', 'ti-box'],
-            'discontinued' => ['secondary', 'Descontinuado', 'ti-na'],
             'archived' => ['dark', 'Archivado', 'ti-archive'],
         ];
 
         [$color, $text, $icon] = $badges[$this->status] ?? ['secondary', 'Desconocido', 'fa-question'];
 
         return sprintf(
-            '<span class="f-12 badge bg-light-%s"><i class="%s me-1"></i> %s</span>',
+            '<span class="f-12 badge bg-light-%s"><i class="ti %s me-1"></i> %s</span>',
             $color,
             $icon,
             $text
@@ -111,5 +118,10 @@ class Product extends Model
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }

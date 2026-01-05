@@ -21,6 +21,65 @@
 
 <div class="row">
     <div class="col-lg-8">
+        <!-- Detalles de Personalización (Moved to Top) -->
+        @if($order->type === 'custom' || $order->items->whereNotNull('custom_order_id')->isNotEmpty())
+        <div class="card mb-4 border-primary border-opacity-25 shadow-sm">
+            <div class="card-header bg-light-primary">
+                <h5 class="card-title mb-0 text-primary"><i class="ti ti-wand me-2"></i>Solicitud de Personalización</h5>
+            </div>
+            <div class="card-body">
+                 @foreach($order->items as $item)
+                    <div class="mb-2">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <h6 class="fw-bold text-dark"><i class="ti ti-file-description me-1"></i>Descripción del Proyecto</h6>
+                                <div class="p-3 bg-light rounded border">
+                                    <p class="mb-0 text-break" style="white-space: pre-line;">{{ $item->custom_description ?? 'Sin descripción detallada.' }}</p>
+                                </div>
+                            </div>
+                            
+                            @if(!empty($item->custom_specs))
+                            <div class="col-md-6 mb-3">
+                                <h6 class="fw-bold text-dark"><i class="ti ti-ruler me-1"></i>Especificaciones Técnicas</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-borderless mb-0">
+                                        <tbody>
+                                        @foreach($item->custom_specs as $key => $val)
+                                            <tr>
+                                                <td class="text-muted w-50 py-1 ps-0"><i class="ti ti-point me-1 f-10"></i>{{ ucfirst($key) }}:</td>
+                                                <td class="fw-medium py-1">{{ $val }}</td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @endif
+
+                            @if(!empty($item->images))
+                            <div class="col-md-6 mb-3">
+                                <h6 class="fw-bold text-dark"><i class="ti ti-photo me-1"></i>Imágenes de Referencia</h6>
+                                <div class="d-flex flex-wrap gap-2 p-2 bg-light rounded border">
+                                    @foreach($item->images as $img)
+                                         <a href="{{ asset('storage/' . $img) }}" target="_blank" class="d-block" data-bs-toggle="tooltip" title="Ver imagen completa">
+                                            <img src="{{ asset('storage/' . $img) }}" 
+                                                 alt="Referencia" 
+                                                 class="rounded border shadow-sm" 
+                                                 width="80" height="80" 
+                                                 style="object-fit: cover;">
+                                         </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @if(!$loop->last) <hr class="my-4"> @endif
+                 @endforeach
+            </div>
+        </div>
+        @endif
+
         <!-- Detalles de Productos -->
         <div class="card mb-4">
             <div class="card-header">
@@ -57,7 +116,7 @@
                                                     {{ $item->product->name }}
                                                 @elseif($item->custom_order_id || $order->type === 'custom')
                                                     {{-- Fallback: If it's a custom order type and no product, it's the custom item --}}
-                                                    Pedido Personalizado #{{ $order->id }}
+                                                    <span class="text-primary fw-bold">Pedido Personalizado #{{ $item->custom_order_id ?? $order->id }}</span>
                                                 @else
                                                     Producto Eliminado
                                                 @endif
@@ -74,6 +133,14 @@
                             </tr>
                             @endforeach
                             <tr>
+                                <td colspan="3" class="text-end">Subtotal</td>
+                                <td class="text-end">${{ number_format($order->items->sum(fn($i) => $i->price * $i->quantity), 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end">Envío (Servientrega)</td>
+                                <td class="text-end">${{ number_format($order->shipping_cost, 2) }}</td>
+                            </tr>
+                            <tr>
                                 <td colspan="3" class="text-end fw-bold">Total</td>
                                 <td class="text-end fw-bold text-primary fs-5">${{ number_format($order->total_amount, 2) }}</td>
                             </tr>
@@ -83,28 +150,7 @@
             </div>
         </div>
 
-        <!-- Información de Envío -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Información de Envío</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <small class="text-muted d-block uppercase font-weight-bold">Dirección</small>
-                        <span class="fs-6">{{ $order->address->street ?? $order->shipping_address ?? 'N/A' }}</span>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <small class="text-muted d-block uppercase font-weight-bold">Ciudad / Provincia</small>
-                        <span class="fs-6">{{ $order->address->city ?? $order->shipping_city ?? 'N/A' }}, {{ $order->address->province ?? $order->shipping_province ?? 'N/A' }}</span>
-                    </div>
-                     <div class="col-md-6 mb-3">
-                        <small class="text-muted d-block uppercase font-weight-bold">Código Postal</small>
-                        <span class="fs-6">{{ $order->address->postal_code ?? $order->shipping_zip ?? 'N/A' }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     <div class="col-lg-4">
@@ -120,6 +166,22 @@
                     <span class="badge bg-light-primary text-primary border border-primary">Stock</span>
                 @endif
             </div>
+
+            @if(in_array($order->status, ['paid', 'working', 'ready_to_ship']))
+                <div class="px-3 pt-3">
+                    <a href="{{ route('admin.orders.label', $order) }}" target="_blank" class="btn btn-outline-dark w-100">
+                        <i class="ti ti-printer me-2"></i> Generar Etiqueta de Envío
+                    </a>
+                </div>
+            @endif
+            
+            @if($order->status === 'linked' && $order->parentItem)
+                <div class="alert alert-primary m-3 mb-0">
+                    <i class="ti ti-link me-1"></i> Esta orden está vinculada a la <strong>Orden Principal #{{ $order->parentItem->order_id }}</strong>. 
+                    <a href="{{ route('admin.orders.show', $order->parentItem->order_id) }}" class="fw-bold">Ver Padre</a>.
+                </div>
+            @endif
+
             <div class="card-body">
                 <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="updateStatusForm">
                     @csrf
@@ -132,23 +194,29 @@
                                 $statuses = [
                                     'quotation' => 'En Cotización',
                                     'pending_payment' => 'Pendiente de Pago',
+                                    'in_cart' => 'En Carrito',
                                     'paid' => 'Pagado',
                                     'working' => 'En Fabricación',
                                     'ready_to_ship' => 'Listo para Envio',
                                     'shipped' => 'Enviado',
                                     'completed' => 'Completado',
-                                    'cancelled' => 'Cancelado'
+                                    'cancelled' => 'Cancelado',
+                                    'linked' => 'Enlazado (Solo Lectura)' // Added linked
                                 ];
                                 $currentLabel = $statuses[$order->status] ?? ucfirst($order->status);
 
                                 $nextStatuses = [];
-                                if ($order->status === 'cancelled' || $order->status === 'completed') {
+                                if ($order->status === 'cancelled' || $order->status === 'completed' || $order->status === 'linked') {
                                     // No updates allowed
                                 } else {
                                     if ($order->type === 'custom') {
                                         if ($order->status === 'quotation') {
                                             $nextStatuses['pending_payment'] = 'Pendiente de Pago';
                                             $nextStatuses['cancelled'] = 'Cancelar Orden';
+                                        } elseif ($order->status === 'in_cart') { // Handle in_cart
+                                             $nextStatuses['pending_payment'] = 'Devolver a Pendiente Pago';
+                                             $nextStatuses['paid'] = 'Pagado (Manual)';
+                                             $nextStatuses['cancelled'] = 'Cancelar Orden';
                                         } elseif ($order->status === 'pending_payment') {
                                             $nextStatuses['paid'] = 'Pagado (Manual)';
                                             $nextStatuses['cancelled'] = 'Cancelar Orden';
@@ -212,47 +280,6 @@
             </div>
         </div>
         
-        @if($order->type === 'custom')
-        <div class="card mb-4">
-             <div class="card-header">
-                <h5 class="card-title mb-0">Detalles Personalización</h5>
-            </div>
-            <div class="card-body">
-                 @php
-                    // Assuming the first item has the description for the whole order in current logic,
-                    // or listing all items' descriptions.
-                    // Ideally custom orders have 1 main item or multiple.
-                 @endphp
-                 @foreach($order->items as $item)
-                    <div class="mb-3 border-bottom pb-2">
-                        <p class="fw-bold mb-1">Descripción Item #{{ $loop->iteration }}</p>
-                        <p class="text-muted f-14">{{ $item->custom_description ?? 'Sin descripción' }}</p>
-                        
-                        @if(!empty($item->custom_specs))
-                            <div class="mt-2 text-muted f-13">
-                                <strong class="d-block mb-1 text-primary">Especificaciones:</strong>
-                                <ul class="mb-0 ps-3">
-                                @foreach($item->custom_specs as $key => $val)
-                                    <li><strong>{{ ucfirst($key) }}:</strong> {{ $val }}</li>
-                                @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        @if(!empty($item->images))
-                            <div class="d-flex flex-wrap gap-2 mt-2">
-                                @foreach($item->images as $img)
-                                     <a href="{{ asset('storage/' . $img) }}" target="_blank">
-                                        <img src="{{ asset('storage/' . $img) }}" alt="Solicitud de Personalización" class="rounded border" width="60" height="60" style="object-fit: cover;">
-                                     </a>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                 @endforeach
-            </div>
-        </div>
-        @endif
 
         <!-- Información del Cliente -->
         <div class="card">
@@ -276,8 +303,37 @@
                     <i class="ti ti-phone me-2 text-muted"></i> {{ $order->customer_phone }}
                 </div>
             </div>
+            </div>
         </div>
-    </div>
+
+        <!-- Información de Envío (Moved Here) -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Información de Envío</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted d-block uppercase fw-bold">Dirección</small>
+                    <span class="fs-6">{{ $order->address->street ?? $order->shipping_address ?? 'N/A' }}</span>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted d-block uppercase fw-bold">Ciudad / Provincia</small>
+                    <span class="fs-6">{{ $order->address->city ?? $order->shipping_city ?? 'N/A' }} / {{ $order->address->province ?? $order->shipping_province ?? 'N/A' }}</span>
+                </div>
+                 <div class="mb-3">
+                    <small class="text-muted d-block uppercase fw-bold">Código Postal</small>
+                    <span class="fs-6">{{ $order->address->postal_code ?? $order->shipping_zip ?? 'N/A' }}</span>
+                </div>
+                @if($order->shipping_cost > 0)
+                <div class="mt-3 pt-3 border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-dark">Costo de Envío:</span>
+                        <span class="badge bg-light-primary text-primary fs-6">${{ number_format($order->shipping_cost, 2) }}</span>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
 </div>
 @endsection
 

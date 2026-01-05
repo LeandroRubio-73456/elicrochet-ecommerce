@@ -6,7 +6,7 @@
 <div class="row mb-4">
     <div class="col-md-12 d-flex justify-content-between align-items-center">
         <div>
-           <h3 class="fw-bold mb-0">Reporte Financiero</h3>
+           <h3 class="fw-bold mb-0">Reporte de Ventas</h3>
            <p class="text-muted">Resumen de ingresos y rendimiento.</p>
         </div>
         <div>
@@ -20,7 +20,7 @@
 <!-- KPIs -->
 <div class="row g-3 mb-4">
     <!-- Total Income -->
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Orders Last 30 Days -->
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
@@ -54,31 +54,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Balance / Status -->
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted fw-bold mb-3 small">Balance de Estados</h6>
-                <div class="d-flex justify-content-between text-center">
-                    <div>
-                        <h5 class="fw-bold text-warning mb-0">{{ $pendingCount }}</h5>
-                        <small class="text-muted small">Pendientes</small>
-                    </div>
-                    <div class="vr opacity-10"></div>
-                    <div>
-                        <h5 class="fw-bold text-info mb-0">{{ $workingCount }}</h5>
-                        <small class="text-muted small">En Proceso</small>
-                    </div>
-                    <div class="vr opacity-10"></div>
-                    <div>
-                        <h5 class="fw-bold text-success mb-0">{{ $paidCount }}</h5>
-                        <small class="text-muted small">Pagados/Completados</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Chart Section -->
@@ -88,6 +63,81 @@
     </div>
     <div class="card-body">
         <canvas id="salesChart" style="height: 300px; width: 100%;"></canvas>
+    </div>
+</div>
+
+
+
+<!-- Sales History Table -->
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="card-title fw-bold mb-0">Detalle de Ventas Completadas</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($salesHistory as $sale)
+                        <tr>
+                            <td class="ps-4 fw-bold">#{{ $sale->id }}</td>
+                            <td>{{ $sale->created_at->format('d/m/Y') }}<br><small class="text-muted">{{ $sale->created_at->format('H:i') }}</small></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avtar avtar-s bg-light-primary text-primary rounded-circle me-3">
+                                        {{ strtoupper(substr($sale->customer_name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 text-truncate" style="max-width: 150px;">{{ $sale->customer_name }}</h6>
+                                        <small class="text-muted text-truncate d-block" style="max-width: 150px;">{{ $sale->customer_email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @if($sale->status == 'paid')
+                                    <span class="badge bg-success">Pagado</span>
+                                @elseif($sale->status == 'shipped')
+                                    <span class="badge bg-info">Enviado</span>
+                                @elseif($sale->status == 'completed')
+                                    <span class="badge bg-primary">Completado</span>
+                                @elseif($sale->status == 'delivered')
+                                    <span class="badge bg-dark">Entregado</span>
+                                @else
+                                    <span class="badge bg-secondary">{{ ucfirst($sale->status) }}</span>
+                                @endif
+                            </td>
+                            <td class="fw-bold text-dark">${{ number_format($sale->total_amount, 0, ',', '.') }}</td>
+                            <td>
+                                <a href="{{ route('admin.orders.show', $sale->id) }}" class="btn btn-sm btn-icon btn-light-secondary" data-bs-toggle="tooltip" title="Ver Detalles">
+                                    <i class="ti ti-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="ti ti-shopping-cart-off fs-1 text-muted mb-3 d-block"></i>
+                                    <h6 class="text-muted">No hay ventas registradas aún.</h6>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-white d-flex justify-content-end">
+        {{ $salesHistory->links() }}
     </div>
 </div>
 

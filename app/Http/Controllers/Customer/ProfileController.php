@@ -24,17 +24,21 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'cedula' => ['required', 'string', 'max:13'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => ['nullable', 'string', 'max:20'],
             'shipping_address' => ['nullable', 'string', 'max:255'],
             'shipping_city' => ['nullable', 'string', 'max:100'],
-            'shipping_province' => ['nullable', 'string', 'max:100'], // Added
-            'shipping_reference' => ['nullable', 'string', 'max:255'], // Added
+            'shipping_province' => ['nullable', 'string', 'max:100'],
+            'shipping_reference' => ['nullable', 'string', 'max:255'],
             'shipping_zip' => ['nullable', 'string', 'max:20'],
             'password' => ['nullable', 'confirmed', 'min:8'],
         ]);
 
         $user->name = $validated['name'];
+        $user->lastname = $validated['lastname'];
+        $user->cedula = $validated['cedula'];
         $user->email = $validated['email'];
         $user->phone = $validated['phone'];
 

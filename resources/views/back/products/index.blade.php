@@ -18,7 +18,7 @@
 
         <div class="card tbl-card">
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="min-height: 400px;">
                     <table id="products-table" class="table table-hover table-striped w-100">
                         <thead>
                             <tr>
@@ -53,9 +53,7 @@
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="">Todos</a></li>
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="active">Activo</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="draft">Borrador</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="out_of_stock">Sin Stock</a></li>
-                                                <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="discontinued">Descontinuado</a></li>
+                                                <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="draft">Inactivo</a></li>
                                                 <li><a class="dropdown-item filter-option" href="#" data-column="6" data-value="archived">Archivado</a></li>
                                             </ul>
                                         </div>
@@ -79,6 +77,9 @@
     <script type="module">
         $(document).ready(function() {
             var table = $('#products-table').DataTable({
+                language: {
+                    url: '{{ asset("assets/json/datatables-es.json") }}'
+                },
                 processing: true,
                 serverSide: true,
                 orderCellsTop: false,

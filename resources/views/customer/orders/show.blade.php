@@ -12,8 +12,8 @@
             <h3>Pedido #{{ $order->order_number }}</h3>
             <!-- Actions -->
             <div class="d-flex gap-2">
-                @if($order->canTransitionTo('cancelled'))
-                    <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" onsubmit="return confirm('¿Estás seguro de cancelar este pedido?');">
+                @if($order->canTransitionTo('cancelled') && $order->status !== \App\Models\Order::STATUS_LINKED)
+                    <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" onsubmit="confirmOrderCancellation(event)">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger">
                             <i class="ti ti-x me-1"></i> Cancelar Pedido
@@ -21,8 +21,8 @@
                     </form>
                 @endif
 
-                @if($order->canTransitionTo('completed'))
-                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" onsubmit="return confirm('¿Confirmas que has recibido el pedido satisfactoriamente?');">
+                @if($order->status === 'shipped')
+                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" onsubmit="confirmOrderReceipt(event)">
                         @csrf
                         <button type="submit" class="btn btn-success text-white">
                             <i class="ti ti-check me-1"></i> Confirmar Recepción
@@ -69,6 +69,22 @@
                                                     @if($item->product->category)
                                                         <small class="text-muted">{{ $item->product->category->name }}</small>
                                                     @endif
+                                                    
+                                                    @if($order->status === 'completed')
+                                                        @if(!auth()->user()->hasReviewed($item->product))
+                                                            <div class="mt-1">
+                                                                <a href="{{ route('product.show', $item->product->slug) }}#reviews-form" class="btn btn-sm btn-outline-primary py-0 px-2 small f-12">
+                                                                    <i class="ti ti-star me-1"></i>Opinar
+                                                                </a>
+                                                            </div>
+                                                        @else
+                                                            <div class="mt-1">
+                                                                <span class="badge bg-success-subtle text-success small f-12">
+                                                                    <i class="ti ti-check me-1"></i>Opinado
+                                                                </span>
+                                                            </div>
+                                                        @endif
+                                                    @endif
                                                 </div>
                                             </div>
                                         @else
@@ -108,6 +124,18 @@
                         </tbody>
                         <tfoot class="bg-light">
                             <tr>
+                                <td colspan="2" class="text-end text-muted pt-3">Subtotal:</td>
+                                <td class="text-end pe-4 pt-3">
+                                    ${{ number_format($order->items->sum(fn($i) => $i->price * $i->quantity), 2) }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-end text-muted">Envío (Servientrega):</td>
+                                <td class="text-end pe-4">
+                                    ${{ number_format($order->shipping_cost, 2) }}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="2" class="text-end fw-bold pt-3">Total:</td>
                                 <td class="text-end fw-bold pe-4 pt-3 fs-5">
                                     @if($order->total_amount == 0 && $order->status === 'quotation')
@@ -134,6 +162,7 @@
                     $badgeClass = match($order->status) {
                         'paid', 'completed', 'shipped' => 'bg-success',
                         'pending_payment', 'quotation' => 'bg-warning text-dark',
+                        'in_cart', \App\Models\Order::STATUS_LINKED => 'bg-light-primary text-primary',
                         'working' => 'bg-info',
                         'cancelled' => 'bg-danger',
                         default => 'bg-secondary'
@@ -147,6 +176,8 @@
                         'shipped' => 'Enviado',
                         'completed' => 'Completado',
                         'cancelled' => 'Cancelado',
+                        'in_cart' => 'En Carrito',
+                        \App\Models\Order::STATUS_LINKED => 'Vinculado a Orden Principal #' . ($order->parentItem->order_id ?? '?'),
                         default => $order->status
                     };
                     
@@ -159,12 +190,21 @@
                         'shipped' => 'Tu pedido ha sido enviado a la dirección proporcionada.',
                         'completed' => 'Has confirmado la recepción. ¡Gracias!',
                         'cancelled' => 'Este pedido ha sido cancelado.',
+                        \App\Models\Order::STATUS_LINKED => 'Este pedido es parte de una orden principal. Revisa la orden #' . ($order->parentItem->order_id ?? '?') . ' para ver el estado del envío.',
                         default => ''
                     };
                 @endphp
                 <div class="text-center py-3">
                     <span class="badge {{ $badgeClass }} fs-6 mb-3 px-3 py-2">{{ $statusLabel }}</span>
                     <p class="text-muted small mb-0">{{ $statusDesc }}</p>
+
+                    @if($order->status === \App\Models\Order::STATUS_LINKED && $order->parentItem)
+                        <div class="mt-3">
+                            <a href="{{ route('customer.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="ti ti-external-link me-2"></i> Ver Orden Principal #{{ $order->parentItem->order_id }}
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
                 @if($order->status === 'pending_payment')
@@ -192,4 +232,47 @@
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    function confirmOrderReceipt(event) {
+        event.preventDefault();
+        const form = event.target;
+        
+        Swal.fire({
+            title: '¿Confirmar Recepción?',
+            text: "¿Confirmas que has recibido el pedido satisfactoriamente?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+
+    function confirmOrderCancellation(event) {
+        event.preventDefault();
+        const form = event.target;
+        
+        Swal.fire({
+            title: '¿Cancelar Pedido?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No, mantener'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 @endsection

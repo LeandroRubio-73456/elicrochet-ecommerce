@@ -69,6 +69,8 @@ class PayPhoneIntegrationTest extends TestCase
             'shipping_address' => 'Av. Test 123',
             'shipping_city' => 'Quito',
             'shipping_province' => 'Pichincha',
+            'customer_lastname' => 'Doe', // Added
+            'customer_cedula' => '1712345678', // Added
             'shipping_zip' => '170101',
         ]);
 
@@ -76,7 +78,7 @@ class PayPhoneIntegrationTest extends TestCase
         $this->assertDatabaseHas('orders', [
             'user_id' => $user->id,
             'status' => 'pending_payment',
-            'total_amount' => 10,
+            'total_amount' => 13, // 10 (Product) + 3 (Shipping Quito)
         ]);
 
         $response->assertRedirect('https://pay.payphone.com.ec/pay-link');

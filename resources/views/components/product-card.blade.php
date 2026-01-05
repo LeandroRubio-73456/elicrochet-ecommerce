@@ -2,7 +2,7 @@
 <div class="product-card-modern h-100">
     <a href="{{ route('product.show', $product->slug) }}" class="product-image-wrapper">
         @if($product->images->first())
-            <img src="{{ asset('storage/' . $product->images->first()->path) }}" 
+            <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
                  alt="{{ $product->name }}"
                  class="product-image">
         @else

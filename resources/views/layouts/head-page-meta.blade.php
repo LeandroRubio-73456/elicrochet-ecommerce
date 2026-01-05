@@ -1,5 +1,5 @@
 @isset($title)
-<title>{{ $title }} | Mantis Bootstrap 5 Admin Template</title>
+<title>{{ $title }} | EliCrochet E-Commerce</title>
 @endisset
 <!-- [Meta] -->
 <meta charset="utf-8">

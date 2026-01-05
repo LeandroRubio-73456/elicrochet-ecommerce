@@ -15,8 +15,16 @@
             <h6 class="mb-3 text-muted border-bottom pb-2">Información Personal</h6>
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
-                    <label for="name" class="form-label">Nombre Completo</label>
+                    <label for="name" class="form-label">Nombres</label>
                     <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="lastname" class="form-label">Apellidos</label>
+                    <input type="text" id="lastname" name="lastname" class="form-control" value="{{ old('lastname', $user->lastname) }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="cedula" class="form-label">Cédula / RUC</label>
+                    <input type="text" id="cedula" name="cedula" class="form-control" value="{{ old('cedula', $user->cedula) }}" required placeholder="Ej: 1712345678">
                 </div>
                 <div class="col-md-6">
                     <label for="email" class="form-label">Correo Electrónico</label>

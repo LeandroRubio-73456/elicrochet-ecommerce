@@ -3,8 +3,34 @@
 @section('title', 'Carrito de Compras | EliCrochet')
 
 @section('content')
+<!-- Cart Header Minimalista -->
+<div class="shop-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="header-content">
+                    <h1 class="header-title">Tu Carrito</h1>
+                    <p class="header-description">Revisa los productos seleccionados antes de finalizar tu compra.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <nav aria-label="breadcrumb" class="breadcrumb-modern">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('home') }}">
+                                <i class="ti ti-home"></i>
+                                Inicio
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">Carrito</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container py-5">
-    <h1 class="mb-4">Tu Carrito</h1>
         
 
     @if($cartItems->count() > 0)
@@ -54,7 +80,7 @@
                             <span class="text-muted d-block mb-2">1 (Fijo)</span>
                         @endif
 
-                        <form action="{{ route('cart.remove', $item->product_id ?? $item->id) }}" method="POST" class="d-inline ms-3">
+                        <form action="{{ route('cart.remove', $item->product_id ?? $item->custom_order_id) }}" method="POST" class="d-inline ms-3">
                             <!-- Note: ensure Controller handles removing by ID if product_id is null, or we need a different route.
                                  Wait, CartController::remove($productId). If I pass item ID it might fail if it looks for product_id.
                                  Let's check controller logic. CartService::removeFromCart uses product_id.

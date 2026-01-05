@@ -94,6 +94,7 @@ class CheckoutTest extends TestCase
             'shipping_address' => '123 Street',
             'shipping_city' => 'City',
             'shipping_province' => 'Prov',
+            'customer_cedula' => '1712345678', // Added
             'shipping_zip' => '12345',
         ];
 
@@ -158,5 +159,106 @@ class CheckoutTest extends TestCase
 
         $response->assertRedirect(route('cart'));
         $response->assertSessionHas('error', 'Error procesando el pedido: Stock insuficiente para el producto \''.$product->name.'\'. La compra ha sido revertida.');
+    }
+
+    /** @test */
+    public function it_can_pay_existing_order()
+    {
+        Http::fake([
+            'pay.payphonetodoesposible.com/*' => Http::response(['payWithCard' => 'http://payphone.link/existing'], 200),
+        ]);
+
+        $user = User::factory()->create();
+        $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment', 'total_amount' => 50]);
+
+        $response = $this->actingAs($user)->post(route('checkout.pay_existing', $order));
+
+        $response->assertRedirect('http://payphone.link/existing');
+    }
+
+    /** @test */
+    public function it_reuses_existing_pending_order_during_store()
+    {
+        Http::fake([
+            'pay.payphonetodoesposible.com/*' => Http::response(['payWithCard' => 'http://payphone.link'], 200),
+        ]);
+
+        $user = User::factory()->create();
+        $product = Product::factory()->create(['stock' => 10, 'price' => 100]);
+        $existingOrder = Order::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'pending_payment',
+            'type' => 'stock',
+        ]);
+
+        $this->mock(CartService::class, function ($mock) use ($product) {
+            $mock->shouldReceive('getCart')->andReturn(collect([
+                (object) ['product_id' => $product->id, 'quantity' => 1, 'price' => 100, 'custom_order_id' => null],
+            ]));
+            $mock->shouldReceive('getTotal')->andReturn(100);
+        });
+
+        $data = [
+            'customer_name' => 'John',
+            'customer_lastname' => 'Doe',
+            'customer_email' => 'john@example.com',
+            'customer_phone' => '1234567890',
+            'shipping_address' => '123 Street',
+            'shipping_city' => 'Quito',
+            'shipping_province' => 'Pichincha',
+            'customer_cedula' => '1712345678',
+            'shipping_zip' => '12345',
+        ];
+
+        $this->actingAs($user)->post(route('checkout.store'), $data);
+
+        $this->assertEquals(1, Order::where('user_id', $user->id)->count());
+        $this->assertEquals($existingOrder->id, Order::where('user_id', $user->id)->first()->id);
+    }
+
+    /** @test */
+    public function it_marks_product_as_draft_when_stock_reaches_zero_after_payment()
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create(['stock' => 1, 'status' => 'active']);
+        $order = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
+        $order->items()->create(['product_id' => $product->id, 'quantity' => 1, 'price' => 10]);
+
+        Http::fake([
+            'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
+        ]);
+
+        $this->actingAs($user)->get(route('checkout.callback', [
+            'id' => 'trans-123',
+            'clientTransactionId' => $order->id.'-time',
+        ]));
+
+        $this->assertEquals(0, $product->fresh()->stock);
+        $this->assertEquals('draft', $product->fresh()->status);
+    }
+
+    /** @test */
+    public function it_links_custom_orders_on_payment_success()
+    {
+        $user = User::factory()->create();
+        $customOrder = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment', 'type' => 'custom']);
+        $masterOrder = Order::factory()->create(['user_id' => $user->id, 'status' => 'pending_payment']);
+        $masterOrder->items()->create([
+            'custom_order_id' => $customOrder->id,
+            'price' => 50,
+            'quantity' => 1,
+        ]);
+
+        Http::fake([
+            'pay.payphonetodoesposible.com/api/button/Confirm' => Http::response(['transactionStatus' => 'Approved'], 200),
+        ]);
+
+        $this->actingAs($user)->get(route('checkout.callback', [
+            'id' => 'trans-123',
+            'clientTransactionId' => $masterOrder->id.'-time',
+        ]));
+
+        $this->assertEquals('linked', $customOrder->fresh()->status);
+        $this->assertEquals('paid', $masterOrder->fresh()->status);
     }
 }

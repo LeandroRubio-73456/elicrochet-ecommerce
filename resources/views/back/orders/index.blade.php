@@ -26,6 +26,7 @@
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="">Todos</a></li>
                                             <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="quotation">En Cotización</a></li>
+                                            <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="in_cart">En Carrito</a></li>
                                             <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="pending_payment">Pendiente Pago</a></li>
                                             <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="paid">Pagado</a></li>
                                             <li><a class="dropdown-item filter-option" href="#" data-column="4" data-value="working">En Fabricación</a></li>
@@ -56,6 +57,9 @@
     <script type="module">
         $(document).ready(function() {
             var table = $('#orders-table').DataTable({
+                language: {
+                    url: '{{ asset("assets/json/datatables-es.json") }}'
+                },
                 processing: true,
                 serverSide: true,
                 orderCellsTop: false,

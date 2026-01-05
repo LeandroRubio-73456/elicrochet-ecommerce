@@ -16,7 +16,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())
-            ->with('items.product')
+            ->with(['items.product', 'parentItem.order'])
             ->orderBy('id', 'desc') // Explicitly enforce ID desc
             ->paginate(10);
 
@@ -43,9 +43,17 @@ class OrderController extends Controller
         }
 
         if ($order->canTransitionTo(Order::STATUS_CANCELLED)) {
+            // Restore stock if order was PAID or READY TO SHIP or WORKING
+            if (in_array($order->status, [Order::STATUS_PAID, Order::STATUS_WORKING, Order::STATUS_READY_TO_SHIP])) {
+                foreach ($order->items as $item) {
+                    if ($item->product_id && $item->product) {
+                        $item->product->increment('stock', $item->quantity);
+                    }
+                }
+            }
+
             $order->status = Order::STATUS_CANCELLED;
             $order->save();
-            // Optional: Restore stock logic here if needed (omitted for now)
 
             return redirect()->back()->with('success', 'Orden cancelada exitosamente.');
         }
@@ -62,14 +70,15 @@ class OrderController extends Controller
             abort(403);
         }
 
-        if ($order->canTransitionTo(Order::STATUS_COMPLETED)) {
+        // Fix: Explicitly check for STATUS_SHIPPED to allow confirmation even if canTransitionTo fails (e.g. type mismatch)
+        if ($order->status === Order::STATUS_SHIPPED || $order->canTransitionTo(Order::STATUS_COMPLETED)) {
             $order->status = Order::STATUS_COMPLETED;
             $order->save();
 
             return redirect()->back()->with('success', 'Recepción confirmada. ¡Gracias por tu compra!');
         }
 
-        return redirect()->back()->with('error', 'No se puede confirmar la orden antes de que sea enviada.');
+        return redirect()->back()->with('error', 'No se puede confirmar la orden. Estado actual: '.$order->status);
     }
 
     // --- Custom Order Logic ---
@@ -139,9 +148,9 @@ class OrderController extends Controller
 
         // Send Email
         try {
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\CustomOrderReceived($order));
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->queue(new \App\Mail\CustomOrderReceived($order));
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error sending CustomOrderReceived email: '.$e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error queuing CustomOrderReceived email: '.$e->getMessage());
         }
 
         // Notify Admin
@@ -149,9 +158,9 @@ class OrderController extends Controller
             $admin = \App\Models\User::where('role', 'admin')->first();
             if ($admin) {
                 \Illuminate\Support\Facades\Log::info("Found admin for notification: {$admin->email}");
-                sleep(11); // Increased to 11s based on user plan
-                \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
-                \Illuminate\Support\Facades\Log::info("Admin notification sent to {$admin->email}");
+                // Used to have sleep(11) here - removed for performance
+                \Illuminate\Support\Facades\Mail::to($admin->email)->queue(new \App\Mail\NewOrderAdminNotification($order));
+                \Illuminate\Support\Facades\Log::info("Admin notification queued for {$admin->email}");
             } else {
                 \Illuminate\Support\Facades\Log::warning('No admin user found to send notification.');
             }

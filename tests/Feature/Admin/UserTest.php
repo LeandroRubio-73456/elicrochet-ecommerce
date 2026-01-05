@@ -56,6 +56,7 @@ class UserTest extends TestCase
     {
         $data = [
             'name' => 'John Doe',
+            'lastname' => 'Smith', // Added
             'email' => 'john@example.com',
             'role' => 'customer',
             'password' => 'password123',
@@ -90,6 +91,7 @@ class UserTest extends TestCase
 
         $response = $this->actingAs($this->admin)->put(route('admin.users.update', $user), [
             'name' => 'New Name',
+            'lastname' => 'Lastname', // Added
             'email' => $user->email,
             'role' => 'admin',
         ]);
@@ -105,6 +107,7 @@ class UserTest extends TestCase
 
         $response = $this->actingAs($this->admin)->put(route('admin.users.update', $user), [
             'name' => $user->name,
+            'lastname' => 'UpdatedLastname', // Explicitly set
             'email' => $user->email,
             'role' => $user->role,
             'password' => 'NewPassword123!',

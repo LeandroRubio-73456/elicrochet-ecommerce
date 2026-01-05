@@ -1,16 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="EliCrochet Ecommerce">
-  <br>
-  <a href="https://github.com/LeandroRubio-73456/EliCrochet-Ecommerce/actions/workflows/ci.yml"><img src="https://github.com/LeandroRubio-73456/EliCrochet-Ecommerce/actions/workflows/ci.yml/badge.svg" alt="CI Quality Gate EliCrochet"></a>
-  <a href="https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce"><img src="https://sonarcloud.io/api/project_badges/measure?project=LeandroRubio-73456_elicrochet-ecommerce&metric=alert_status" alt="Quality Gate Status"></a>
-  <a href="https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce"><img src="https://sonarcloud.io/api/project_badges/measure?project=LeandroRubio-73456_elicrochet-ecommerce&metric=coverage" alt="Coverage"></a>
+  <img src="public/assets/images/Logo.webp" width="15%" alt="EliCrochet Logo">
 </p>
 
-# EliCrochet Ecommerce
+<h1 align="center">EliCrochet Ecommerce</h1>
 
-<<<<<<< Updated upstream
-Este es un proyecto de comercio electrónico desarrollado con Laravel, diseñado para la venta y gestión de productos de crochet.
-=======
 <p align="center">
   <strong>Plataforma de comercio electrónico especializada en productos artesanales de crochet</strong>
 </p>
@@ -105,17 +98,19 @@ Este es un proyecto de comercio electrónico desarrollado con Laravel, diseñado
 - **Lighthouse CI:** Monitorización continua de WPO, SEO y Accesibilidad
 
 ---
->>>>>>> Stashed changes
+
+## Galería
+
+| Vista Cliente | Vista Administración |
+|:---:|:---:|
+| <img src="public/screenshots/home.jpg" width="400" alt="Home"> | <img src="public/screenshots/admin.jpg" width="400" alt="Admin Dashboard"> |
+
+---
 
 ## Requisitos
 
-Asegúrate de tener instalados los siguientes componentes en tu entorno de desarrollo:
+Antes de comenzar, asegúrate de tener instalado:
 
-<<<<<<< Updated upstream
-- [PHP 8.2](https://www.php.net/) o superior
-- [Composer](https://getcomposer.org/)
-- [Node.js](https://nodejs.org/) y NPM
-=======
 | Software | Versión Mínima | Enlace |
 |:---------|:---------------|:-------|
 | PHP | 8.2 | [Descargar](https://www.php.net/) |
@@ -123,104 +118,71 @@ Asegúrate de tener instalados los siguientes componentes en tu entorno de desar
 | Node.js | 20.x | [Descargar](https://nodejs.org/) |
 | MySQL | 8.0 | [Descargar](https://www.mysql.com/) |
 
+### Extensiones PHP Requeridas
+- BCMath, Ctype, cURL, DOM, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML.
+
 ---
->>>>>>> Stashed changes
 
 ## Instalación y Configuración
 
-<<<<<<< Updated upstream
-Sigue estos pasos para configurar el proyecto en tu máquina local:
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/LeandroRubio-73456/elicrochet-ecommerce.git
+   cd elicrochet-ecommerce
+   ```
 
-1.  **Clonar el repositorio**
-    ```bash
-    git clone <URL_DEL_REPOSITORIO>
-    cd EliCrochet-Ecommerce
-    ```
+2. **Ejecutar script de configuración**
+   ```bash
+   composer run setup
+   ```
 
-2.  **Ejecutar el script de configuración**
-    El proyecto incluye un comando personalizado de Composer que automatiza la instalación de dependencias, la configuración del archivo `.env`, la generación de la clave de la aplicación, las migraciones de base de datos y la construcción de los assets del frontend.
-
-    ```bash
-    composer run setup
-    ```
-
-    > **Nota:** Este comando ejecutará internamente:
-    > - `composer install`
-    > - Copia de `.env.example` a `.env` (si no existe)
-    > - `php artisan key:generate`
-    > - `php artisan migrate --force`
-    > - `npm install`
-    > - `npm run build`
-=======
-### Configuración Rápida (Recomendado)
-
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/LeandroRubio-73456/elicrochet-ecommerce.git
-cd elicrochet-ecommerce
-
-# 2. Instalación automatizada
-composer run setup
-```
-
-El script `setup` preparará automáticamente:
-- Dependencias PHP y Node.js.
-- Variables de entorno (`.env`).
-- Claves de cifrado y base de datos (Migraciones + Seeders).
-- Compilación final de assets.
+   Este comando ejecuta automáticamente:
+   - Instalación de dependencias PHP e Instalación de dependencias Node.
+   - Copia del archivo `.env.example` a `.env`.
+   - Generación de key de aplicación y Ejecución de migraciones con Seeders.
+   - Build de assets (`npm run build`).
 
 ---
->>>>>>> Stashed changes
 
 ## Desarrollo y Ejecución
 
-<<<<<<< Updated upstream
-Para iniciar el servidor de desarrollo y los procesos necesarios (vite, queue, etc.), utiliza el siguiente comando que ejecuta todo en paralelo:
-=======
 Para iniciar el ecosistema de desarrollo completo:
->>>>>>> Stashed changes
 
 ```bash
 composer run dev
 ```
 
-<<<<<<< Updated upstream
-O si prefieres ejecutar solo el servidor de Laravel:
+Este comando inicia automáticamente:
+- Servidor de desarrollo Laravel (`php artisan serve`)
+- Servidor Vite para hot-reload (`npm run dev`)
+- Cola de trabajos (`php artisan queue:work`)
 
+---
+
+## Credenciales de Acceso
+
+Para propósitos de desarrollo y prueba, se incluyen usuarios precargados:
+
+| Rol | Email | Contraseña | Permisos |
+|:----|:------|:-----------|:---------|
+| **Administrador** | `admin@elicrochet.com` | `password` | Acceso completo al sistema |
+| **Cliente** | `cliente@elicrochet.com` | `password` | Compras y gestión de perfil |
+
+---
+
+## Tests y Calidad
+
+### Ejecutar Tests
 ```bash
-php artisan serve
-```
-=======
-Este comando inicia de forma concurrente:
-- Servidor Laravel (`serve`).
-- Servidor de assets Vite (`dev`).
-- Listener de colas para notificaciones y procesos en segundo plano.
->>>>>>> Stashed changes
-
-## Tests
-
-<<<<<<< Updated upstream
-Para ejecutar las pruebas automatizadas del proyecto:
-
-```bash
+# Todos los tests
 php artisan test
-```
-=======
-## Tests y Calidad de Código
 
-El proyecto prioriza la estabilidad. Para ejecutar la suite de pruebas:
-
-```bash
-# Ejecutar tests estándar
-composer run test
-
-# Ejecutar auditoría de estilos
-composer run lint
+# Con cobertura
+php artisan test --coverage
 ```
 
-### Reportes de Calidad
-- **Cobertura:** El proyecto mantiene un _Quality Gate_ estricto que exige >80% de cobertura en archivos críticos.
-- **Performance:** Auditorías de Lighthouse integradas para mantener LCP < 2.5s y CLS < 0.1.
+### Análisis de Código
+El proyecto está integrado con **SonarCloud** para garantizar la calidad del código. Ver reportes en: [SonarCloud Dashboard](https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce)
 
 ---
 
@@ -235,8 +197,8 @@ elicrochet-ecommerce/
 │   └── Mail/                  # Notificaciones transaccionales
 ├── database/                  # Migraciones, Factories y Seeders
 ├── resources/
-│   ├── css/                   # TailwindCSS 4 & Modern CSS
-│   └── views/                 # Blade Templates (Layouts modulares)
+│   ├── css/                   # Modern CSS (Vanilla)
+│   └── views/                 # Blade Templates
 ├── routes/                    # Definición de rutas (web.php)
 └── tests/                     # Suite de Unit/Feature Testing
 ```
@@ -245,7 +207,7 @@ elicrochet-ecommerce/
 
 ## Licencia
 
-Este proyecto se distribuye bajo la Licencia MIT.
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ---
 
@@ -253,9 +215,13 @@ Este proyecto se distribuye bajo la Licencia MIT.
 
 **Leandro Rubio**
 - GitHub: [@LeandroRubio-73456](https://github.com/LeandroRubio-73456)
-- Proyecto: [EliCrochet Ecommerce](https://github.com/LeandroRubio-73456/elicrochet-ecommerce)
+- LinkedIn: [Tu perfil](https://linkedin.com/in/leandrorubio)
+
+**Link del Proyecto:** [https://github.com/LeandroRubio-73456/elicrochet-ecommerce](https://github.com/LeandroRubio-73456/elicrochet-ecommerce)
+
+---
 
 <p align="center">
-  <sub>Lanzamiento v1.0.0</sub>
+  Hecho por <strong>Leandro Rubio</strong><br>
+  <sub>Proyecto de Tesis | Lanzamiento v1.0.0</sub>
 </p>
->>>>>>> Stashed changes

@@ -35,7 +35,14 @@
                                 Inicio
                             </a>
                         </li>
-                        <li class="breadcrumb-item active">Tienda</li>
+                        @if(isset($category))
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('shop') }}">Tienda</a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ $category->name }}</li>
+                        @else
+                            <li class="breadcrumb-item active">Tienda</li>
+                        @endif
                     </ol>
                 </nav>
             </div>
@@ -46,6 +53,28 @@
 <!-- Main Content -->
 <section class="shop-section">
     <div class="container">
+        
+        <!-- Search Bar (Full Width) -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <form action="{{ isset($category) ? route('category.show', $category->slug) : route('shop') }}" method="GET" class="card border-0 shadow-sm">
+                    <div class="card-body p-2">
+                        <div class="input-group input-group-lg">
+                            <input type="text" name="search" class="form-control border-0 bg-transparent me-3" placeholder="Buscar productos..." value="{{ request('search') }}" autocomplete="off">
+                            <button class="btn btn-primary px-3 rounded-3" type="submit">
+                                <i class="ti ti-search bg-transparent"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Maintain other filters -->
+                        @if(request('min_price')) <input type="hidden" name="min_price" value="{{ request('min_price') }}"> @endif
+                        @if(request('max_price')) <input type="hidden" name="max_price" value="{{ request('max_price') }}"> @endif
+                        @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="row g-4">
             
             <!-- Sidebar Filters -->
@@ -97,7 +126,7 @@
                         <div class="col-span-full text-center py-5">
                             <div class="empty-state">
                                 <div class="empty-icon">
-                                    <i class="ti ti-shopping-bag-off fs-1"></i>
+                                    <i class="ti ti-shopping-cart-off fs-1"></i>
                                 </div>
                                 <h3 class="empty-title">No se encontraron productos</h3>
                                 <p class="empty-text">Intenta seleccionar otra categoría o revisa más tarde.</p>

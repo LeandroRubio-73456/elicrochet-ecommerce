@@ -263,11 +263,9 @@
             padding: 0.75rem 0 !important;
         }
 
-        .navbar .d-flex {
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 1px solid #e5e7eb;
-        }
+            /* border-top: 1px solid #e5e7eb; */
     }
 
     /* Scroll behavior */

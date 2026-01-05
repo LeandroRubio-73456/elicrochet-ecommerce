@@ -21,6 +21,21 @@
                         </div>
                     @endif
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="ti ti-alert-circle me-2 f-18"></i>
+                                <strong class="f-16">Por favor, corrige los siguientes errores:</strong>
+                            </div>
+                            <ul class="mb-0 mt-2">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -36,7 +51,8 @@
 
                                 <div class="mb-3">
                                     <label for="slug" class="form-label fw-bold">URL amigable (slug)</label>
-                                    <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $product->slug) }}">
+                                    <input type="text" name="slug" id="slug" class="form-control" placeholder="Ej. amigurumi-foxy" value="{{ old('slug', $product->slug) }}">
+                                    <small class="text-muted">Si lo dejas vacío, se generará automáticamente</small>
                                     @error('slug') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                 </div>
 
@@ -90,9 +106,9 @@
                                 <div class="mb-3">
                                     <span class="form-label fw-bold d-block mb-2">Estado</span>
                                     <div class="row g-2">
-                                        @foreach (['draft' => ['Borrador','warning','pencil'], 'active' => ['Activo','success','eye'], 'discontinued' => ['Descontinuado','secondary','na'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
+                                        @foreach (['active' => ['Activo','success','eye'], 'draft' => ['Inactivo','secondary','toggle-left'], 'archived' => ['Archivado','dark','archive']] as $val => [$label,$color,$icon])
                                             <div class="col-6">
-                                                <div class="form-check card-radio p-2 border rounded">
+                                                <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="status" id="status_{{ $val }}" value="{{ $val }}" {{ old('status', $product->status) == $val ? 'checked' : '' }}>
                                                     <label class="form-check-label" for="status_{{ $val }}">
                                                         <i class="ti ti-{{ $icon }} text-{{ $color }} me-1"></i> {{ $label }}
@@ -122,6 +138,7 @@
                                 <div class="mb-3">
                                     <label for="images" class="form-label fw-bold">Nuevas Imágenes</label>
                                     <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*">
+                                    <small class="text-muted d-block mt-1">Sube hasta 5 imágenes (máx. 5MB c/u).</small>
                                 </div>
                             </div>
                         </div>
@@ -175,10 +192,17 @@
                 const parent = this.closest('.image-thumbnail-container');
                 Swal.fire({ title: '¿Eliminar?', icon: 'warning', showCancelButton: true }).then(res => {
                     if (res.isConfirmed) {
-                        fetch(`{{ url('products/images') }}/${id}`, {
+                        fetch(`{{ url('admin/products/images') }}/${id}`, {
                             method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' },
                             body: JSON.stringify({ _method: 'DELETE' })
-                        }).then(() => parent.remove());
+                        }).then(response => {
+                            if (response.ok) {
+                                parent.remove();
+                                Swal.fire('Eliminado', 'La imagen ha sido eliminada.', 'success');
+                            } else {
+                                Swal.fire('Error', 'No se pudo eliminar la imagen.', 'error');
+                            }
+                        });
                     }
                 });
             });
