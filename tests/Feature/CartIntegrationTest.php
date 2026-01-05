@@ -18,7 +18,7 @@ class CartIntegrationTest extends TestCase
         $product = Product::factory()->create(['stock' => 10, 'price' => 50]);
 
         $response = $this->actingAs($user)->post(route('cart.add', $product), [
-            'quantity' => 2
+            'quantity' => 2,
         ]);
 
         $response->assertRedirect(route('cart'));
@@ -27,7 +27,7 @@ class CartIntegrationTest extends TestCase
         $this->assertDatabaseHas('cart_items', [
             'user_id' => $user->id,
             'product_id' => $product->id,
-            'quantity' => 2
+            'quantity' => 2,
         ]);
     }
 
@@ -39,7 +39,7 @@ class CartIntegrationTest extends TestCase
 
         // Try to add 6
         $response = $this->actingAs($user)->post(route('cart.add', $product), [
-            'quantity' => 6
+            'quantity' => 6,
         ]);
 
         $response->assertSessionHas('error');
@@ -51,14 +51,14 @@ class CartIntegrationTest extends TestCase
     {
         $user = User::factory()->create();
         $product = Product::factory()->create(['stock' => 10, 'price' => 50]);
-        
+
         // Add initial item
         $this->actingAs($user)->post(route('cart.add', $product), ['quantity' => 1]);
 
         // Update via AJAX
         $response = $this->actingAs($user)->patch(route('cart.update'), [
             'product_id' => $product->id,
-            'quantity' => 5
+            'quantity' => 5,
         ]);
 
         $response->assertOk();
@@ -66,7 +66,7 @@ class CartIntegrationTest extends TestCase
 
         $this->assertDatabaseHas('cart_items', [
             'product_id' => $product->id,
-            'quantity' => 5
+            'quantity' => 5,
         ]);
     }
 
@@ -75,7 +75,7 @@ class CartIntegrationTest extends TestCase
     {
         $user = User::factory()->create();
         $product = Product::factory()->create();
-        
+
         $this->actingAs($user)->post(route('cart.add', $product), ['quantity' => 1]);
 
         $response = $this->actingAs($user)->post(route('cart.remove', $product->id));

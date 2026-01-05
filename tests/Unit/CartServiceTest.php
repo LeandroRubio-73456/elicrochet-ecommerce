@@ -4,7 +4,6 @@ namespace Tests\Unit;
 
 use App\Models\Product;
 use App\Models\User;
-use App\Models\CartItem;
 use App\Providers\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,12 +13,13 @@ class CartServiceTest extends TestCase
     use RefreshDatabase;
 
     private CartService $cartService;
+
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->cartService = new CartService();
+        $this->cartService = new CartService;
         $this->user = User::factory()->create();
     }
 
@@ -44,7 +44,7 @@ class CartServiceTest extends TestCase
     {
         $this->actingAs($this->user);
         $product = Product::factory()->create(['price' => 100, 'stock' => 10]);
-        
+
         $this->cartService->addToCart($product, 1);
         $this->cartService->addToCart($product, 2);
 
@@ -60,9 +60,9 @@ class CartServiceTest extends TestCase
     {
         $this->actingAs($this->user);
         $product = Product::factory()->create(['price' => 100, 'stock' => 5]);
-        
+
         $this->expectException(\App\Exceptions\BusinessLogicException::class);
-        
+
         $this->cartService->addToCart($product, 6);
     }
 

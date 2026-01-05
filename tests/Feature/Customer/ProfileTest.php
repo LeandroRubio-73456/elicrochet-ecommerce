@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Customer;
 
-use App\Models\User;
 use App\Models\Address;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -93,7 +93,7 @@ class ProfileTest extends TestCase
 
         $response->assertSessionHasNoErrors();
         $response->assertRedirect(route('customer.profile.edit'));
-        
+
         $this->user->refresh();
         $this->assertTrue(Hash::check('NewPassword123!', $this->user->password));
     }
@@ -102,7 +102,7 @@ class ProfileTest extends TestCase
     /** @test */
     public function customer_cannot_update_with_invalid_data()
     {
-         $response = $this->actingAs($this->user)->put(route('customer.profile.update'), [
+        $response = $this->actingAs($this->user)->put(route('customer.profile.update'), [
             'name' => '', // Required
             'email' => 'not-an-email',
             'cedula' => str_repeat('1', 14), // Max 13
