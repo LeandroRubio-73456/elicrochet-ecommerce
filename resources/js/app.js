@@ -1,5 +1,4 @@
-import './bootstrap';
-import Alpine from 'alpinejs';
+
 
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
@@ -88,5 +87,4 @@ $.extend(true, $.fn.dataTable.defaults, {
     }
 });
 
-window.Alpine = Alpine;
-Alpine.start();
+

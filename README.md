@@ -44,61 +44,58 @@
 
 ## Descripción
 
-**EliCrochet Ecommerce** es una plataforma de comercio electrónico desarrollada con **Laravel 12**, especializada en la venta y gestión de productos artesanales de crochet. El sistema ofrece una experiencia completa tanto para clientes como para administradores, incluyendo:
+**EliCrochet Ecommerce** es una plataforma de comercio electrónico desarrollada con **Laravel 12**, especializada en la venta y gestión de productos artesanales de crochet. El sistema ofrece una experiencia robusta y segura, respaldada por un índice de **cobertura de pruebas superior al 80%**.
 
-- Carrito de compras interactivo
-- Gestión completa de pedidos
-- Solicitudes de pedidos personalizados
-- Sistema de autenticación y perfiles de usuario
-- Panel administrativo completo con estadísticas
-- Integración con herramientas de análisis de calidad de código
+- Carrito de compras reactivo y seguro
+- Pasarela de pagos integrada (**PayPhone**)
+- Gestión avanzada de pedidos (Stock y Personalizados)
+- Sistema dinámico de perfiles y direcciones (con soporte para cédula/ID)
+- Panel administrativo con control de ventas
+- Calidad de código certificada con **SonarCloud** y **Lighthouse CI**
 
 ---
 
 ## Características Principales
 
 ### Para Clientes
-- Catálogo de productos con filtros y búsqueda
-- Carrito de compras con gestión en tiempo real
-- Solicitud de productos personalizados
-- Diseño responsive y optimizado para móviles
-- Gestión de perfil y direcciones
-- Historial de pedidos
-- Sistema de valoraciones y reseñas
+- Catálogo optimizado con filtros dinámicos y búsqueda.
+- Carrito de compras con persistencia y validaciones de stock en tiempo real.
+- **Pedidos Personalizados:** Formulario especializado para solicitudes a medida con carga de referencias.
+- Gestión de perfil completa y libreta de direcciones detallada.
+- Historial de pedidos con seguimiento de estados y reintentos de pago.
+- Sistema de valoraciones y testimonios.
 
-### Para Administradores
-- Dashboard con estadísticas en tiempo real
-- Gestión completa de productos y categorías
-- Carga múltiple de imágenes
-- Administración de usuarios y roles
-- Gestión de pedidos y estados
-- Visualización de pedidos personalizados
-- Reportes y análisis de ventas
+### Para Administradores (Back-office)
+- **Panel de Control:** Resumen de ventas, gestión de inventario y alertas de stock bajo.
+- Gestión de catálogo con carga múltiple de imágenes.
+- Administración de usuarios con roles definidos.
+- Sistema de estados de pedido (Pendiente, Pagado, Fabricando, Enviado, Completado).
+- **Gestión de Ventas:** Visualización detallada de transacciones y exportación a Excel.
+- Generación de etiquetas de envío.
 
 ---
 
 ## Tecnologías
 
-<p align="left">
-  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="200" alt="Laravel Logo">
-</p>
-
-### Backend
+### Backend & Core
 - **Framework:** Laravel 12.x
 - **PHP:** 8.2+
-- **Base de Datos:** MySQL/MariaDB / SQLite (Dev)
-- **Queue:** Redis / Database
+- **Base de Datos:** MySQL / SQLite (optimizado para testing en memoria)
+- **Pagos:** PayPhone API Integration
+- **Estándar:** PSR-12 / Laravel Pint
 
 ### Frontend
-- **CSS Framework:** Bootstrap 5
-- **JavaScript:** Vanilla JS + Alpine.js
-- **Build Tool:** Vite
+- **Styles:** CSS Moderno (Vanilla CSS) para la interfaz de cliente.
+- **Admin Template:** Basado en Bootstrap 5 para el panel administrativo.
+- **JavaScript:** Vanilla JS
+- **Build Tool:** Vite 7.x
 - **Icons:** Tabler Icons
 
-### Testing & Quality
-- **PHPUnit:** Tests unitarios e integración
-- **SonarCloud:** Análisis estático de código
-- **GitHub Actions:** CI/CD Pipeline
+### Calidad & Testing
+- **PHPUnit:** +100 tests unitarios e integración (+80% coverage)
+- **SonarCloud:** Análisis estático detallado y Quality Gate
+- **GitHub Actions:** Pipeline de CI/CD automatizado
+- **Lighthouse CI:** Monitorización continua de WPO, SEO y Accesibilidad
 
 ---
 
@@ -118,27 +115,15 @@ Antes de comenzar, asegúrate de tener instalado:
 |:---------|:---------------|:-------|
 | PHP | 8.2 | [Descargar](https://www.php.net/) |
 | Composer | 2.x | [Descargar](https://getcomposer.org/) |
-| Node.js | 18.x | [Descargar](https://nodejs.org/) |
-| MySQL/MariaDB | 8.0/10.x | [Descargar](https://www.mysql.com/) |
+| Node.js | 20.x | [Descargar](https://nodejs.org/) |
+| MySQL | 8.0 | [Descargar](https://www.mysql.com/) |
 
 ### Extensiones PHP Requeridas
-- BCMath
-- Ctype
-- cURL
-- DOM
-- Fileinfo
-- JSON
-- Mbstring
-- OpenSSL
-- PDO
-- Tokenizer
-- XML
+- BCMath, Ctype, cURL, DOM, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML.
 
 ---
 
-## Instalación
-
-### Opción 1: Instalación Automática (Recomendado)
+## Instalación y Configuración
 
 1. **Clonar el repositorio**
    ```bash
@@ -152,53 +137,17 @@ Antes de comenzar, asegúrate de tener instalado:
    ```
 
    Este comando ejecuta automáticamente:
-   - Instalación de dependencias PHP (`composer install`)
-   - Copia del archivo `.env.example` a `.env`
-   - Generación de key de aplicación (`php artisan key:generate`)
-   - Ejecución de migraciones (`php artisan migrate`)
-   - Seeders de datos de prueba (`php artisan db:seed`)
-   - Instalación de dependencias Node (`npm install`)
-   - Build de assets (`npm run build`)
-
-### Opción 2: Instalación Manual
-
-Si prefieres controlar cada paso:
-
-```bash
-# 1. Clonar repositorio
-git clone https://github.com/LeandroRubio-73456/elicrochet-ecommerce.git
-cd elicrochet-ecommerce
-
-# 2. Instalar dependencias PHP
-composer install
-
-# 3. Configurar entorno
-cp .env.example .env
-php artisan key:generate
-
-# 4. Configurar base de datos en .env
-# DB_DATABASE=elicrochet
-# DB_USERNAME=tu_usuario
-# DB_PASSWORD=tu_contraseña
-
-# 5. Ejecutar migraciones y seeders
-php artisan migrate --seed
-
-# 6. Instalar dependencias frontend
-npm install
-npm run build
-
-# 7. Crear enlace simbólico para storage
-php artisan storage:link
-```
+   - Instalación de dependencias PHP e Instalación de dependencias Node.
+   - Copia del archivo `.env.example` a `.env`.
+   - Generación de key de aplicación y Ejecución de migraciones con Seeders.
+   - Build de assets (`npm run build`).
 
 ---
 
-## Ejecución
+## Desarrollo y Ejecución
 
-### Entorno de Desarrollo
+Para iniciar el ecosistema de desarrollo completo:
 
-**Opción 1: Comando único (recomendado)**
 ```bash
 composer run dev
 ```
@@ -207,21 +156,6 @@ Este comando inicia automáticamente:
 - Servidor de desarrollo Laravel (`php artisan serve`)
 - Servidor Vite para hot-reload (`npm run dev`)
 - Cola de trabajos (`php artisan queue:work`)
-
-**Opción 2: Comandos individuales**
-
-En terminales separadas, ejecuta:
-
-```bash
-# Terminal 1 - Servidor Laravel
-php artisan serve
-
-# Terminal 2 - Vite (desarrollo)
-npm run dev
-
-# Terminal 3 - Cola de trabajos (si usas queues)
-php artisan queue:work
-```
 
 ---
 
@@ -239,40 +173,16 @@ Para propósitos de desarrollo y prueba, se incluyen usuarios precargados:
 ## Tests y Calidad
 
 ### Ejecutar Tests
-
 ```bash
 # Todos los tests
 php artisan test
 
 # Con cobertura
 php artisan test --coverage
-
-# Tests específicos
-php artisan test --filter NombreDelTest
-
-# Tests con output detallado
-php artisan test --verbose
 ```
 
 ### Análisis de Código
-
-El proyecto está integrado con **SonarCloud** para garantizar la calidad del código:
-
-- Análisis estático de código
-- Cobertura de tests
-- Detección de code smells
-- Detección de vulnerabilidades
-- Métricas de mantenibilidad
-
-Ver reportes en: [SonarCloud Dashboard](https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce)
-
-### CI/CD Pipeline
-
-Cada push y pull request ejecuta automáticamente:
-1. Tests unitarios
-2. Tests de integración
-3. Análisis de código estático
-4. Generación de reportes de cobertura
+El proyecto está integrado con **SonarCloud** para garantizar la calidad del código. Ver reportes en: [SonarCloud Dashboard](https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce)
 
 ---
 
@@ -281,25 +191,16 @@ Cada push y pull request ejecuta automáticamente:
 ```
 elicrochet-ecommerce/
 ├── app/
-│   ├── Http/
-│   │   ├── Controllers/      # Controladores
-│   │   └── Middleware/        # Middleware personalizado
-│   ├── Models/                # Modelos Eloquent
-│   └── Services/              # Lógica de negocio
-├── database/
-│   ├── migrations/            # Migraciones de BD
-│   └── seeders/               # Seeders de datos
-├── public/
-│   ├── assets/                # Assets públicos
-│   └── screenshots/           # Capturas de pantalla
+│   ├── Http/Controllers/      # Lógica de flujo (Front/Admin/Customer)
+│   ├── Models/                # Modelos con Eloquent ORM
+│   ├── Services/              # Servicios de negocio (Cart, Payments)
+│   └── Mail/                  # Notificaciones transaccionales
+├── database/                  # Migraciones, Factories y Seeders
 ├── resources/
-│   ├── views/                 # Vistas Blade
-│   ├── css/                   # Estilos
-│   └── js/                    # JavaScript
-├── routes/
-│   ├── web.php               # Rutas web
-│   └── api.php               # Rutas API
-└── tests/                     # Tests automatizados
+│   ├── css/                   # Modern CSS (Vanilla)
+│   └── views/                 # Blade Templates
+├── routes/                    # Definición de rutas (web.php)
+└── tests/                     # Suite de Unit/Feature Testing
 ```
 
 ---
@@ -314,7 +215,6 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 **Leandro Rubio**
 - GitHub: [@LeandroRubio-73456](https://github.com/LeandroRubio-73456)
-- Email: leandro.rubio@example.com
 - LinkedIn: [Tu perfil](https://linkedin.com/in/leandrorubio)
 
 **Link del Proyecto:** [https://github.com/LeandroRubio-73456/elicrochet-ecommerce](https://github.com/LeandroRubio-73456/elicrochet-ecommerce)
@@ -322,9 +222,6 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 ---
 
 <p align="center">
-  Hecho por <strong>Leandro Rubio</strong>
-</p>
-
-<p align="center">
-  <sub>Proyecto de Tesis</sub>
+  Hecho por <strong>Leandro Rubio</strong><br>
+  <sub>Proyecto de Tesis | Lanzamiento v1.0.0</sub>
 </p>
