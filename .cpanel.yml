@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    # PRECAUCIÓN: Actualiza esta ruta con la ruta real de tu servidor
+    # Por ejemplo: /home/tu_usuario/public_html
+    - export DEPLOYPATH=/home/customer/www/default
+    
+    # Copia todo el contenido del repositorio al directorio de despliegue
+    - /bin/cp -R * $DEPLOYPATH
