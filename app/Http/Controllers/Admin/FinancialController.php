@@ -212,7 +212,7 @@ class FinancialController extends Controller
                 break;
         }
 
-        $fileName = 'reporte_ventas_'.date('Y-m-d_H-i').'.csv';
+        $fileName = 'elicrochet_ventas_'.date('Y-m-d_H-i').'.csv';
 
         // Export logic: Get all paid/completed orders in range
         $orders = Order::whereBetween('orders.created_at', [$startDate, $endDate])
