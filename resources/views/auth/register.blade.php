@@ -92,24 +92,6 @@
                                     Crear Cuenta
                                 </button>
                             </div>
-              
-                            <!-- Social Login -->
-                            <div class="position-relative text-center my-4">
-                                <hr class="border-secondary opacity-25">
-                                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">O regístrate con</span>
-                            </div>
-
-                            <div class="d-flex gap-2 justify-content-center">
-                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                    <i class="ti ti-brand-google fs-4"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                    <i class="ti ti-brand-x fs-4"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                    <i class="ti ti-brand-facebook fs-4"></i>
-                                </button>
-                            </div>
                         </form>
                     </div>
                 </div>

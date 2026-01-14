@@ -73,12 +73,6 @@
                                 <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
                                     <i class="ti ti-brand-google fs-4"></i>
                                 </button>
-                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                    <i class="ti ti-brand-x fs-4"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                    <i class="ti ti-brand-facebook fs-4"></i>
-                                </button>
                             </div>
                         </form>
                     </div>
