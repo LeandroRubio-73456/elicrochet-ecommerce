@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class SalesSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class SalesSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create('es_ES');
-        
+
         // Ensure we have products
         if (Product::count() < 5) {
             $this->command->info('Creating dummy products first...');
@@ -28,16 +28,16 @@ class SalesSeeder extends Seeder
         }
 
         $products = Product::all();
-        $statuses = ['paid', 'completed', 'shipped']; 
-        
+        $statuses = ['paid', 'completed', 'shipped'];
+
         // Create 200 orders distributed over the last 6 months
         $this->command->info('Generando 200 ventas históricas...');
 
         for ($i = 0; $i < 200; $i++) {
-            
+
             // Random date in last 6 months
             $date = Carbon::now()->subDays(rand(0, 180));
-            
+
             // Random status (mostly specific completed/paid statuses for charts)
             $status = $faker->randomElement($statuses);
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\OrderItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -61,12 +60,12 @@ class FinancialController extends Controller
             Order::STATUS_WORKING,
             Order::STATUS_READY_TO_SHIP,
             Order::STATUS_SHIPPED,
-            Order::STATUS_COMPLETED
+            Order::STATUS_COMPLETED,
         ];
 
         // Base Query for Revenue Analytics (Scoped to Date Range)
         $revenueQuery = Order::whereBetween('orders.created_at', [$startDate, $endDate])
-                             ->whereIn('orders.status', $revenueStatuses);
+            ->whereIn('orders.status', $revenueStatuses);
 
         // --- KPIs ---
 
@@ -88,12 +87,12 @@ class FinancialController extends Controller
         // 5. Conversion Rate
         // Logic: Paid Orders / Total Orders (including Quotes/Pending) created in this period
         $allOrdersQuery = Order::whereBetween('orders.created_at', [$startDate, $endDate])
-                               ->where('orders.status', '!=', Order::STATUS_LINKED) // Exclude technical status
-                               ->where('orders.status', '!=', Order::STATUS_CANCELLED);
+            ->where('orders.status', '!=', Order::STATUS_LINKED) // Exclude technical status
+            ->where('orders.status', '!=', Order::STATUS_CANCELLED);
         $totalOrdersCount = $allOrdersQuery->count();
 
-        $conversionRate = $totalOrdersCount > 0 
-            ? ($totalPaidOrders / $totalOrdersCount) * 100 
+        $conversionRate = $totalOrdersCount > 0
+            ? ($totalPaidOrders / $totalOrdersCount) * 100
             : 0;
 
         // --- Charts Data ---
@@ -101,9 +100,9 @@ class FinancialController extends Controller
         // A. Sales Trend (Line Chart)
         // Group by Day if period <= 31 days, else by Month
         $diffInDays = $startDate->diffInDays($endDate);
-        $groupByFormat = $diffInDays <= 31 
-            ? (DB::getDriverName() === 'sqlite' ? "%Y-%m-%d" : "%Y-%m-%d") // Daily
-            : (DB::getDriverName() === 'sqlite' ? "%Y-%m" : "%Y-%m");       // Monthly
+        $groupByFormat = $diffInDays <= 31
+            ? (DB::getDriverName() === 'sqlite' ? '%Y-%m-%d' : '%Y-%m-%d') // Daily
+            : (DB::getDriverName() === 'sqlite' ? '%Y-%m' : '%Y-%m');       // Monthly
 
         $dateSelect = DB::getDriverName() === 'sqlite'
             ? "strftime('$groupByFormat', orders.created_at) as date_label"
@@ -143,9 +142,9 @@ class FinancialController extends Controller
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->whereIn('orders.status', $revenueStatuses)
             ->select(
-                'products.name', 
+                'products.name',
                 'products.slug',
-                DB::raw('SUM(order_items.quantity) as total_qty'), 
+                DB::raw('SUM(order_items.quantity) as total_qty'),
                 DB::raw('SUM(order_items.quantity * order_items.price) as total_revenue')
             )
             ->groupBy('products.id', 'products.name', 'products.slug')
@@ -214,7 +213,7 @@ class FinancialController extends Controller
         }
 
         $fileName = 'reporte_ventas_'.date('Y-m-d_H-i').'.csv';
-        
+
         // Export logic: Get all paid/completed orders in range
         $orders = Order::whereBetween('orders.created_at', [$startDate, $endDate])
             ->whereIn('orders.status', [Order::STATUS_PAID, Order::STATUS_SHIPPED, Order::STATUS_COMPLETED, Order::STATUS_WORKING, Order::STATUS_READY_TO_SHIP])
@@ -237,7 +236,7 @@ class FinancialController extends Controller
 
             // Metadata
             fputcsv($file, ['Reporte de Ventas - EliCrochet'], ';');
-            fputcsv($file, ['Periodo:', $startDate->format('d/m/Y') . ' - ' . $endDate->format('d/m/Y')], ';');
+            fputcsv($file, ['Periodo:', $startDate->format('d/m/Y').' - '.$endDate->format('d/m/Y')], ';');
             fputcsv($file, [], ';');
 
             fputcsv($file, $columns, ';');
@@ -250,7 +249,7 @@ class FinancialController extends Controller
                     $order->customer_email,
                     ucfirst($order->status),
                     ucfirst($order->type),
-                    number_format($order->total_amount, 2, ',', '.')
+                    number_format($order->total_amount, 2, ',', '.'),
                 ], ';');
             }
             fclose($file);
