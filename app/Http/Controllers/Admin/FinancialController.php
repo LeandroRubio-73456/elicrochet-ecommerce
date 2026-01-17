@@ -101,8 +101,8 @@ class FinancialController extends Controller
         // Group by Day if period <= 31 days, else by Month
         $diffInDays = $startDate->diffInDays($endDate);
         $groupByFormat = $diffInDays <= 31
-            ? (DB::getDriverName() === 'sqlite' ? '%Y-%m-%d' : '%Y-%m-%d') // Daily
-            : (DB::getDriverName() === 'sqlite' ? '%Y-%m' : '%Y-%m');       // Monthly
+            ? '%Y-%m-%d' // Daily
+            : '%Y-%m';   // Monthly
 
         $dateSelect = DB::getDriverName() === 'sqlite'
             ? "strftime('$groupByFormat', orders.created_at) as date_label"
