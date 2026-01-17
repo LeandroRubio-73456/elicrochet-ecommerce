@@ -24,6 +24,7 @@ class Order extends Model
         'shipping_city',
         'shipping_zip',
         'shipping_cost',
+        'shipping_guide',
     ];
 
     // Types

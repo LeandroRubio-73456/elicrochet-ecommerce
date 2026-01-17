@@ -69,7 +69,7 @@
                         
                         <div class="mb-3">
                             <label for="description" class="form-label">Descripción detallada</label>
-                            <textarea name="description" id="description" class="form-control" rows="5" placeholder="Describe tu idea: colores, tamaño, tipo de tejido, para quién es, etc..." required>{{ old('description') }}</textarea>
+                            <textarea name="description" id="description" class="form-control" rows="5" required>{{ old('description') }}</textarea>
                             <div class="form-text">Sé lo más específico posible para darte una cotización exacta.</div>
                         </div>
 

@@ -51,7 +51,7 @@
 
                                 <div class="mb-3">
                                     <label for="slug" class="form-label fw-bold">URL amigable (slug)</label>
-                                    <input type="text" name="slug" id="slug" class="form-control" placeholder="Ej. amigurumi-foxy" value="{{ old('slug', $product->slug) }}">
+                                    <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug', $product->slug) }}">
                                     <small class="text-muted">Si lo dejas vacío, se generará automáticamente</small>
                                     @error('slug') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                                 </div>

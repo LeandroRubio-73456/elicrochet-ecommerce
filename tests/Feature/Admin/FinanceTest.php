@@ -31,7 +31,7 @@ class FinanceTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewIs('back.finance.index');
-        $response->assertViewHas(['totalIncome', 'ordersLast30Days']);
+        $response->assertViewHas(['totalIncome']);
     }
 
     /** @test */

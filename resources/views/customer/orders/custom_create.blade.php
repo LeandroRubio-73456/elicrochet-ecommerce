@@ -58,7 +58,7 @@
 
                     <div class="mb-4">
                         <label for="description" class="form-label fw-bold">Describe tu idea</label>
-                        <textarea name="description" id="description" rows="5" class="form-control" placeholder="Ej: Quiero un diseño especial con detalles dorados..." required>{{ old('description') }}</textarea>
+                        <textarea name="description" id="description" rows="5" class="form-control" required>{{ old('description') }}</textarea>
                         <small class="text-muted">Incluye detalles adicionales no cubiertos arriba.</small>
                     </div>
 

@@ -40,7 +40,6 @@
                        id="email"
                        name="email"
                        value="{{ old('email') }}"
-                       placeholder="correo@ejemplo.com"
                        required
                        autofocus>
                 @error('email')

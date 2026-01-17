@@ -52,7 +52,7 @@
                 <li class="pc-item">
                     <a href="{{ route('admin.finance.index') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-chart-bar"></i></span>
-                        <span class="pc-mtext">Ventas</span>
+                        <span class="pc-mtext">Reportes</span>
                     </a>
                 </li>
             </ul>

@@ -37,12 +37,12 @@
         <div class="filter-content p-3">
             <div class="d-flex align-items-center gap-2 mb-3">
                 <div class="form-floating flex-grow-1">
-                    <input type="number" class="form-control form-control-sm" id="min_price" name="min_price" placeholder="Min" value="{{ request('min_price') }}">
+                    <input type="number" class="form-control form-control-sm" id="min_price" name="min_price" value="{{ request('min_price') }}">
                     <label for="min_price">Mín</label>
                 </div>
                 <span class="text-muted">-</span>
                 <div class="form-floating flex-grow-1">
-                    <input type="number" class="form-control form-control-sm" id="max_price" name="max_price" placeholder="Max" value="{{ request('max_price') }}">
+                    <input type="number" class="form-control form-control-sm" id="max_price" name="max_price" value="{{ request('max_price') }}">
                     <label for="max_price">Máx</label>
                 </div>
             </div>

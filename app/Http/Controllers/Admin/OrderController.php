@@ -64,7 +64,17 @@ class OrderController extends Controller
         $request->validate([
             'status' => 'required|string',
             'total_amount' => 'nullable|numeric|min:0',
+            'shipping_guide' => 'nullable|image|max:2048', // Max 2MB
         ]);
+
+        // Handle shipping guide upload
+        if ($request->hasFile('shipping_guide')) {
+            $path = $request->file('shipping_guide')->store('shipping_guides', 'public');
+            $order->shipping_guide = $path;
+            // No save here because it's saved in the transaction block below,
+            // BUT wait, standard update uses $order->save() below.
+            // We need to make sure this assignment persists.
+        }
 
         $this->updateQuotationAmount($request, $order);
         $this->checkStatusNotifications($request, $order);

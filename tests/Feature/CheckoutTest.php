@@ -17,6 +17,7 @@ class CheckoutTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        config(['services.payphone.token' => 'test-token']);
         // Assuming database migration is handled or mocked if RefreshDatabase is disabled
     }
 

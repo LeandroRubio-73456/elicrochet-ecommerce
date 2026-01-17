@@ -22,8 +22,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
 
-        // Force HTTPS in all environments (Local + Production) to support HTTP/2
-        \Illuminate\Support\Facades\URL::forceScheme('https');
+        // Force HTTPS in Production only
+        if (app()->isProduction()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
 
         \App\Models\Review::observe(\App\Observers\ReviewObserver::class);
 

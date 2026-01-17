@@ -33,13 +33,13 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="name" class="form-label fw-bold">Nombre del Producto <span class="text-danger">*</span></label>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Ej. Amigurumi Foxy" value="{{ old('name') }}" required>
+                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
                             @error('name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="slug" class="form-label fw-bold">URL amigable (slug)</label>
-                            <input type="text" name="slug" id="slug" class="form-control" placeholder="Ej. amigurumi-foxy" value="{{ old('slug') }}">
+                            <input type="text" name="slug" id="slug" class="form-control" value="{{ old('slug') }}">
                             <small class="text-muted">Si lo dejas vacío, se generará automáticamente</small>
                             @error('slug') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -57,7 +57,7 @@
 
                         <div class="mb-3">
                             <label for="description" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
-                            <textarea class="form-control" name="description" id="description" rows="8" required placeholder="Describe tu producto...">{{ old('description') }}</textarea>
+                            <textarea class="form-control" name="description" id="description" rows="8" required>{{ old('description') }}</textarea>
                             @error('description') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                         </div>
 

@@ -183,7 +183,7 @@
             @endif
 
             <div class="card-body">
-                <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="updateStatusForm">
+                <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" id="updateStatusForm" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     
@@ -260,10 +260,26 @@
                         @enderror
                     </div>
 
+                    {{-- Shipping Guide Upload --}}
+                    <div class="mb-3" id="shippingGuideContainer" style="display: none;">
+                        <label for="shipping_guide" class="form-label fw-bold text-dark">Subir Guía de Envío (Servientrega)</label>
+                        <input type="file" name="shipping_guide" id="shipping_guide" class="form-control" accept="image/*">
+                        <small class="text-muted">Sube una foto del comprobante de envío.</small>
+                    </div>
+
+                    @if($order->shipping_guide)
+                        <div class="mb-3 p-2 border rounded bg-light">
+                            <label class="form-label small text-muted text-uppercase fw-bold">Guía de Envío Actual:</label>
+                            <a href="{{ asset('storage/' . $order->shipping_guide) }}" target="_blank" class="d-block">
+                                <img src="{{ asset('storage/' . $order->shipping_guide) }}" alt="Guía de Envío" class="img-fluid rounded border shadow-sm" style="max-height: 150px;">
+                            </a>
+                        </div>
+                    @endif
+
                     @if($order->type === 'custom' && $order->status === 'quotation')
                         <div class="mb-3">
                             <label for="total_amount_input" class="form-label fw-bold text-primary">Cotizar Valor Total ($)</label>
-                            <input type="number" step="0.01" name="total_amount" id="total_amount_input" class="form-control" value="{{ $order->total_amount > 0 ? $order->total_amount : '' }}" placeholder="0.00">
+                            <input type="number" step="0.01" name="total_amount" id="total_amount_input" class="form-control" value="{{ $order->total_amount > 0 ? $order->total_amount : '' }}">
                             <small class="text-muted">Al cambiar a 'Pendiente de Pago', este será el valor a cobrar.</small>
                         </div>
                     @endif
@@ -303,11 +319,10 @@
                     <i class="ti ti-phone me-2 text-muted"></i> {{ $order->customer_phone }}
                 </div>
             </div>
-            </div>
         </div>
 
-        <!-- Información de Envío (Moved Here) -->
-        <div class="card mt-4">
+        <!-- Información de Envío -->
+        <div class="card">
             <div class="card-header">
                 <h5 class="card-title mb-0">Información de Envío</h5>
             </div>
@@ -343,7 +358,23 @@
     document.addEventListener('DOMContentLoaded', function() {
         const updateStatusForm = document.getElementById('updateStatusForm');
         const statusSelect = document.getElementById('statusSelect');
+        const shippingGuideContainer = document.getElementById('shippingGuideContainer');
         const currentStatus = "{{ $order->status }}";
+
+        // Logic to toggle shipping guide input
+        function toggleShippingGuide() {
+            if (statusSelect.value === 'shipped') {
+                shippingGuideContainer.style.display = 'block';
+            } else {
+                shippingGuideContainer.style.display = 'none';
+            }
+        }
+
+        if (statusSelect) {
+            statusSelect.addEventListener('change', toggleShippingGuide);
+            // Run on load just in case (though default is hidden)
+            toggleShippingGuide(); 
+        }
 
         if (updateStatusForm) {
             updateStatusForm.addEventListener('submit', function(e) {
@@ -352,7 +383,14 @@
                 const selectedStatus = statusSelect.value;
                 
                 if (selectedStatus === currentStatus) {
-                    // If no change, just submit or do nothing
+                    // If no change, check if file is selected (for re-uploading)
+                    const fileInput = document.getElementById('shipping_guide');
+                    if (fileInput && fileInput.files.length > 0) {
+                        this.submit();
+                        return;
+                    }
+                    
+                    // Otherwise do nothing or submit
                     this.submit();
                     return;
                 }

@@ -46,7 +46,7 @@
               <div class="form-group mb-3">
                 <label for="password" class="form-label">Nueva Contraseña</label>
                 <div class="input-group">
-                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password" placeholder="••••••••">
+                    <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password">
                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                         <i class="ti ti-eye"></i>
                     </button>
@@ -61,7 +61,7 @@
               <div class="form-group mb-3">
                 <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
                 <div class="input-group">
-                    <input type="password" class="form-control form-control-lg" id="password_confirmation" name="password_confirmation" required autocomplete="new-password" placeholder="••••••••">
+                    <input type="password" class="form-control form-control-lg" id="password_confirmation" name="password_confirmation" required autocomplete="new-password">
                     <button class="btn btn-outline-secondary" type="button" id="toggleConfirm">
                         <i class="ti ti-eye"></i>
                     </button>

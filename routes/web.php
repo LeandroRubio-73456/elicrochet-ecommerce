@@ -112,4 +112,8 @@ Route::middleware(['auth'])->prefix('account')->name('account.')->group(function
 
 Route::get('/back-dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('back.dashboard')->middleware(['auth']);
 
+// Google Auth
+Route::get('auth/google', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
+
 require __DIR__.'/auth.php';
