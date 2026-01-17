@@ -13,7 +13,7 @@ class PayPhoneService
 
     public function __construct()
     {
-        $this->token = config('services.payphone.token');
+        $this->token = (string) config('services.payphone.token', '');
     }
 
     /**
