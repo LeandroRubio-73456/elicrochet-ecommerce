@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="cedula" class="form-label">Cédula / RUC</label>
-                    <input type="text" id="cedula" name="cedula" class="form-control" value="{{ old('cedula', $user->cedula) }}" required placeholder="Ej: 1712345678">
+                    <input type="text" id="cedula" name="cedula" class="form-control" value="{{ old('cedula', $user->cedula) }}" required>
                 </div>
                 <div class="col-md-6">
                     <label for="email" class="form-label">Correo Electrónico</label>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="phone" class="form-label">Teléfono</label>
-                    <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="Ej: 0991234567">
+                    <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-12">
                      <label for="shipping_province" class="form-label">Provincia / Estado</label>
-                    <input type="text" id="shipping_province" name="shipping_province" class="form-control" value="{{ old('shipping_province', $address->province ?? $user->shipping_state ?? '') }}" placeholder="Ej: Pichincha">
+                    <input type="text" id="shipping_province" name="shipping_province" class="form-control" value="{{ old('shipping_province', $address->province ?? $user->shipping_state ?? '') }}">
                 </div>
                 <div class="col-md-6">
                     <label for="shipping_city" class="form-label">Ciudad</label>
@@ -48,15 +48,15 @@
                 </div>
                 <div class="col-md-6">
                     <label for="shipping_zip" class="form-label">Código Postal / Zona</label>
-                    <input type="text" id="shipping_zip" name="shipping_zip" class="form-control" value="{{ old('shipping_zip', $address->postal_code ?? $user->shipping_zip ?? '') }}" placeholder="Ej: 170504">
+                    <input type="text" id="shipping_zip" name="shipping_zip" class="form-control" value="{{ old('shipping_zip', $address->postal_code ?? $user->shipping_zip ?? '') }}">
                 </div>
                 <div class="col-md-12">
                     <label for="shipping_address" class="form-label">Dirección / Calle Principal</label>
-                    <input type="text" id="shipping_address" name="shipping_address" class="form-control" value="{{ old('shipping_address', $address->street ?? $user->shipping_address ?? '') }}" placeholder="Ej: Av. Amazonas N35-12 y Corea" required>
+                    <input type="text" id="shipping_address" name="shipping_address" class="form-control" value="{{ old('shipping_address', $address->street ?? $user->shipping_address ?? '') }}" required>
                 </div>
                 <div class="col-md-12">
                     <label for="shipping_reference" class="form-label">Referencia (Opcional)</label>
-                    <input type="text" id="shipping_reference" name="shipping_reference" class="form-control" value="{{ old('shipping_reference', $address->reference ?? '') }}" placeholder="Ej: Junto a la farmacia azul">
+                    <input type="text" id="shipping_reference" name="shipping_reference" class="form-control" value="{{ old('shipping_reference', $address->reference ?? '') }}">
                 </div>
             </div>
 
@@ -64,7 +64,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
                     <label for="password" class="form-label">Nueva Contraseña</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Dejar en blanco para mantener actual">
+                    <input type="password" id="password" name="password" class="form-control">
                 </div>
                 <div class="col-md-6">
                     <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>

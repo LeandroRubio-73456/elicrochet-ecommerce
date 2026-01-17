@@ -26,7 +26,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="phone" class="form-label">Teléfono</label>
-                            <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="Ej: 0991234567">
+                            <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
                         </div>
                     </div>
                     <div class="mt-4 text-end">
@@ -51,11 +51,11 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label for="street" class="form-label">Calle Principal y Número</label>
-                            <input type="text" id="street" name="street" class="form-control" value="{{ old('street', $address->street ?? '') }}" required placeholder="Ej: Av. Amazonas y Shyris">
+                            <input type="text" id="street" name="street" class="form-control" value="{{ old('street', $address->street ?? '') }}" required>
                         </div>
                         <div class="col-md-6">
                             <label for="details" class="form-label">Detalles / Referencia</label>
-                            <input type="text" id="details" name="details" class="form-control" value="{{ old('details', $address->details ?? '') }}" placeholder="Ej: Edificio Blanco, Piso 2">
+                            <input type="text" id="details" name="details" class="form-control" value="{{ old('details', $address->details ?? '') }}">
                         </div>
                         <div class="col-md-4">
                             <label for="city" class="form-label">Ciudad</label>

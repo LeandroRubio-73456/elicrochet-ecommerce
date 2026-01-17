@@ -70,9 +70,9 @@
                             </div>
 
                             <div class="d-flex gap-2 justify-content-center">
-                                <button type="button" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                <a href="{{ route('auth.google') }}" class="btn btn-outline-light border text-muted p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" title="Iniciar con Google">
                                     <i class="ti ti-brand-google fs-4"></i>
-                                </button>
+                                </a>
                             </div>
                         </form>
                     </div>

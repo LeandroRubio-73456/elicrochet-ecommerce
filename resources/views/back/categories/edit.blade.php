@@ -25,7 +25,7 @@
                                         <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" name="name" id="name" class="form-control"
-                                        placeholder="Ej. Amigurumis" value="{{ old('name', $category->name) }}" required>
+                                        value="{{ old('name', $category->name) }}" required>
                                     @error('name')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
@@ -34,7 +34,7 @@
                                 <div class="mb-3">
                                     <label for="slug" class="form-label fw-bold">URL amigable (slug)</label>
                                     <input type="text" name="slug" id="slug" class="form-control"
-                                        placeholder="Ej. amigurumis" value="{{ old('slug', $category->slug) }}">
+                                        value="{{ old('slug', $category->slug) }}">
                                     <small class="text-muted">Si lo dejas vacío, se generará automáticamente</small>
                                     @error('slug')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
@@ -79,8 +79,8 @@
                             <label for="description" class="form-label fw-bold">Descripción
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea class="form-control" name="description" id="description" rows="4" required
-                                placeholder="Describe esta categoría...">{{ old('description', $category->description) }}</textarea>
+                            <textarea class="form-control" name="description" id="description" rows="3" required
+                                >{{ old('description', $category->description) }}</textarea>
                             <small class="text-muted">Describe los productos que pertenecen a esta categoría.</small>
                             @error('description')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
@@ -133,7 +133,7 @@
                                 function addRow(data = {}) {
                                     const row = document.createElement('tr');
                                     row.innerHTML = `
-                                        <td><input type="text" class="form-control form-control-sm spec-name" placeholder="Ej: Talla" value="${data.name || ''}"></td>
+                                        <td><input type="text" class="form-control form-control-sm spec-name" value="${data.name || ''}"></td>
                                         <td>
                                             <select class="form-select form-select-sm spec-type">
                                                 <option value="text" ${data.type === 'text' ? 'selected' : ''}>Texto</option>
@@ -141,7 +141,7 @@
                                                 <option value="select" ${data.type === 'select' ? 'selected' : ''}>Selección</option>
                                             </select>
                                         </td>
-                                        <td><input type="text" class="form-control form-control-sm spec-options" placeholder="Op1, Op2" value="${data.options ? data.options.join(', ') : ''}" ${data.type !== 'select' ? 'disabled' : ''}></td>
+                                        <td><input type="text" class="form-control form-control-sm spec-options" value="${data.options ? data.options.join(', ') : ''}" ${data.type !== 'select' ? 'disabled' : ''}></td>
                                         <td class="text-center">
                                             <div class="form-check d-flex justify-content-center">
                                                 <input class="form-check-input spec-required" type="checkbox" ${data.required === false ? '' : 'checked'}>

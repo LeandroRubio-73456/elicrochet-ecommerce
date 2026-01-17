@@ -230,6 +230,20 @@
                 <p class="mb-0 text-muted"><i class="ti ti-phone me-1"></i> {{ $order->customer_phone ?? $order->shipping_phone }}</p>
             </div>
         </div>
+
+        @if($order->shipping_guide)
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body">
+                <h6 class="text-uppercase text-muted fw-bold f-12 mb-3">Comprobante de Envío</h6>
+                <div class="text-center">
+                    <a href="{{ asset('storage/' . $order->shipping_guide) }}" target="_blank">
+                        <img src="{{ asset('storage/' . $order->shipping_guide) }}" alt="Guía de Envío" class="img-fluid rounded border shadow-sm">
+                    </a>
+                    <small class="text-muted d-block mt-2">Clic para ampliar</small>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 </div>

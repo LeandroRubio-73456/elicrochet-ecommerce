@@ -28,7 +28,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input type="text" name="name" id="name" class="form-control"
-                                            placeholder="Ej. Juan" value="{{ old('name', $user->name) }}" required>
+                                            value="{{ old('name', $user->name) }}" required>
                                     </div>
                                     @error('name')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
@@ -40,7 +40,7 @@
                                             class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input type="text" name="lastname" id="lastname" class="form-control"
-                                            placeholder="Ej. Pérez" value="{{ old('lastname', $user->lastname) }}" required>
+                                            value="{{ old('lastname', $user->lastname) }}" required>
                                     </div>
                                     @error('lastname')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
@@ -53,7 +53,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="ti ti-mail"></i></span>
                                         <input type="email" name="email" id="email" class="form-control"
-                                            placeholder="juan@ejemplo.com" value="{{ old('email', $user->email) }}" required>
+                                            value="{{ old('email', $user->email) }}" required>
                                     </div>
                                     @error('email')
                                         <div class="text-danger small mt-1">{{ $message }}</div>
@@ -89,8 +89,7 @@
                                     <label for="password" class="form-label fw-bold">Nueva Contraseña</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="ti ti-lock"></i></span>
-                                        <input type="password" name="password" id="password" class="form-control"
-                                            placeholder="••••••••">
+                                        <input type="password" name="password" id="password" class="form-control">
                                     </div>
                                     <small class="text-muted">Mínimo 8 caracteres.</small>
                                     @error('password')
@@ -104,7 +103,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="ti ti-lock-check"></i></span>
                                         <input type="password" name="password_confirmation" id="password_confirmation"
-                                            class="form-control" placeholder="••••••••">
+                                            class="form-control">
                                     </div>
                                 </div>
                             </div>

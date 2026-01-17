@@ -43,4 +43,10 @@ return [
            ? 'https://api.payphone.app/prod' // URL de producción
            : 'https://api.payphone.app/dev', // URL de pruebas
     ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+    ],
 ];

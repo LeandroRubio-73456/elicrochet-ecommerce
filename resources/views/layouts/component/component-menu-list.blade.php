@@ -7,7 +7,7 @@
       <div class="card-header">
         <div class="form-search">
           <i class="ph-duotone ph-magnifying-glass icon-search"></i>
-          <input type="search" class="form-control" placeholder="ex. alert, textbox... " id="compo-menu-search" >
+          <input type="search" class="form-control" id="compo-menu-search" >
         </div>
       </div>
       <div class="card-body p-0">

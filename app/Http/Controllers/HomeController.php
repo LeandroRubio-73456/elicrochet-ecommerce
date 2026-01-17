@@ -88,7 +88,7 @@ class HomeController extends Controller
 
     public function notfound()
     {
-        return view('front.404');
+        return view('errors.404');
     }
 
     public function bestseller()

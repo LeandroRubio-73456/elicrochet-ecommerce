@@ -25,20 +25,7 @@
                         </a>
                         <a href="#categories" class="btn-modern btn-ghost">Ver categorías</a>
                     </div>
-                    <div class="hero-stats mt-4">
-                        <div class="stat-item">
-                            <div class="stat-number">500+</div>
-                            <div class="stat-label">Clientes felices</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">1000+</div>
-                            <div class="stat-label">Piezas creadas</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">4.9</div>
-                            <div class="stat-label">Calificación</div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div class="col-lg-7">
@@ -196,7 +183,7 @@
             <h2 class="newsletter-title">Mantente al día</h2>
             <p class="newsletter-text">Suscríbete para recibir novedades, ofertas exclusivas y tips de cuidado</p>
             <form class="newsletter-form">
-                <input type="email" placeholder="tu@email.com" required>
+                <input type="email" required>
                 <button type="submit" class="btn-modern btn-primary">Suscribirse</button>
             </form>
         </div>

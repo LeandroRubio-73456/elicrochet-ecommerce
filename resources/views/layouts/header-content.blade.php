@@ -21,7 +21,7 @@
                 <form class="px-3">
                     <div class="form-group mb-0 d-flex align-items-center">
                         <i data-feather="search"></i>
-                        <input type="search" class="form-control border-0 shadow-none" placeholder="Search here. . .">
+                        <input type="search" class="form-control border-0 shadow-none">
                     </div>
                 </form>
             </div>
@@ -29,7 +29,7 @@
         <li class="pc-h-item d-none d-md-inline-flex">
             <form class="header-search">
                 <i data-feather="search" class="icon-search"></i>
-                <input type="search" class="form-control" placeholder="Search here. . .">
+                <input type="search" class="form-control">
             </form>
         </li>
     </ul>
