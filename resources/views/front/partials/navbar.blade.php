@@ -75,7 +75,7 @@
                                         <span>Panel Admin</span>
                                     </a>
                                 @else
-                                    <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
+                                    <a href="{{ route('account.index') }}" class="dropdown-item">
                                         <i class="ti ti-layout-dashboard"></i>
                                         <span>Mi Cuenta</span>
                                     </a>

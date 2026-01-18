@@ -126,7 +126,7 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Sí, realizamos envíos a nivel nacional a través de Servientrega. El tiempo estimado de entrega suele ser de 24 horas laborables en ciudades principales. Puedes ver el estado de tu pedido en <a href="{{ route('customer.orders.index') }}">Mis Pedidos</a>.
+                                Sí, realizamos envíos a nivel nacional a través de Servientrega. El tiempo estimado de entrega suele ser de 24 horas laborables en ciudades principales. Puedes ver el estado de tu pedido en <a href="{{ route('account.orders.index') }}">Mis Pedidos</a>.
                             </div>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Puedes solicitar un pedido personalizado directamente desde tu panel de cliente. <a href="{{ route('customer.custom.create') }}">Haz clic aquí para crear un pedido personalizado</a>. Te enviaremos una cotización y, una vez aprobada, comenzaremos la fabricación.
+                                Puedes solicitar un pedido personalizado directamente desde tu panel de cliente. <a href="{{ route('account.custom.create') }}">Haz clic aquí para crear un pedido personalizado</a>. Te enviaremos una cotización y, una vez aprobada, comenzaremos la fabricación.
                             </div>
                         </div>
                     </div>

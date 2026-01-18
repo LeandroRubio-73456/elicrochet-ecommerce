@@ -7,7 +7,7 @@ Hemos cotizado tu pedido personalizado #{{ $order->id }}.
 
 Ya puedes proceder al pago para comenzar con la fabricación.
 
-<x-mail::button :url="route('customer.orders.show', $order)">
+<x-mail::button :url="route('account.orders.show', $order)">
 Ver Cotización y Pagar
 </x-mail::button>
 

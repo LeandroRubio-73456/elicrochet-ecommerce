@@ -30,7 +30,7 @@ class OrderTest extends TestCase
         $order = Order::factory()->create(['user_id' => $this->user->id]);
         $otherOrder = Order::factory()->create(); // Different user
 
-        $response = $this->actingAs($this->user)->get(route('customer.orders.index'));
+        $response = $this->actingAs($this->user)->get(route('account.orders.index'));
 
         $response->assertOk();
         $response->assertViewHas('orders', function ($orders) use ($order, $otherOrder) {
@@ -43,7 +43,7 @@ class OrderTest extends TestCase
     {
         $order = Order::factory()->create(['user_id' => $this->user->id]);
 
-        $response = $this->actingAs($this->user)->get(route('customer.orders.show', $order));
+        $response = $this->actingAs($this->user)->get(route('account.orders.show', $order));
 
         $response->assertOk();
         $response->assertSee($order->order_number);
@@ -54,7 +54,7 @@ class OrderTest extends TestCase
     {
         $otherOrder = Order::factory()->create();
 
-        $response = $this->actingAs($this->user)->get(route('customer.orders.show', $otherOrder));
+        $response = $this->actingAs($this->user)->get(route('account.orders.show', $otherOrder));
 
         $response->assertStatus(403);
     }
@@ -74,7 +74,7 @@ class OrderTest extends TestCase
             'price' => $product->price,
         ]);
 
-        $response = $this->actingAs($this->user)->post(route('customer.orders.cancel', $order));
+        $response = $this->actingAs($this->user)->post(route('account.orders.cancel', $order));
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -91,7 +91,7 @@ class OrderTest extends TestCase
             'type' => Order::TYPE_STOCK,
         ]);
 
-        $response = $this->actingAs($this->user)->post(route('customer.orders.cancel', $order));
+        $response = $this->actingAs($this->user)->post(route('account.orders.cancel', $order));
 
         $response->assertRedirect();
         $response->assertSessionHas('error');
@@ -106,7 +106,7 @@ class OrderTest extends TestCase
             'status' => Order::STATUS_SHIPPED,
         ]);
 
-        $response = $this->actingAs($this->user)->post(route('customer.orders.confirm', $order));
+        $response = $this->actingAs($this->user)->post(route('account.orders.confirm', $order));
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
@@ -116,7 +116,7 @@ class OrderTest extends TestCase
     /** @test */
     public function customer_can_view_custom_order_form()
     {
-        $response = $this->actingAs($this->user)->get(route('customer.custom.create'));
+        $response = $this->actingAs($this->user)->get(route('account.custom.create'));
 
         $response->assertOk();
         $response->assertViewHas('categories');
@@ -141,9 +141,9 @@ class OrderTest extends TestCase
             'images' => [UploadedFile::fake()->image('dragon.jpg')],
         ];
 
-        $response = $this->actingAs($this->user)->post(route('customer.custom.store'), $data);
+        $response = $this->actingAs($this->user)->post(route('account.custom.store'), $data);
 
-        $response->assertRedirect(route('customer.orders.index'));
+        $response->assertRedirect(route('account.orders.index'));
         $response->assertSessionHas('success');
 
         $this->assertDatabaseHas('orders', [
@@ -169,7 +169,7 @@ class OrderTest extends TestCase
             'type' => Order::TYPE_CUSTOM,
         ]);
 
-        $response = $this->actingAs($this->user)->post(route('customer.orders.add_to_cart', $order));
+        $response = $this->actingAs($this->user)->post(route('account.orders.add_to_cart', $order));
 
         $response->assertRedirect(route('cart'));
         $response->assertSessionHas('success');

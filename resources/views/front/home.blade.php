@@ -102,7 +102,7 @@
                                 Creamos piezas únicas según tu visión. Desde diseños personalizados hasta colores específicos, hacemos realidad tus ideas.
                             </p>
                             <div class="d-flex align-items-center gap-4 flex-wrap justify-content-center justify-content-lg-start">
-                                <a href="{{ route('customer.custom.create') }}" class="btn-modern btn-primary">
+                                <a href="{{ route('account.custom.create') }}" class="btn-modern btn-primary">
                                     Solicitar ahora
                                     <i class="ti ti-arrow-right"></i>
                                 </a>

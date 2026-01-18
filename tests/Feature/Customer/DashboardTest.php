@@ -15,16 +15,16 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create(['role' => 'customer', 'email_verified_at' => now()]);
 
-        $response = $this->actingAs($user)->get(route('customer.dashboard'));
+        $response = $this->actingAs($user)->get(route('account.index'));
 
         $response->assertOk();
-        $response->assertViewIs('customer.dashboard');
+        $response->assertViewIs('front.account.index');
         $response->assertViewHas('recentOrders');
     }
 
     /** @test */
     public function guest_cannot_access_customer_dashboard()
     {
-        $this->get(route('customer.dashboard'))->assertRedirect(route('login'));
+        $this->get(route('account.index'))->assertRedirect(route('login'));
     }
 }

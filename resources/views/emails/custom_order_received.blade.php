@@ -7,7 +7,7 @@ Hemos recibido tu solicitud de pedido personalizado con éxito.
 
 Nuestro equipo revisará los detalles y te enviaremos una cotización lo antes posible.
 
-<x-mail::button :url="route('customer.orders.show', $order)">
+<x-mail::button :url="route('account.orders.show', $order)">
 Ver Solicitud
 </x-mail::button>
 

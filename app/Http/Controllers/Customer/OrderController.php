@@ -20,7 +20,7 @@ class OrderController extends Controller
             ->orderBy('id', 'desc') // Explicitly enforce ID desc
             ->paginate(10);
 
-        return view('customer.orders.index', compact('orders'));
+        return view('front.account.orders.index', compact('orders'));
     }
 
     public function show(Order $order)
@@ -30,7 +30,7 @@ class OrderController extends Controller
             abort(403);
         }
 
-        return view('customer.orders.show', compact('order'));
+        return view('front.account.orders.show', compact('order'));
     }
 
     /**
@@ -87,7 +87,7 @@ class OrderController extends Controller
     {
         $categories = \App\Models\Category::where('status', 'active')->get();
 
-        return view('customer.orders.custom_create', compact('categories'));
+        return view('front.account.orders.custom_create', compact('categories'));
     }
 
     public function storeCustom(Request $request)
@@ -168,7 +168,7 @@ class OrderController extends Controller
             \Illuminate\Support\Facades\Log::error('Error sending NewOrderAdminNotification: '.$e->getMessage());
         }
 
-        return redirect()->route('customer.orders.index')
+        return redirect()->route('account.orders.index')
             ->with('success', 'Solicitud enviada. Te enviaremos una cotización pronto.');
     }
 

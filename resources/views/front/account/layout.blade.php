@@ -8,19 +8,24 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-0">
                     <div class="p-3 border-bottom text-center">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random&color=fff"
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random&color=fff" 
                              alt="user" class="rounded-circle mb-2" width="60">
                         <h6 class="mb-0 fw-bold">{{ auth()->user()->name }}</h6>
                         <small class="text-muted">{{ auth()->user()->email }}</small>
                     </div>
                     <div class="list-group list-group-flush">
                         <a href="{{ route('account.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('account.index') ? 'active' : '' }}">
+                            <i class="ti ti-dashboard me-2"></i> Resumen
+                        </a>
+                        <a href="{{ route('account.profile.edit') }}" class="list-group-item list-group-item-action {{ request()->routeIs('account.profile.edit') ? 'active' : '' }}">
                             <i class="ti ti-user me-2"></i> Mi Perfil y Datos
                         </a>
-                        <a href="{{ route('account.orders') }}" class="list-group-item list-group-item-action {{ request()->routeIs('account.orders') ? 'active' : '' }}">
+                        <a href="{{ route('account.orders.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('account.orders.*') ? 'active' : '' }}">
                             <i class="ti ti-shopping-cart me-2"></i> Mis Pedidos
                         </a>
-                        <a href="{{ route('custom-order.create') }}" class="list-group-item list-group-item-action text-primary fw-bold">
+                        <a href="{{ route('account.custom.create') }}" class="list-group-item list-group-item-action text-primary fw-bold {{ request()->routeIs('account.custom.create') ? 'bg-light-primary' : '' }}">
+                            <i class="ti ti-wand me-2"></i> Solicitar Pedido Personalizado
+                        </a>
                             <i class="ti ti-wand me-2"></i> Solicitar Pedido Personalizado
                         </a>
                         <form action="{{ route('logout') }}" method="POST" class="d-grid p-2 border-top">
@@ -60,7 +65,7 @@
                 </div>
             @endif
 
-            @yield('account_content')
+            @yield('customer_content')
         </div>
     </div>
 </div>

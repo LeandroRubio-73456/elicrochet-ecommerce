@@ -1,4 +1,4 @@
-@extends('customer.layout')
+@extends('front.account.layout')
 
 @section('title', 'Mi Perfil | EliCrochet')
 
@@ -8,7 +8,7 @@
         <h5 class="card-title mb-0"><i class="ti ti-user-edit me-2 text-primary"></i>Datos Personales y Envío</h5>
     </div>
     <div class="card-body">
-        <form action="{{ route('customer.profile.update') }}" method="POST">
+        <form action="{{ route('account.profile.update') }}" method="POST">
             @csrf
             @method('PUT')
             

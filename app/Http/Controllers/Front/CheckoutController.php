@@ -70,7 +70,7 @@ class CheckoutController extends Controller
         if ($order->status !== 'pending_payment') {
             Log::warning('Order status mismatch. Redirecting to show.');
 
-            return redirect()->route('customer.orders.show', $order->id)
+            return redirect()->route('account.orders.show', $order->id)
                 ->with('error', 'Esta orden no está pendiente de pago.');
         }
 
@@ -91,7 +91,7 @@ class CheckoutController extends Controller
         if ($order->status !== 'pending_payment') {
             Log::warning("payExisting: Order {$order->id} is not pending payment. Status: {$order->status}");
 
-            return redirect()->route('customer.orders.show', $order->id)->with('error', 'Orden no válida para pago.');
+            return redirect()->route('account.orders.show', $order->id)->with('error', 'Orden no válida para pago.');
         }
 
         try {

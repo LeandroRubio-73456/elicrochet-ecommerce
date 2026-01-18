@@ -59,7 +59,7 @@
              class="img-fluid mb-3">
         <h4 class="cta-title">¿Buscas algo único?</h4>
         <p class="cta-text">Creamos diseños exclusivos a tu medida</p>
-        <a href="{{ route('customer.custom.create') }}" class="btn-cta-mini">
+        <a href="{{ route('account.custom.create') }}" class="btn-cta-mini">
             Solicitar ahora
             <i class="ti ti-arrow-right"></i>
         </a>

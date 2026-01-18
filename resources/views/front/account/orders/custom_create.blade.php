@@ -1,4 +1,4 @@
-@extends('customer.layout')
+@extends('front.account.layout')
 
 @section('title', 'Pedido Personalizado | EliCrochet')
 
@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form action="{{ route('customer.custom.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('account.custom.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="alert alert-info border-0 bg-light-info text-dark d-flex align-items-center mb-4">
@@ -117,7 +117,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 mt-4">
-                        <a href="{{ route('customer.dashboard') }}" class="btn btn-light border">Cancelar</a>
+                        <a href="{{ route('account.index') }}" class="btn btn-light border">Cancelar</a>
                         <button type="submit" class="btn btn-primary px-4" id="btnSubmit">
                             <span class="d-none spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                             <span id="btnText"><i class="ti ti-send me-2"></i> Enviar Solicitud</span>
@@ -131,7 +131,7 @@
 
 @push('scripts')
 <script>
-    document.querySelector('form[action="{{ route('customer.custom.store') }}"]').addEventListener('submit', function(e) {
+    document.querySelector('form[action="{{ route('account.custom.store') }}"]').addEventListener('submit', function(e) {
         var btn = document.getElementById('btnSubmit');
         // Prevent double submission if already disabled
         if (btn.disabled) {
