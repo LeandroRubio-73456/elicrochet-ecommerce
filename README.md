@@ -1,6 +1,12 @@
 # EliCrochet Ecommerce
 
-Plataforma de comercio electrónico para productos artesanales, desarrollada con **Laravel 12**.
+<p align="center">
+  <img src="public/assets/images/Logo.webp" alt="EliCrochet Logo" width="200">
+</p>
+
+Solución E-commerce desarrollada para EliCrochet, una microempresa de artesanías en Ecuador. Este sistema optimizó su gestión de inventario y permitió digitalizar sus ventas que antes eran manuales por WhatsApp.
+
+# [Ver Demo en Vivo](https://elicrochet.shop)
 
 <p align="center">
   <a href="https://github.com/LeandroRubio-73456/EliCrochet-Ecommerce/actions/workflows/ci.yml">
@@ -15,6 +21,14 @@ Plataforma de comercio electrónico para productos artesanales, desarrollada con
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
   </a>
+</p>
+
+## Stack Tecnológico Visual
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
 </p>
 
 ## Requisitos Previos
@@ -68,6 +82,13 @@ El proyecto cuenta con una suite de pruebas automatizadas (>80% de cobertura) pa
 # Ejecutar todos los tests
 php artisan test
 ```
+
+## Galería
+
+<p align="center">
+  <img src="public/screenshots/home.png" alt="Home Page" width="45%">
+  <img src="public/screenshots/admin.png" alt="Admin Dashboard" width="45%">
+</p>
 
 ## Licencia
 

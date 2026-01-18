@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Merchant Information
+    |--------------------------------------------------------------------------
+    |
+    | Information specific to the business owner, used in invoices and labels.
+    |
+    */
+    'merchant_name' => env('MERCHANT_NAME', 'Estefania Elizabeth'),
+    'merchant_cedula' => env('MERCHANT_CEDULA', '1754989877'),
+    'merchant_phone' => env('MERCHANT_PHONE', '0967561212'),
+    'merchant_city' => env('MERCHANT_CITY', 'Quito – Pichincha'),
+
 ];
