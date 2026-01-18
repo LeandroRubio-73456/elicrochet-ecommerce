@@ -25,7 +25,7 @@ class DashboardTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.dashboard');
+        $response->assertViewIs('admin.dashboard');
         $response->assertViewHas(['totalUsers', 'totalOrders', 'totalSales', 'recentOrders', 'lowStockProducts']);
     }
 }

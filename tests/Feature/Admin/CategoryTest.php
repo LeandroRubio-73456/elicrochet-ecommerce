@@ -28,7 +28,7 @@ class CategoryTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.categories.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.categories.index');
+        $response->assertViewIs('admin.categories.index');
     }
 
     /** @test */

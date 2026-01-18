@@ -30,7 +30,7 @@ class FinanceTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.finance.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.finance.index');
+        $response->assertViewIs('admin.finance.index');
         $response->assertViewHas(['totalIncome']);
     }
 

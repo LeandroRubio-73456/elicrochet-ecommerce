@@ -31,7 +31,7 @@ class DashboardController extends Controller
         $workingCount = ($statusCounts['working'] ?? 0) + ($statusCounts['ready_to_ship'] ?? 0);
         $paidCount = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0) + ($statusCounts['delivered'] ?? 0);
 
-        return view('back.dashboard', compact(
+        return view('admin.dashboard', compact(
             'totalUsers',
             'totalOrders',
             'totalSales',

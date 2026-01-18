@@ -1,19 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): View|JsonResponse
     {
         if ($request->ajax()) {
             $query = Product::with(['category', 'images']);
@@ -23,13 +28,13 @@ class ProductController extends Controller
             $totalRecords = Product::count();
             $filteredRecords = $query->count();
 
-            $start = $request->input('start', 0);
-            $length = $request->input('length', 10);
+            $start = (int) $request->input('start', 0);
+            $length = (int) $request->input('length', 10);
 
             $products = $query->skip($start)->take($length)->get();
 
             // 5. Transformación de datos para DataTables
-            $data = $products->map(fn ($product) => $this->transformProduct($product));
+            $data = $products->map(fn (Product $product) => $this->transformProduct($product));
 
             return response()->json([
                 'draw' => intval($request->input('draw')),
@@ -42,17 +47,17 @@ class ProductController extends Controller
         $categories = Category::all();
 
         // Updated View Path (back.products.index)
-        return view('back.products.index', compact('categories'));
+        return view('admin.products.index', compact('categories'));
     }
 
-    public function create()
+    public function create(): View
     {
         $categories = Category::orderBy('name')->get();
 
-        return view('back.products.create', compact('categories'));
+        return view('admin.products.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -79,7 +84,7 @@ class ProductController extends Controller
         $validated['specs'] = $request->specs ?? [];
 
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+            $validated['slug'] = Str::slug((string) $validated['name']);
             $count = 1;
             $originalSlug = $validated['slug'];
             while (Product::where('slug', $validated['slug'])->exists()) {
@@ -104,19 +109,19 @@ class ProductController extends Controller
             ->with('success', 'Producto "'.$product->name.'" creado exitosamente.');
     }
 
-    public function show(Product $product)
+    public function show(Product $product): View
     {
-        return view('back.products.show', compact('product'));
+        return view('admin.products.show', compact('product'));
     }
 
-    public function edit(Product $product)
+    public function edit(Product $product): View
     {
         $categories = Category::orderBy('name')->get();
 
-        return view('back.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product): RedirectResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -145,7 +150,7 @@ class ProductController extends Controller
         $validated['specs'] = $request->specs ?? [];
 
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+            $validated['slug'] = Str::slug((string) $validated['name']);
         }
 
         if ((int) $validated['stock'] <= 0) {
@@ -165,7 +170,7 @@ class ProductController extends Controller
             ->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroy(Product $product)
+    public function destroy(Product $product): JsonResponse
     {
         $product->delete();
 
@@ -175,14 +180,14 @@ class ProductController extends Controller
         ]);
     }
 
-    private function applyFilters($query, Request $request)
+    private function applyFilters($query, Request $request): void
     {
         $this->applySearch($query, $request);
         $this->applyColumnFilters($query, $request);
         $this->applySorting($query, $request);
     }
 
-    private function applySearch($query, Request $request)
+    private function applySearch($query, Request $request): void
     {
         if ($request->has('search') && ! empty($request->input('search.value'))) {
             $searchValue = $request->input('search.value');
@@ -196,7 +201,7 @@ class ProductController extends Controller
         }
     }
 
-    private function applyColumnFilters($query, Request $request)
+    private function applyColumnFilters($query, Request $request): void
     {
         if ($request->has('columns')) {
             // Filtro Estado (Columna 6)
@@ -215,7 +220,7 @@ class ProductController extends Controller
         }
     }
 
-    private function applySorting($query, Request $request)
+    private function applySorting($query, Request $request): void
     {
         if ($request->has('order')) {
             $orderColumnIndex = $request->input('order.0.column');
@@ -237,7 +242,7 @@ class ProductController extends Controller
         }
     }
 
-    private function transformProduct($product)
+    private function transformProduct(Product $product): array
     {
         // Imagen
         $imageHtml = '<div class="d-flex align-items-center"><div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="ti ti-photo text-muted"></i></div></div>';
@@ -279,7 +284,7 @@ class ProductController extends Controller
             'image' => $imageHtml,
             'name' => '<h6 class="mb-0">'.$product->name.'</h6>',
             'category' => $product->category ? $product->category->name : 'N/A',
-            'price' => '$'.number_format($product->price, 2),
+            'price' => '$'.number_format((float) $product->price, 2),
             'stock' => $product->stock,
             'status' => $statusBadge,
             'actions' => $actions,

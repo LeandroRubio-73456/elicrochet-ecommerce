@@ -20,7 +20,7 @@ class FinancialTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.finance.index'));
 
         $response->assertOk();
-        $response->assertViewIs('back.finance.index');
+        $response->assertViewIs('admin.finance.index');
         $response->assertViewHasAll(['totalIncome', 'avgTicket', 'totalProductsSold', 'conversionRate']);
     }
 

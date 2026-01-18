@@ -1,18 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): View|JsonResponse
     {
         if ($request->ajax()) {
             $query = Category::withCount('products');
@@ -22,13 +27,13 @@ class CategoryController extends Controller
             // 4. Paginación
             $totalRecords = Category::count();
             $filteredRecords = $query->count();
-            $start = $request->input('start', 0);
-            $length = $request->input('length', 10);
+            $start = (int) $request->input('start', 0);
+            $length = (int) $request->input('length', 10);
 
             $categories = $query->skip($start)->take($length)->get();
 
             // 5. Transformación
-            $data = $categories->map(function ($category) {
+            $data = $categories->map(function (Category $category) {
                 // Icono
                 $iconClass = $category->icon ?? 'ti ti-folder';
                 if (! str_contains($iconClass, 'ti ')) {
@@ -67,7 +72,7 @@ class CategoryController extends Controller
                 return [
                     'id' => $category->id,
                     'icon' => $iconHtml,
-                    'name' => '<h6 class="mb-0">'.$category->name.'</h6><small class="text-muted">'.Str::limit($category->description, 50).'</small>',
+                    'name' => '<h6 class="mb-0">'.$category->name.'</h6><small class="text-muted">'.Str::limit($category->description ?? '', 50).'</small>',
                     'slug' => $category->slug,
                     'products_count' => $productsLink,
                     'status' => $statusBadge,
@@ -83,25 +88,25 @@ class CategoryController extends Controller
             ]);
         }
 
-        return view('back.categories.index');
+        return view('admin.categories.index');
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::whereNull('parent_id')->get();
 
-        return view('back.categories.create', compact('categories'));
+        return view('admin.categories.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string|max:1000',
@@ -109,28 +114,35 @@ class CategoryController extends Controller
             'icon' => 'nullable|string|max:50',
         ]);
 
-        // Generar slug automático si no se proporcionó
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+        $data = $request->all();
 
-            // Si el slug ya existe, añadir número
-            $count = 1;
-            $originalSlug = $validated['slug'];
-            while (Category::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug.'-'.$count++;
-            }
+        if (empty($data['slug'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['name']);
         }
 
-        // Process Specs
         if ($request->has('required_specs')) {
-            $validated['required_specs'] = json_decode($request->required_specs, true);
+            $data['required_specs'] = json_decode($request->required_specs, true);
         }
 
-        // Crear categoria
-        $category = Category::create($validated);
+        $category = Category::create($data);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Categoría "'.$category->name.'" creada exitosamente.');
+    }
+
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $original = $slug;
+        $count = 1;
+
+        // Optimized existence check loop
+        while (Category::where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
+            $slug = "{$original}-{$count}";
+            $count++;
+        }
+
+        return $slug;
     }
 
     /**
@@ -148,7 +160,7 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
-        return view('back.categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -169,7 +181,7 @@ class CategoryController extends Controller
 
         // 2. Lógica para manejar el slug (igual que en el store)
         if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
+            $data['slug'] = $this->generateUniqueSlug($data['name'], $category->id);
         }
 
         // Process Specs

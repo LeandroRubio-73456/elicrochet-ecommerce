@@ -37,7 +37,7 @@ class UserController extends Controller
             ]);
         }
 
-        return view('back.users.index');
+        return view('admin.users.index');
     }
 
     /**
@@ -45,7 +45,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('back.users.create');
+        return view('admin.users.create');
     }
 
     /**
@@ -87,7 +87,7 @@ class UserController extends Controller
     {
         $user = \App\Models\User::findOrFail($id);
 
-        return view('back.users.edit', compact('user'));
+        return view('admin.users.edit', compact('user'));
     }
 
     /**

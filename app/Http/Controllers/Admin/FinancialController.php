@@ -160,7 +160,7 @@ class FinancialController extends Controller
             ->limit(5)
             ->get();
 
-        return view('back.finance.index', compact(
+        return view('admin.finance.index', compact(
             'period', 'startDate', 'endDate',
             'totalIncome', 'avgTicket', 'totalProductsSold', 'conversionRate',
             'trendLabels', 'trendValues',
