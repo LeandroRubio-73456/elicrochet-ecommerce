@@ -5,7 +5,7 @@ Hola {{ $order->customer_name }}, tu pedido #{{ $order->id }} ha sido enviado.
 
 Pronto recibirás tus productos en la dirección registrada.
 
-<x-mail::button :url="route('customer.orders.show', $order)">
+<x-mail::button :url="route('account.orders.show', $order)">
 Rastrear Pedido
 </x-mail::button>
 

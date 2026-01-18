@@ -40,7 +40,7 @@
                             <button type="submit" class="btn btn-success btn-lg">
                                 <i class="ti ti-credit-card me-2"></i> Pagar ${{ number_format($order->total_amount, 2) }}
                             </button>
-                            <a href="{{ route('customer.orders.index') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('account.orders.index') }}" class="btn btn-outline-secondary">
                                 Cancelar y Volver
                             </a>
                         </div>

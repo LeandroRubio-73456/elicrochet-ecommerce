@@ -26,10 +26,10 @@ class ProfileTest extends TestCase
     /** @test */
     public function customer_can_view_profile_edit_page()
     {
-        $response = $this->actingAs($this->user)->get(route('customer.profile.edit'));
+        $response = $this->actingAs($this->user)->get(route('account.profile.edit'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('customer.profile.edit');
+        $response->assertViewIs('front.account.profile');
         $response->assertViewHas('user');
     }
 
@@ -49,9 +49,9 @@ class ProfileTest extends TestCase
             'shipping_zip' => '170102',
         ];
 
-        $response = $this->actingAs($this->user)->put(route('customer.profile.update'), $data);
+        $response = $this->actingAs($this->user)->put(route('account.profile.update'), $data);
 
-        $response->assertRedirect(route('customer.profile.edit'));
+        $response->assertRedirect(route('account.profile.edit'));
         $response->assertSessionHas('success');
 
         $this->user->refresh();
@@ -100,9 +100,51 @@ class ProfileTest extends TestCase
     */
 
     /** @test */
+    public function email_verification_status_is_unchanged_when_the_email_address_is_unchanged()
+    {
+        $response = $this->actingAs($this->user)->put(route('account.profile.update'), [
+            'name' => 'Test User',
+            'lastname' => 'User Lastname',
+            'cedula' => '1712345678',
+            'email' => $this->user->email,
+            'phone' => $this->user->phone,
+        ]);
+
+        $response->assertSessionHasNoErrors()->assertRedirect(route('account.profile.edit'));
+        $this->assertNotNull($this->user->refresh()->email_verified_at);
+    }
+
+    /** @test */
+    public function customer_can_delete_their_account()
+    {
+        $response = $this->actingAs($this->user)->delete(route('account.profile.destroy'), [
+            'password' => 'password',
+        ]);
+
+        $response->assertSessionHasNoErrors()->assertRedirect('/');
+        $this->assertGuest();
+        $this->assertNull($this->user->fresh());
+    }
+
+    /** @test */
+    public function correct_password_must_be_provided_to_delete_account()
+    {
+        $response = $this->actingAs($this->user)
+            ->from(route('account.profile.edit'))
+            ->delete(route('account.profile.destroy'), [
+                'password' => 'wrong-password',
+            ]);
+
+        $response->assertSessionHasErrorsIn('userDeletion', 'password')
+            ->assertRedirect(route('account.profile.edit'));
+
+        $this->assertNotNull($this->user->fresh());
+    }
+
+    /** @test */
     public function customer_cannot_update_with_invalid_data()
     {
-        $response = $this->actingAs($this->user)->put(route('customer.profile.update'), [
+        $response = $this->actingAs($this->user)->put(route('account.profile.update'), [
             'name' => '', // Required
             'email' => 'not-an-email',
             'cedula' => str_repeat('1', 14), // Max 13

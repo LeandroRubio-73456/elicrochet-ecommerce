@@ -15,7 +15,7 @@ class ProfileController extends Controller
         $user = Auth::user()->load('addresses');
         $address = $user->addresses->first(); // Get the first address or null
 
-        return view('customer.profile.edit', compact('user', 'address'));
+        return view('front.account.profile', compact('user', 'address'));
     }
 
     public function update(Request $request)
@@ -40,7 +40,7 @@ class ProfileController extends Controller
         $user->lastname = $validated['lastname'];
         $user->cedula = $validated['cedula'];
         $user->email = $validated['email'];
-        $user->phone = $validated['phone'];
+        $user->phone = $validated['phone'] ?? null;
 
         // Actualizar o Crear Dirección
         if ($request->filled('shipping_address')) {
@@ -66,6 +66,27 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('customer.profile.edit')->with('success', 'Perfil actualizado correctamente.');
+        return redirect()->route('account.profile.edit')->with('success', 'Perfil actualizado correctamente.');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request)
+    {
+        $request->validateWithBag('userDeletion', [
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

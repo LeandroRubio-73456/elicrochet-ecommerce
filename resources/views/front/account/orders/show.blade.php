@@ -1,11 +1,11 @@
-@extends('customer.layout')
+@extends('front.account.layout')
 
 @section('title', 'Detalle de Pedido #' . $order->order_number)
 
 @section('customer_content')
 <div class="row">
     <div class="col-12 mb-3">
-        <a href="{{ route('customer.orders.index') }}" class="text-decoration-none text-muted mb-3 d-inline-block">
+        <a href="{{ route('account.orders.index') }}" class="text-decoration-none text-muted mb-3 d-inline-block">
             <i class="ti ti-arrow-left me-1"></i> Volver a mis pedidos
         </a>
         <div class="d-flex justify-content-between align-items-center">
@@ -13,7 +13,7 @@
             <!-- Actions -->
             <div class="d-flex gap-2">
                 @if($order->canTransitionTo('cancelled') && $order->status !== \App\Models\Order::STATUS_LINKED)
-                    <form action="{{ route('customer.orders.cancel', $order) }}" method="POST" onsubmit="confirmOrderCancellation(event)">
+                    <form action="{{ route('account.orders.cancel', $order) }}" method="POST" onsubmit="confirmOrderCancellation(event)">
                         @csrf
                         <button type="submit" class="btn btn-outline-danger">
                             <i class="ti ti-x me-1"></i> Cancelar Pedido
@@ -22,7 +22,7 @@
                 @endif
 
                 @if($order->status === 'shipped')
-                    <form action="{{ route('customer.orders.confirm', $order) }}" method="POST" onsubmit="confirmOrderReceipt(event)">
+                    <form action="{{ route('account.orders.confirm', $order) }}" method="POST" onsubmit="confirmOrderReceipt(event)">
                         @csrf
                         <button type="submit" class="btn btn-success text-white">
                             <i class="ti ti-check me-1"></i> Confirmar Recepción
@@ -200,7 +200,7 @@
 
                     @if($order->status === \App\Models\Order::STATUS_LINKED && $order->parentItem)
                         <div class="mt-3">
-                            <a href="{{ route('customer.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ route('account.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="ti ti-external-link me-2"></i> Ver Orden Principal #{{ $order->parentItem->order_id }}
                             </a>
                         </div>
@@ -209,7 +209,7 @@
 
                 @if($order->status === 'pending_payment')
                      <div class="d-grid mt-3">
-                         <form action="{{ route('customer.orders.add_to_cart', $order) }}" method="POST">
+                         <form action="{{ route('account.orders.add_to_cart', $order) }}" method="POST">
                              @csrf
                              <button type="submit" class="btn btn-primary w-100">
                                  <i class="ti ti-shopping-cart-plus me-2"></i> Agregar al Carrito para Pagar

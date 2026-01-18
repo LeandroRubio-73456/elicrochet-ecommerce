@@ -11,7 +11,7 @@
             
             <div class="mt-5">
                 <a href="{{ route('home') }}" class="btn btn-primary">Volver a la tienda</a>
-                <a href="{{ route('customer.orders.show', $order) }}" class="btn btn-outline-primary ms-2">Ver detalle de mi orden</a>
+                <a href="{{ route('account.orders.show', $order) }}" class="btn btn-outline-primary ms-2">Ver detalle de mi orden</a>
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@ Hola {{ $order->customer_name }}, hemos recibido tu pago correctamente.
 {{ $order->shipping_city }}, {{ $order->shipping_province }}
 CP: {{ $order->shipping_zip }}
 
-<x-mail::button :url="route('customer.orders.show', $order)">
+<x-mail::button :url="route('account.orders.show', $order)">
 Ver Detalles del Pedido
 </x-mail::button>
 

@@ -44,7 +44,7 @@ class SocialAuthenticationTest extends TestCase
             'avatar' => 'https://avatar.com/pic.jpg',
         ]);
 
-        $response->assertRedirect(route('customer.dashboard'));
+        $response->assertRedirect(route('account.index'));
     }
 
     /** @test */
@@ -69,7 +69,7 @@ class SocialAuthenticationTest extends TestCase
         $response = $this->get('auth/google/callback');
 
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(route('customer.dashboard'));
+        $response->assertRedirect(route('account.index'));
     }
 
     /** @test */

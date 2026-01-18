@@ -54,7 +54,7 @@ class SocialAuthController extends Controller
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             } else {
-                return redirect()->route('customer.dashboard');
+                return redirect()->route('account.index');
             }
 
         } catch (\Exception $e) {

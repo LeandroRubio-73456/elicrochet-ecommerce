@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\HomeController;
-use App\Http\Controllers\Front\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -21,10 +20,7 @@ Route::view('/terminos-condiciones', 'front.legal.terms')->name('legal.terms');
 
 // Rutas del carrito (PROTEGIDAS por auth) - Se mantienen igual por ahora
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/cart', [\App\Http\Controllers\Front\CartController::class, 'index'])->name('cart');
     Route::post('/cart/add/{product:slug}', [\App\Http\Controllers\Front\CartController::class, 'addToCart'])->name('cart.add');
     Route::any('/cart/remove/{id}', [\App\Http\Controllers\Front\CartController::class, 'remove'])->name('cart.remove');
@@ -71,16 +67,17 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
 
     });
 
-// --- GRUPO CUSTOMER (Cliente) ---
+// --- GRUPO ACCOUNT (Cliente) ---
 Route::middleware(['auth', 'verified'])
-    ->prefix('customer')
-    ->name('customer.')
+    ->prefix('account')
+    ->name('account.')
     ->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/', [\App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('index'); // Dashboard
 
         // Perfil y Dirección
         Route::get('/profile', [\App\Http\Controllers\Customer\ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [\App\Http\Controllers\Customer\ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [\App\Http\Controllers\Customer\ProfileController::class, 'destroy'])->name('profile.destroy');
 
         // Pedidos
         Route::get('/orders', [\App\Http\Controllers\Customer\OrderController::class, 'index'])->name('orders.index');
@@ -97,15 +94,6 @@ Route::middleware(['auth', 'verified'])
 // --- ROUTES FOR FRONT CONTROLLERS (For coverage and public use) ---
 Route::get('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'create'])->name('custom-order.create');
 Route::post('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'store'])->name('custom-order.store');
-
-Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Front\AccountController::class, 'index'])->name('index');
-    Route::put('/profile', [\App\Http\Controllers\Front\AccountController::class, 'updateProfile'])->name('update-profile');
-    Route::put('/address', [\App\Http\Controllers\Front\AccountController::class, 'updateAddress'])->name('update-address');
-    Route::get('/orders', [\App\Http\Controllers\Front\AccountController::class, 'orders'])->name('orders');
-    Route::post('/orders/{order}/cancel', [\App\Http\Controllers\Front\AccountController::class, 'cancelOrder'])->name('orders.cancel');
-    Route::post('/orders/{order}/confirm', [\App\Http\Controllers\Front\AccountController::class, 'confirmReceipt'])->name('orders.confirm');
-});
 
 // Google Auth
 Route::get('auth/google', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');

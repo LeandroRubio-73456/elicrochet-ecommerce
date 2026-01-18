@@ -12,6 +12,6 @@ class DashboardController extends Controller
         $user = Auth::user();
         $recentOrders = $user->orders()->latest()->take(5)->get();
 
-        return view('customer.dashboard', compact('user', 'recentOrders'));
+        return view('front.account.index', compact('user', 'recentOrders'));
     }
 }
