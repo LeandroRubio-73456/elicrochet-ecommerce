@@ -115,4 +115,14 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notification Email
+    |--------------------------------------------------------------------------
+    |
+    | Email address to receive administrative notifications (new orders, etc).
+    |
+    */
+    'admin_email' => env('ADMIN_NOTIFICATION_EMAIL', 'admin@elicrochet.com'),
+
 ];

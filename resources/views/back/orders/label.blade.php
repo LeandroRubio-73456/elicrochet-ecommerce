@@ -95,10 +95,10 @@
         <div class="section remitente">
             <div class="section-title">REMITENTE:</div>
             <div class="content">
-                <strong>Estefania Elizabeth</strong><br>
-                <strong>CI: 1754989877</strong><br>
-                Cel:0967561212<br>
-                Quito – Pichincha
+                <strong>{{ config('app.merchant_name') }}</strong><br>
+                <strong>CI: {{ config('app.merchant_cedula') }}</strong><br>
+                Cel: {{ config('app.merchant_phone') }}<br>
+                {{ config('app.merchant_city') }}
             </div>
         </div>
 

@@ -476,9 +476,9 @@ class CheckoutController extends Controller
         }
 
         try {
-            $admin = \App\Models\User::where('role', 'admin')->first();
-            if ($admin) {
-                \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewOrderAdminNotification($order));
+            $adminEmail = config('mail.admin_email');
+            if ($adminEmail) {
+                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\NewOrderAdminNotification($order));
             }
         } catch (\Exception $e) {
             Log::error('Error sending NewOrderAdminNotification (Paid): '.$e->getMessage());
