@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;

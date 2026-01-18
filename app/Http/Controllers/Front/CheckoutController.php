@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;

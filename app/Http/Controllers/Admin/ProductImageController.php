@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\ProductImage; // Asegúrate de que este es el modelo correcto
 use Illuminate\Support\Facades\Storage;
 

@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\ProfileController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -69,7 +69,6 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
         Route::get('/finance', [\App\Http\Controllers\Admin\FinancialController::class, 'index'])->name('finance.index');
         Route::get('/finance/export', [\App\Http\Controllers\Admin\FinancialController::class, 'export'])->name('finance.export');
 
-
     });
 
 // --- GRUPO CUSTOMER (Cliente) ---
@@ -107,8 +106,6 @@ Route::middleware(['auth'])->prefix('account')->name('account.')->group(function
     Route::post('/orders/{order}/cancel', [\App\Http\Controllers\Front\AccountController::class, 'cancelOrder'])->name('orders.cancel');
     Route::post('/orders/{order}/confirm', [\App\Http\Controllers\Front\AccountController::class, 'confirmReceipt'])->name('orders.confirm');
 });
-
-
 
 // Google Auth
 Route::get('auth/google', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
