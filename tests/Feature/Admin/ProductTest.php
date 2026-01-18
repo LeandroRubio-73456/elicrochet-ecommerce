@@ -32,7 +32,7 @@ class ProductTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.products.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.products.index');
+        $response->assertViewIs('admin.products.index');
     }
 
     public function test_admin_can_view_products_index_ajax()
@@ -52,7 +52,7 @@ class ProductTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.products.create'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.products.create');
+        $response->assertViewIs('admin.products.create');
     }
 
     public function test_admin_can_create_product()
@@ -87,7 +87,7 @@ class ProductTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.products.edit', $product));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.products.edit');
+        $response->assertViewIs('admin.products.edit');
         $response->assertViewHas('product', $product);
     }
 

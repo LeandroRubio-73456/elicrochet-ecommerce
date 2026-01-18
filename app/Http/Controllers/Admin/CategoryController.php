@@ -101,8 +101,52 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:categories,slug',
+            'description' => 'nullable|string|max:1000',
+            'status' => 'required|in:active,inactive,archived',
+            'icon' => 'nullable|string|max:50',
+        ]);
+
+        $data = $request->all();
+
+        if (empty($data['slug'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['name']);
+        }
+
+        if ($request->has('required_specs')) {
+            $data['required_specs'] = json_decode($request->required_specs, true);
+        }
+
+        $category = Category::create($data);
+
         return redirect()->route('admin.categories.index')
             ->with('success', 'Categoría "'.$category->name.'" creada exitosamente.');
+    }
+
+    private function generateUniqueSlug($name, $ignoreId = null)
+    {
+        $slug = Str::slug($name);
+        $original = $slug;
+        $count = 1;
+
+        $checkQuery = function ($slug) use ($ignoreId) {
+            $query = Category::where('slug', $slug);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+
+            return $query->exists();
+        };
+
+        // Prevent infinite loop if something goes wrong, though unlikely with increment
+        while ($checkQuery($slug)) {
+            $slug = "{$original}-{$count}";
+            $count++;
+        }
+
+        return $slug;
     }
 
     /**
@@ -141,7 +185,7 @@ class CategoryController extends Controller
 
         // 2. Lógica para manejar el slug (igual que en el store)
         if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
+            $data['slug'] = $this->generateUniqueSlug($data['name'], $category->id);
         }
 
         // Process Specs

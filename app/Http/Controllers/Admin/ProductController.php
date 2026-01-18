@@ -106,14 +106,14 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return view('back.products.show', compact('product'));
+        return view('admin.products.show', compact('product'));
     }
 
     public function edit(Product $product)
     {
         $categories = Category::orderBy('name')->get();
 
-        return view('back.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)

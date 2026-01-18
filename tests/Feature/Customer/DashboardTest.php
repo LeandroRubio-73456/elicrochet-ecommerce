@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Customer;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,20 +11,9 @@ class DashboardTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function admin_can_access_admin_dashboard()
-    {
-        $admin = User::factory()->create(['role' => 'admin']);
-
-        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
-
-        $response->assertOk();
-        $response->assertViewIs('back.dashboard');
-    }
-
-    /** @test */
     public function customer_can_access_customer_dashboard()
     {
-        $user = User::factory()->create(['role' => 'customer']);
+        $user = User::factory()->create(['role' => 'customer', 'email_verified_at' => now()]);
 
         $response = $this->actingAs($user)->get(route('customer.dashboard'));
 
@@ -34,9 +23,8 @@ class DashboardTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_access_dashboards()
+    public function guest_cannot_access_customer_dashboard()
     {
-        $this->get(route('admin.dashboard'))->assertRedirect(route('login'));
         $this->get(route('customer.dashboard'))->assertRedirect(route('login'));
     }
 }

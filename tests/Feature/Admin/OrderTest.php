@@ -30,7 +30,7 @@ class OrderTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.orders.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.orders.index');
+        $response->assertViewIs('admin.orders.index');
     }
 
     /** @test */
@@ -54,7 +54,7 @@ class OrderTest extends TestCase
         $response = $this->actingAs($this->admin)->get(route('admin.orders.show', $order));
 
         $response->assertStatus(200);
-        $response->assertViewIs('back.orders.show');
+        $response->assertViewIs('admin.orders.show');
     }
 
     /** @test */
