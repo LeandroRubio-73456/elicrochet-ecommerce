@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
@@ -7,8 +9,8 @@ use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
@@ -136,8 +138,8 @@ class CategoryController extends Controller
 
         // Optimized existence check loop
         while (Category::where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
-             $slug = "{$original}-{$count}";
-             $count++;
+            $slug = "{$original}-{$count}";
+            $count++;
         }
 
         return $slug;
