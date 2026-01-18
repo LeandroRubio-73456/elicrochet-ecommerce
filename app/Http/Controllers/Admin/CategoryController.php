@@ -1,10 +1,13 @@
-<?php
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -12,7 +15,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): View|JsonResponse
     {
         if ($request->ajax()) {
             $query = Category::withCount('products');
@@ -22,13 +25,13 @@ class CategoryController extends Controller
             // 4. Paginación
             $totalRecords = Category::count();
             $filteredRecords = $query->count();
-            $start = $request->input('start', 0);
-            $length = $request->input('length', 10);
+            $start = (int) $request->input('start', 0);
+            $length = (int) $request->input('length', 10);
 
             $categories = $query->skip($start)->take($length)->get();
 
             // 5. Transformación
-            $data = $categories->map(function ($category) {
+            $data = $categories->map(function (Category $category) {
                 // Icono
                 $iconClass = $category->icon ?? 'ti ti-folder';
                 if (! str_contains($iconClass, 'ti ')) {
@@ -67,7 +70,7 @@ class CategoryController extends Controller
                 return [
                     'id' => $category->id,
                     'icon' => $iconHtml,
-                    'name' => '<h6 class="mb-0">'.$category->name.'</h6><small class="text-muted">'.Str::limit($category->description, 50).'</small>',
+                    'name' => '<h6 class="mb-0">'.$category->name.'</h6><small class="text-muted">'.Str::limit($category->description ?? '', 50).'</small>',
                     'slug' => $category->slug,
                     'products_count' => $productsLink,
                     'status' => $statusBadge,
@@ -89,7 +92,7 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $categories = Category::whereNull('parent_id')->get();
 
@@ -99,7 +102,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -125,25 +128,16 @@ class CategoryController extends Controller
             ->with('success', 'Categoría "'.$category->name.'" creada exitosamente.');
     }
 
-    private function generateUniqueSlug($name, $ignoreId = null)
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
         $slug = Str::slug($name);
         $original = $slug;
         $count = 1;
 
-        $checkQuery = function ($slug) use ($ignoreId) {
-            $query = Category::where('slug', $slug);
-            if ($ignoreId) {
-                $query->where('id', '!=', $ignoreId);
-            }
-
-            return $query->exists();
-        };
-
-        // Prevent infinite loop if something goes wrong, though unlikely with increment
-        while ($checkQuery($slug)) {
-            $slug = "{$original}-{$count}";
-            $count++;
+        // Optimized existence check loop
+        while (Category::where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
+             $slug = "{$original}-{$count}";
+             $count++;
         }
 
         return $slug;
