@@ -257,15 +257,28 @@
     @media (max-width: 991px) {
         .navbar-nav {
             padding: 1rem 0;
+            text-align: center;
         }
 
         .nav-link-modern {
             padding: 0.75rem 0 !important;
+            display: inline-block;
         }
 
+        .navbar-collapse .d-flex {
+            justify-content: center !important;
             margin-top: 1rem;
             padding-top: 1rem;
-            /* border-top: 1px solid #e5e7eb; */
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Prevent dropdown overflow on mobile */
+        .dropdown-modern.dropdown-menu-end {
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            margin-top: 10px !important;
+        }
     }
 
     /* Scroll behavior */

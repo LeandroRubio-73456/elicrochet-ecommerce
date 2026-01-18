@@ -100,44 +100,17 @@
                                 </div>
                             </div>
                         </div>
-                        <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="drp-t1" data-bs-toggle="tab"
-                                    data-bs-target="#drp-tab-1" type="button" role="tab"
-                                    aria-controls="drp-tab-1" aria-selected="true"><i class="ti ti-user"></i>
-                                    Perfil</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="drp-t2" data-bs-toggle="tab"
-                                    data-bs-target="#drp-tab-2" type="button" role="tab"
-                                    aria-controls="drp-tab-2" aria-selected="false"><i class="ti ti-settings"></i>
-                                    Ajustes</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="mysrpTabContent">
-                            <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel"
-                                aria-labelledby="drp-t1">
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-edit-circle"></i>
-                                    <span>Editar Perfil</span>
-                                </a>
-                                <button
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                                    class="dropdown-item" type="button">
-                                    <i class="ti ti-power"></i>
-                                    <span>Cerrar Sesión</span>
-                                </button>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="drp-tab-2" role="tabpanel" aria-labelledby="drp-t2">
-                                <a href="#!" class="dropdown-item">
-                                    <i class="ti ti-settings"></i>
-                                    <span>Configuración de Cuenta</span>
-                                </a>
-                            </div>
+                        <div class="dropdown-body p-3">
+                            <button
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                class="dropdown-item" type="button">
+                                <i class="ti ti-power"></i>
+                                <span>Cerrar Sesión</span>
+                            </button>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                style="display: none;">
+                                @csrf
+                            </form>
                         </div>
                     </div>
                 </li>
