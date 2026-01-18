@@ -36,7 +36,7 @@ class OrderController extends Controller
             ]);
         }
 
-        return view('back.orders.index');
+        return view('admin.orders.index');
     }
 
     /**
@@ -46,14 +46,14 @@ class OrderController extends Controller
     {
         $order->load(['items.product', 'user', 'address']);
 
-        return view('back.orders.show', compact('order'));
+        return view('admin.orders.show', compact('order'));
     }
 
     public function generateLabel(Order $order)
     {
         $order->load(['user', 'address']);
 
-        return view('back.orders.label', compact('order'));
+        return view('admin.orders.label', compact('order'));
     }
 
     /**

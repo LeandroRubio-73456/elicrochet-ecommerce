@@ -87,7 +87,7 @@ class UserController extends Controller
     {
         $user = \App\Models\User::findOrFail($id);
 
-        return view('back.users.edit', compact('user'));
+        return view('admin.users.edit', compact('user'));
     }
 
     /**

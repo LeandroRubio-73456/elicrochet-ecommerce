@@ -83,7 +83,7 @@ class CategoryController extends Controller
             ]);
         }
 
-        return view('back.categories.index');
+        return view('admin.categories.index');
     }
 
     /**
@@ -91,9 +91,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::whereNull('parent_id')->get();
 
-        return view('back.categories.create', compact('categories'));
+        return view('admin.categories.create', compact('categories'));
     }
 
     /**
@@ -101,34 +101,6 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:categories,slug',
-            'description' => 'nullable|string|max:1000',
-            'status' => 'required|in:active,inactive,archived',
-            'icon' => 'nullable|string|max:50',
-        ]);
-
-        // Generar slug automático si no se proporcionó
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
-
-            // Si el slug ya existe, añadir número
-            $count = 1;
-            $originalSlug = $validated['slug'];
-            while (Category::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug.'-'.$count++;
-            }
-        }
-
-        // Process Specs
-        if ($request->has('required_specs')) {
-            $validated['required_specs'] = json_decode($request->required_specs, true);
-        }
-
-        // Crear categoria
-        $category = Category::create($validated);
-
         return redirect()->route('admin.categories.index')
             ->with('success', 'Categoría "'.$category->name.'" creada exitosamente.');
     }
@@ -148,7 +120,7 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
-        return view('back.categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**

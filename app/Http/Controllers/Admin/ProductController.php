@@ -42,14 +42,14 @@ class ProductController extends Controller
         $categories = Category::all();
 
         // Updated View Path (back.products.index)
-        return view('back.products.index', compact('categories'));
+        return view('admin.products.index', compact('categories'));
     }
 
     public function create()
     {
         $categories = Category::orderBy('name')->get();
 
-        return view('back.products.create', compact('categories'));
+        return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
