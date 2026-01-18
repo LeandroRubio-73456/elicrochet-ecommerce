@@ -26,8 +26,6 @@
                         <a href="{{ route('account.custom.create') }}" class="list-group-item list-group-item-action text-primary fw-bold {{ request()->routeIs('account.custom.create') ? 'bg-light-primary' : '' }}">
                             <i class="ti ti-wand me-2"></i> Solicitar Pedido Personalizado
                         </a>
-                            <i class="ti ti-wand me-2"></i> Solicitar Pedido Personalizado
-                        </a>
                         <form action="{{ route('logout') }}" method="POST" class="d-grid p-2 border-top">
                             @csrf
                             <button class="btn btn-outline-danger btn-sm">
