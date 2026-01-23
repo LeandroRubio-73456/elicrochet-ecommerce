@@ -17,7 +17,7 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', Auth::id())
             ->with(['items.product', 'parentItem.order'])
-            ->orderBy('id', 'desc') // Explicitly enforce ID desc
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('front.account.orders.index', compact('orders'));

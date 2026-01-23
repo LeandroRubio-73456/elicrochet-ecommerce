@@ -282,6 +282,13 @@ class CheckoutController extends Controller
 
     private function resolveOrderForCheckout($user, $address, $validated)
     {
+        // 0. Clean up old abandoned parent orders (>1 hour old) to prevent accumulation
+        Order::where('user_id', $user->id)
+            ->where('type', 'stock')
+            ->where('status', Order::STATUS_PENDING_PAYMENT)
+            ->where('created_at', '<', now()->subHour())
+            ->delete();
+
         // 1. Check for an existing PENDING order for this user (Reuse Strategy)
         // We look for a recent 'stock' type order pending payment to avoid creating duplicates on retry.
         $existingOrder = Order::where('user_id', $user->id)

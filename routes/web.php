@@ -31,6 +31,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/callback', [CheckoutController::class, 'callback'])->name('checkout.callback');
     Route::get('/checkout/cancel', function () {
+        // Delete any pending parent orders for this user to avoid confusion
+        if (Auth::check()) {
+            \App\Models\Order::where('user_id', Auth::id())
+                ->where('type', 'standard')
+                ->where('status', \App\Models\Order::STATUS_PENDING_PAYMENT)
+                ->delete();
+        }
+        
         return redirect()->route('cart')->with('info', 'Pago cancelado por el usuario.');
     })->name('checkout.cancel');
 
