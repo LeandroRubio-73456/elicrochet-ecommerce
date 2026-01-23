@@ -110,6 +110,7 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             $errorMsg = 'Error: '.$e->getMessage();
             Log::error('PayExisting Exception: '.$e->getMessage());
+
             return back()->with('error', $errorMsg);
         }
     }
@@ -181,6 +182,7 @@ class CheckoutController extends Controller
 
         if (empty($rawOrderId)) {
             Log::warning('PayPhone Callback received without clientTransactionId.');
+
             return redirect()->route('cart')->with('error', 'No se recibió la referencia de la orden.');
         }
 
