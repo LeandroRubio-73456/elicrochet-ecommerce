@@ -110,9 +110,9 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             $errorMsg = 'Error: '.$e->getMessage();
             Log::error('PayExisting Exception: '.$e->getMessage());
-        }
 
-        return back()->with('error', $errorMsg);
+            return back()->with('error', $errorMsg);
+        }
     }
 
     public function store(Request $request)
@@ -149,10 +149,10 @@ class CheckoutController extends Controller
 
                 // --- FUSION LOGIC START ---
                 // 1. Resolve Master Order or Create New
-                [$order, $masterOriginalItem] = $this->resolveOrderForCheckout($user, $address, $cartItems, $validated);
+                [$order] = $this->resolveOrderForCheckout($user, $address, $validated);
 
                 // 2. Process Cart Items
-                $this->processCartItems($order, $cartItems, $masterOriginalItem);
+                $this->processCartItems($order, $cartItems);
 
                 // 3. Recalculate Final Total
                 $this->finalizeOrderTotal($order);
@@ -178,7 +178,13 @@ class CheckoutController extends Controller
     public function callback(Request $request)
     {
         $payphoneId = $request->query('id');
-        $rawOrderId = $request->query('clientTransactionId');
+        $rawOrderId = $request->query('clientTransactionId', '');
+
+        if (empty($rawOrderId)) {
+            Log::warning('PayPhone Callback received without clientTransactionId.');
+
+            return redirect()->route('cart')->with('error', 'No se recibió la referencia de la orden.');
+        }
 
         $orderIdParts = explode('-', $rawOrderId);
         $orderId = $orderIdParts[0];
@@ -274,7 +280,7 @@ class CheckoutController extends Controller
         return $address;
     }
 
-    private function resolveOrderForCheckout($user, $address, $cartItems, $validated)
+    private function resolveOrderForCheckout($user, $address, $validated)
     {
         // 1. Check for an existing PENDING order for this user (Reuse Strategy)
         // We look for a recent 'stock' type order pending payment to avoid creating duplicates on retry.
@@ -329,10 +335,10 @@ class CheckoutController extends Controller
             'type' => 'stock',
         ]);
 
-        return [$order, null];
+        return [$order];
     }
 
-    private function processCartItems($order, $cartItems, $masterOriginalItem)
+    private function processCartItems($order, $cartItems)
     {
         foreach ($cartItems as $cartItem) {
             if ($cartItem->custom_order_id) {
@@ -431,10 +437,8 @@ class CheckoutController extends Controller
         foreach ($order->items as $item) {
             if ($item->custom_order_id) {
                 $customOrder = Order::find($item->custom_order_id);
-                if ($customOrder) {
-                    if ($customOrder->status !== Order::STATUS_LINKED) {
-                        $customOrder->update(['status' => Order::STATUS_LINKED]);
-                    }
+                if ($customOrder && $customOrder->status !== Order::STATUS_LINKED) {
+                    $customOrder->update(['status' => Order::STATUS_LINKED]);
                 }
             }
         }

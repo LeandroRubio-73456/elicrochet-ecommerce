@@ -20,6 +20,10 @@ class ReviewController extends Controller
 
         $user = Auth::user();
 
+        if (! $user) {
+            return redirect()->route('login')->with('error', 'Debes iniciar sesión para dejar una reseña.');
+        }
+
         // 1. Check if user has already reviewed
         if ($user->hasReviewed($product)) {
             return back()->with('error', 'Ya has enviado una reseña para este producto.');

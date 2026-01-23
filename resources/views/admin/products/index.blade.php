@@ -85,7 +85,14 @@
                 orderCellsTop: false,
                 fixedHeader: true,
                 ajax: {
-                    url: "{{ route('admin.products.index') }}"
+                    url: "{{ route('admin.products.index') }}",
+                    data: function(d) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.has('sort')) {
+                            d.sort = urlParams.get('sort');
+                            d.direction = urlParams.get('direction') || 'asc';
+                        }
+                    }
                 },
                 columns: [
                     { data: 'id', name: 'id' },
@@ -97,7 +104,13 @@
                     { data: 'status', name: 'status' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false, className: "text-center" }
                 ],
-                // Buscador (f) a la izquierda, Botones (B) a la derecha. length (l) opcional.
+                order: (function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.get('sort') === 'stock') {
+                        return [[5, urlParams.get('direction') || 'asc']];
+                    }
+                    return [[0, 'desc']];
+                })(),
                 dom: '<"row mb-3"<"col-md-4"l><"col-md-4"f><"col-md-4 text-end"B>>' +
                      '<"row"<"col-sm-12"tr>>' +
                      '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',

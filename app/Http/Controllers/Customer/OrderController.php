@@ -92,6 +92,16 @@ class OrderController extends Controller
 
     public function storeCustom(Request $request)
     {
+        // 0. Anti-spam check: Only one active quotation per user
+        $hasActiveQuotation = Order::where('user_id', Auth::id())
+            ->where('type', Order::TYPE_CUSTOM)
+            ->where('status', Order::STATUS_QUOTATION)
+            ->exists();
+
+        if ($hasActiveQuotation) {
+            return back()->with('error', 'Ya tienes una solicitud de cotización en proceso. Por favor espera a que sea revisada antes de enviar otra.');
+        }
+
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string|max:1000',

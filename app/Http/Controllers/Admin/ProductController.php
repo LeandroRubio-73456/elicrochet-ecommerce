@@ -237,6 +237,13 @@ class ProductController extends Controller
                     $query->orderBy($columnName, $orderDirection);
                 }
             }
+        } elseif ($request->has('sort')) {
+            $sortColumn = $request->input('sort');
+            $direction = $request->input('direction', 'asc');
+            $allowedColumns = ['stock', 'price', 'name', 'id'];
+            if (in_array($sortColumn, $allowedColumns)) {
+                $query->orderBy($sortColumn, $direction);
+            }
         } else {
             $query->latest('id');
         }
@@ -279,13 +286,20 @@ class ProductController extends Controller
                 </button>
             </div>';
 
+        // Stock with visual warning (Red text + icon, no badge)
+        $stockValue = $product->stock;
+        $stockHtml = $stockValue;
+        if ($stockValue < 5) {
+            $stockHtml = '<span class="text-danger fw-bold">'.$stockValue.'</span>';
+        }
+
         return [
             'id' => $product->id,
             'image' => $imageHtml,
             'name' => '<h6 class="mb-0">'.$product->name.'</h6>',
             'category' => $product->category ? $product->category->name : 'N/A',
             'price' => '$'.number_format((float) $product->price, 2),
-            'stock' => $product->stock,
+            'stock' => $stockHtml,
             'status' => $statusBadge,
             'actions' => $actions,
         ];

@@ -65,7 +65,13 @@
                 orderCellsTop: false,
                 fixedHeader: true,
                 ajax: {
-                    url: "{{ route('admin.orders.index') }}"
+                    url: "{{ route('admin.orders.index') }}",
+                    data: function(d) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.has('status')) {
+                            d.status = urlParams.get('status');
+                        }
+                    }
                 },
                 columns: [
                     { data: 'id', name: 'id' },
@@ -75,6 +81,10 @@
                     { data: 'status', name: 'status' },
                     { data: 'created_at', name: 'created_at' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false }
+                ],
+                searchCols: [
+                    null, null, null, null,
+                    { search: new URLSearchParams(window.location.search).get('status') || '' }
                 ],
                 order: [[4, 'desc']], 
                 dom: '<"row mb-3"<"col-md-4"l><"col-md-4"f><"col-md-4 text-end"B>>' +

@@ -40,17 +40,25 @@
                 <div class="row mb-3 align-items-center border-bottom pb-3">
                     <div class="col-md-2">
                         @php
-                            $imagePath = 'https://placehold.co/100x100?text=Sin+Imagen';
+                            $imagePath = null;
                             if ($item->product && $item->product->images->first()) {
                                 $imagePath = asset('storage/' . $item->product->images->first()->image_path);
                             } elseif (isset($item->attributes['image']) && $item->attributes['image']) {
                                 $imagePath = asset('storage/' . $item->attributes['image']);
                             }
                             
+                            $isCustom = isset($item->attributes['is_custom']) || !$item->product;
                             $name = $item->product ? $item->product->name : ($item->attributes['name'] ?? 'Producto Desconocido');
                             $link = $item->product ? route('product.show', $item->product->slug) : '#';
                         @endphp
-                        <img src="{{ $imagePath }}" class="img-fluid rounded" alt="{{ $name }}" width="50">
+                        
+                        @if($imagePath && !$isCustom)
+                            <img src="{{ $imagePath }}" class="img-fluid rounded" alt="{{ $name }}" width="50" height="50" style="object-fit: cover;">
+                        @else
+                            <div class="rounded bg-light d-flex align-items-center justify-content-center border" style="width: 50px; height: 50px;">
+                                <i class="ti ti-star text-warning fs-3"></i>
+                            </div>
+                        @endif
                     </div>
                     <div class="col-md-6">
                         <h5 class="mb-1">

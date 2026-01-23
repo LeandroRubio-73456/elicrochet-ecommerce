@@ -29,6 +29,65 @@
             </ul>
 
             <div class="d-flex align-items-center gap-2">
+                <!-- Notifications Bell -->
+                @auth
+                    <div class="dropdown">
+                        <button class="btn-icon-modern position-relative" type="button" id="notificationMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti ti-bell"></i>
+                            @if($userNotificationCount > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.25rem 0.4rem;">
+                                    {{ $userNotificationCount }}
+                                </span>
+                            @endif
+                        </button>
+                        <div class="dropdown-menu dropdown-user-profile dropdown-menu-end dropdown-modern shadow border-0 mt-2 p-0" aria-labelledby="notificationMenu" style="min-width: 300px;">
+                            <div class="dropdown-header">
+                                <h6 class="mb-0 fw-bold">Notificaciones</h6>
+                            </div>
+                            <div class="p-2">
+                                <div class="overflow-auto" style="max-height: 350px;">
+                                    @forelse($userNotifications as $notif)
+                                        @php
+                                            $notifIcon = match($notif->status) {
+                                                'pending_payment' => 'ti-credit-card text-warning',
+                                                'working' => 'ti-tools text-info',
+                                                'shipped' => 'ti-truck text-success',
+                                                default => 'ti-info-circle text-primary'
+                                            };
+                                            $notifLabel = match($notif->status) {
+                                                'pending_payment' => 'Pendiente de Pago',
+                                                'working' => 'En Proceso',
+                                                'shipped' => 'Enviado',
+                                                default => $notif->status
+                                            };
+                                        @endphp
+                                        <a href="{{ route('account.orders.show', $notif) }}" class="dropdown-item border-bottom py-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="avtar avtar-s bg-light">
+                                                    <i class="ti {{ $notifIcon }} fs-4"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="mb-1 f-14 fw-bold">Pedido #{{ $notif->id }}</h6>
+                                                <p class="mb-0 text-muted f-12">Estado actual: <strong>{{ $notifLabel }}</strong></p>
+                                                <small class="text-muted d-block">{{ $notif->updated_at->diffForHumans() }}</small>
+                                            </div>
+                                        </a>
+                                    @empty
+                                        <div class="p-4 text-center">
+                                            <i class="ti ti-bell-off fs-2 text-muted mb-2 d-block"></i>
+                                            <p class="mb-0 text-muted">No tienes notificaciones pendientes.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                                <div class="p-2 border-top text-center mt-1">
+                                    <a href="{{ route('account.orders.index') }}" class="text-primary small fw-bold text-decoration-none">Ver todos mis pedidos</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endauth
+
                 <!-- Cart Button -->
                 @auth
                     <a href="{{ route('cart') }}" class="btn-icon-modern position-relative" id="navbar-cart-btn">
@@ -272,12 +331,22 @@
             border-top: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Prevent dropdown overflow on mobile */
-        .dropdown-modern.dropdown-menu-end {
+        /* Center dropdowns on mobile to prevent clipping */
+        .dropdown-modern {
+            position: absolute !important;
             left: 50% !important;
             right: auto !important;
             transform: translateX(-50%) !important;
             margin-top: 10px !important;
+            width: calc(100vw - 32px) !important;
+            max-width: 320px !important;
+            position: fixed !important; /* Optional: might keep it centered regardless of parent */
+        }
+
+        /* User specific: since it might inherit different classes */
+        .dropdown-user-profile.dropdown-modern {
+            width: calc(100vw - 32px) !important;
+            max-width: 320px !important;
         }
     }
 
@@ -340,6 +409,32 @@
     .dropdown-modern {
         padding: 0; /* Override padding for this complex dropdown */
         overflow: hidden;
+    }
+    /* Avtar Utility for Notifications */
+    .avtar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+    .avtar-s {
+        width: 35px;
+        height: 35px;
+    }
+    .f-14 { font-size: 0.875rem; }
+    .f-12 { font-size: 0.75rem; }
+
+    /* Scrollbar minimalista para notificaciones */
+    .overflow-auto::-webkit-scrollbar {
+        width: 4px;
+    }
+    .overflow-auto::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .overflow-auto::-webkit-scrollbar-thumb {
+        background: #e5e7eb;
+        border-radius: 10px;
     }
 </style>
 
