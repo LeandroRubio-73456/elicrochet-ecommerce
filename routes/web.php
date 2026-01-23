@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\HomeController;
+use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -34,11 +36,11 @@ Route::middleware(['auth'])->group(function () {
         // Delete any pending parent orders for this user to avoid confusion
         if (Auth::check()) {
             \App\Models\Order::where('user_id', Auth::id())
-                ->where('type', 'standard')
+                ->whereIn('type', [Order::TYPE_STOCK, 'stock'])
                 ->where('status', \App\Models\Order::STATUS_PENDING_PAYMENT)
                 ->delete();
         }
-        
+
         return redirect()->route('cart')->with('info', 'Pago cancelado por el usuario.');
     })->name('checkout.cancel');
 

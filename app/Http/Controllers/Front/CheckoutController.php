@@ -284,7 +284,7 @@ class CheckoutController extends Controller
     {
         // 0. Clean up old abandoned parent orders (>1 hour old) to prevent accumulation
         Order::where('user_id', $user->id)
-            ->where('type', 'stock')
+            ->whereIn('type', [Order::TYPE_STOCK, 'stock'])
             ->where('status', Order::STATUS_PENDING_PAYMENT)
             ->where('created_at', '<', now()->subHour())
             ->delete();
@@ -293,7 +293,7 @@ class CheckoutController extends Controller
         // We look for a recent 'stock' type order pending payment to avoid creating duplicates on retry.
         $existingOrder = Order::where('user_id', $user->id)
             ->where('status', Order::STATUS_PENDING_PAYMENT)
-            ->where('type', 'stock') // Master orders are 'stock'
+            ->whereIn('type', [Order::TYPE_STOCK, 'stock']) // Master orders are TYPE_STOCK (legacy: 'stock')
             ->latest()
             ->first();
 
@@ -339,7 +339,7 @@ class CheckoutController extends Controller
             'shipping_zip' => $validated['shipping_zip'],
             'total_amount' => 0,
             'shipping_cost' => $this->calculateShippingCost($validated['shipping_city']),
-            'type' => 'stock',
+            'type' => Order::TYPE_STOCK,
         ]);
 
         return [$order];
@@ -385,11 +385,11 @@ class CheckoutController extends Controller
                 'custom_specs' => $customItem ? $customItem->custom_specs : [],
             ]);
 
-            // Update Child Order Status to indicate it's linked
-            // Do NOT cancel it. Keep it locked.
-            $customOrder->update([
-                'status' => Order::STATUS_LINKED,
-            ]);
+            // Do NOT mark the custom order as LINKED before payment is approved.
+            // Keep it in_cart while the user is checking out, so cancelling payment doesn't leave orphaned LINKED orders.
+            if ($customOrder->status === Order::STATUS_PENDING_PAYMENT) {
+                $customOrder->update(['status' => Order::STATUS_IN_CART]);
+            }
         }
     }
 
