@@ -20,6 +20,10 @@ class SocialAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
+            if (! $googleUser || ! $googleUser->id) {
+                return redirect()->route('login')->with('error', 'No se pudo obtener la información de Google. Por favor intenta nuevamente.');
+            }
+
             $user = User::where('google_id', $googleUser->id)->first();
 
             if ($user) {

@@ -44,7 +44,7 @@ class Product extends Model
         return Attribute::make(
             get: fn ($value, $attributes) =>
             // Limita la descripción a 25 palabras
-            Str::words(strip_tags($attributes['description']), 10, '...'),
+            Str::words(strip_tags($attributes['description'] ?? ''), 10, '...'),
         );
     }
 

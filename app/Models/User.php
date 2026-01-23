@@ -99,8 +99,13 @@ class User extends Authenticatable implements MustVerifyEmail
             ->exists();
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function hasReviewed(Product $product)
     {
-        return $this->hasMany(Review::class)->where('product_id', $product->id)->exists();
+        return $this->reviews()->where('product_id', $product->id)->exists();
     }
 }
