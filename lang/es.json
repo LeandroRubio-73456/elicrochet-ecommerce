@@ -1,0 +1,15 @@
+{
+    "Whoops!": "¡Oops!",
+    "Hello!": "¡Hola!",
+    "Regards,": "Saludos,",
+    "All rights reserved.": "Todos los derechos reservados.",
+    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "Si tienes problemas para hacer clic en el botón \":actionText\", copia y pega la siguiente URL en tu navegador:",
+    "Reset Password Notification": "Notificación de Restablecimiento de Contraseña",
+    "You are receiving this email because we received a password reset request for your account.": "Recibes este correo porque recibimos una solicitud de restablecimiento de contraseña para tu cuenta.",
+    "Reset Password": "Restablecer Contraseña",
+    "This password reset link will expire in :count minutes.": "Este enlace de restablecimiento de contraseña expirará en :count minutos.",
+    "If you did not request a password reset, no further action is required.": "Si no solicitaste un restablecimiento de contraseña, no es necesario realizar ninguna acción adicional.",
+    "Verify Email Address": "Verificar Dirección de Correo Electrónico",
+    "Please click the button below to verify your email address.": "Por favor, haz clic en el botón de abajo para verificar tu dirección de correo electrónico.",
+    "If you did not create an account, no further action is required.": "Si no creaste una cuenta, no es necesario realizar ninguna acción adicional."
+}

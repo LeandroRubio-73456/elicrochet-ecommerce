@@ -28,13 +28,13 @@
                 <h5 class="card-title mb-0 text-primary"><i class="ti ti-wand me-2"></i>Solicitud de Personalización</h5>
             </div>
             <div class="card-body">
-                 @foreach($order->items as $item)
+                 @foreach($order->items->whereNotNull('custom_description') as $item)
                     <div class="mb-2">
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <h6 class="fw-bold text-dark"><i class="ti ti-file-description me-1"></i>Descripción del Proyecto</h6>
+                                <h6 class="fw-bold text-dark"><i class="ti ti-file-description me-1"></i>Descripción del Pedido Personalizado #{{ $item->custom_order_id ?? $item->id }}</h6>
                                 <div class="p-3 bg-light rounded border">
-                                    <p class="mb-0 text-break" style="white-space: pre-line;">{{ $item->custom_description ?? 'Sin descripción detallada.' }}</p>
+                                    <p class="mb-0 text-break" style="white-space: pre-line;">{{ $item->custom_description }}</p>
                                 </div>
                             </div>
                             
@@ -177,8 +177,8 @@
             
             @if($order->status === 'linked' && $order->parentItem)
                 <div class="alert alert-primary m-3 mb-0">
-                    <i class="ti ti-link me-1"></i> Esta orden está vinculada a la <strong>Orden Principal #{{ $order->parentItem->order_id }}</strong>. 
-                    <a href="{{ route('admin.orders.show', $order->parentItem->order_id) }}" class="fw-bold">Ver Padre</a>.
+                    <i class="ti ti-link me-1"></i> Esta orden está enlazada a la <strong>Orden Principal #{{ $order->parentItem->order_id }}</strong>. 
+                    <a href="{{ route('admin.orders.show', $order->parentItem->order_id) }}" class="fw-bold">Ver orden principal</a>.
                 </div>
             @endif
 

@@ -25,10 +25,13 @@
                         <i class="ti ti-info-circle me-3 fs-4"></i>
                         <div>
                             <strong>¿Cómo funciona?</strong>
-                            <ol class="mb-0 ps-3 mt-1 small">
-                                <li>Elige el tipo de producto (Categoría) y completa los detalles específicos.</li>
-                                <li>Describe tu idea con detalle y sube imágenes de referencia.</li>
-                                <li>Revisaremos tu solicitud y te enviaremos una <strong>cotización</strong>.</li>
+                            <p class="small mb-1 mt-1">
+                                Tomamos pedidos con al menos <strong>5-7 días de antelación</strong>. El proceso es:
+                            </p>
+                            <ol class="mb-0 ps-3 small">
+                                <li>Elige el tipo de producto y completa los detalles.</li>
+                                <li>Envía tu idea. Te responderemos con la cotización.</li>
+                                <li>Tras el pago, tejemos tu pedido (aprox. <strong>5 días laborables</strong>).</li>
                             </ol>
                         </div>
                     </div>

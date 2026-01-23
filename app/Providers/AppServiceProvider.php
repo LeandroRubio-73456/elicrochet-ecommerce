@@ -37,5 +37,11 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('cartCount', 0);
             }
         });
+
+        // Admin Notifications
+        view()->composer(['layouts.layout-vertical', 'admin.*'], \App\Http\View\Composers\AdminNotificationComposer::class);
+
+        // User Notifications
+        view()->composer(['layouts.front-layout', 'front.partials.navbar'], \App\Http\View\Composers\UserNotificationComposer::class);
     }
 }

@@ -95,6 +95,34 @@ class FinancialController extends Controller
             ? ($totalPaidOrders / $totalOrdersCount) * 100
             : 0;
 
+        // 6. Revenue Growth (Vs Previous Equivalent Period)
+        $duration = $startDate->diffInDays($endDate);
+        if ($period == 'this_month') {
+            $prevStartDate = $startDate->copy()->subMonth();
+            $prevEndDate = $endDate->copy()->subMonth();
+        } elseif ($period == 'this_year') {
+            $prevStartDate = $startDate->copy()->subYear();
+            $prevEndDate = $endDate->copy()->subYear();
+        } else {
+            $prevStartDate = $startDate->copy()->subDays($duration + 1);
+            $prevEndDate = $endDate->copy()->subDays($duration + 1);
+        }
+
+        $prevRevenue = Order::whereBetween('created_at', [$prevStartDate, $prevEndDate])
+            ->whereIn('status', $revenueStatuses)
+            ->sum('total_amount');
+
+        $revenueGrowth = $prevRevenue > 0 ? (($totalIncome - $prevRevenue) / $prevRevenue) * 100 : 0;
+
+        // 7. Customer Retention Rate (Lifetime)
+        $totalCustomers = Order::distinct('customer_email')->count();
+        $returningCustomers = Order::select('customer_email', DB::raw('COUNT(*) as count'))
+            ->groupBy('customer_email')
+            ->having('count', '>', 1)
+            ->get()
+            ->count();
+        $retentionRate = $totalCustomers > 0 ? ($returningCustomers / $totalCustomers) * 100 : 0;
+
         // --- Charts Data ---
 
         // A. Sales Trend (Line Chart)
@@ -105,8 +133,8 @@ class FinancialController extends Controller
             : '%Y-%m';   // Monthly
 
         $dateSelect = DB::getDriverName() === 'sqlite'
-            ? "strftime('$groupByFormat', orders.created_at) as date_label"
-            : "DATE_FORMAT(orders.created_at, '$groupByFormat') as date_label";
+            ? "strftime('$groupByFormat', created_at) as date_label"
+            : "DATE_FORMAT(created_at, '$groupByFormat') as date_label";
 
         $salesTrend = (clone $revenueQuery)
             ->select(DB::raw($dateSelect), DB::raw('SUM(total_amount) as total'))
@@ -132,6 +160,21 @@ class FinancialController extends Controller
 
         $catLabels = $categoryDist->pluck('category');
         $catValues = $categoryDist->pluck('total_revenue');
+
+        // C. Geographic Analysis (Sales by City)
+        $salesByCity = (clone $revenueQuery)
+            ->select('shipping_city', DB::raw('SUM(total_amount) as total'))
+            ->whereNotNull('shipping_city')
+            ->groupBy('shipping_city')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        // D. Sales by Type (Custom vs Stock)
+        $salesByType = (clone $revenueQuery)
+            ->select('type', DB::raw('SUM(total_amount) as total'))
+            ->groupBy('type')
+            ->get();
 
         // --- Rankings ---
 
@@ -162,9 +205,10 @@ class FinancialController extends Controller
 
         return view('admin.finance.index', compact(
             'period', 'startDate', 'endDate',
-            'totalIncome', 'avgTicket', 'totalProductsSold', 'conversionRate',
+            'totalIncome', 'avgTicket', 'totalProductsSold', 'conversionRate', 'revenueGrowth', 'retentionRate',
             'trendLabels', 'trendValues',
             'catLabels', 'catValues',
+            'salesByCity', 'salesByType',
             'topProducts', 'vipClients'
         ));
     }
@@ -228,30 +272,108 @@ class FinancialController extends Controller
             'Expires' => '0',
         ];
 
-        $columns = ['ID', 'Fecha', 'Cliente', 'Email', 'Estado', 'Tipo', 'Total'];
+        $columns = ['ID', 'Fecha', 'Cliente', 'Email', 'Ciudad', 'Estado', 'Tipo', 'Subtotal', 'Envio', 'Total', 'Productos'];
 
         $callback = function () use ($orders, $columns, $startDate, $endDate) {
             $file = fopen('php://output', 'w');
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM correctly
 
             // Metadata
-            fputcsv($file, ['Reporte de Ventas - EliCrochet'], ';');
+            fputcsv($file, ['Reporte de Ventas Detallado - EliCrochet'], ';');
             fputcsv($file, ['Periodo:', $startDate->format('d/m/Y').' - '.$endDate->format('d/m/Y')], ';');
+            fputcsv($file, ['Fecha de Generacion:', now()->format('d/m/Y H:i')], ';');
             fputcsv($file, [], ';');
 
             fputcsv($file, $columns, ';');
 
             foreach ($orders as $order) {
+                $items = $order->items->map(function ($item) {
+                    $name = $item->product ? $item->product->name : ($item->name ?? 'Producto Personalizado');
+
+                    return $name.' (x'.$item->quantity.')';
+                })->implode(', ');
+
+                $subtotal = $order->total_amount - $order->shipping_cost;
+
                 fputcsv($file, [
-                    $order->id,
+                    $order->order_id ?? $order->id,
                     $order->created_at->format('d/m/Y H:i'),
                     $order->customer_name,
                     $order->customer_email,
+                    $order->shipping_city ?? 'No especificada',
                     ucfirst($order->status),
                     ucfirst($order->type),
+                    number_format($subtotal, 2, ',', '.'),
+                    number_format($order->shipping_cost, 2, ',', '.'),
                     number_format($order->total_amount, 2, ',', '.'),
+                    $items,
                 ], ';');
             }
+
+            // --- SUMMARY REPORTS SECTION ---
+            fputcsv($file, [], ';');
+            fputcsv($file, ['RESUMEN EJECUTIVO DEL PERIODO'], ';');
+            fputcsv($file, [], ';');
+
+            // 1. Top Products
+            fputcsv($file, ['TOP 5 PRODUCTOS MÁS VENDIDOS'], ';');
+            fputcsv($file, ['Producto', 'Cantidad', 'Ingresos'], ';');
+            $revenueStatuses = [Order::STATUS_PAID, Order::STATUS_WORKING, Order::STATUS_READY_TO_SHIP, Order::STATUS_SHIPPED, Order::STATUS_COMPLETED];
+            $topProducts = DB::table('order_items')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.product_id', '=', 'products.id')
+                ->whereBetween('orders.created_at', [$startDate, $endDate])
+                ->whereIn('orders.status', $revenueStatuses)
+                ->select('products.name', DB::raw('SUM(order_items.quantity) as total_qty'), DB::raw('SUM(order_items.quantity * order_items.price) as total_revenue'))
+                ->groupBy('products.id', 'products.name')
+                ->orderByDesc('total_qty')
+                ->limit(5)->get();
+            foreach ($topProducts as $p) {
+                fputcsv($file, [$p->name, $p->total_qty, number_format($p->total_revenue, 2, ',', '.')], ';');
+            }
+            fputcsv($file, [], ';');
+
+            // 2. VIP Clients
+            fputcsv($file, ['TOP 5 CLIENTES (MAYORES COMPRADORES)'], ';');
+            fputcsv($file, ['Nombre', 'Email', 'Gasto Total', 'Pedidos'], ';');
+            $vipClients = Order::whereBetween('created_at', [$startDate, $endDate])
+                ->whereIn('status', $revenueStatuses)
+                ->select('customer_name', 'customer_email', DB::raw('SUM(total_amount) as total_spent'), DB::raw('COUNT(id) as orders_count'))
+                ->groupBy('customer_email', 'customer_name')
+                ->orderByDesc('total_spent')->limit(5)->get();
+            foreach ($vipClients as $c) {
+                fputcsv($file, [$c->customer_name, $c->customer_email, number_format($c->total_spent, 2, ',', '.'), $c->orders_count], ';');
+            }
+            fputcsv($file, [], ';');
+
+            // 3. Sales by City
+            fputcsv($file, ['VENTAS POR CIUDAD'], ';');
+            fputcsv($file, ['Ciudad', 'Total Ventas'], ';');
+            $cities = Order::whereBetween('created_at', [$startDate, $endDate])
+                ->whereIn('status', $revenueStatuses)
+                ->select('shipping_city', DB::raw('SUM(total_amount) as total'))
+                ->whereNotNull('shipping_city')
+                ->groupBy('shipping_city')->orderByDesc('total')->get();
+            foreach ($cities as $ct) {
+                fputcsv($file, [$ct->shipping_city, number_format($ct->total, 2, ',', '.')], ';');
+            }
+            fputcsv($file, [], ';');
+
+            // 4. Sales by Category
+            fputcsv($file, ['VENTAS POR CATEGORÍA'], ';');
+            fputcsv($file, ['Categoría', 'Ingresos'], ';');
+            $categories = DB::table('order_items')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.product_id', '=', 'products.id')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->whereBetween('orders.created_at', [$startDate, $endDate])
+                ->whereIn('orders.status', $revenueStatuses)
+                ->select('categories.name', DB::raw('SUM(order_items.quantity * order_items.price) as total'))
+                ->groupBy('categories.id', 'categories.name')->orderByDesc('total')->get();
+            foreach ($categories as $cat) {
+                fputcsv($file, [$cat->name, number_format($cat->total, 2, ',', '.')], ';');
+            }
+
             fclose($file);
         };
 

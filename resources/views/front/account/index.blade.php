@@ -7,7 +7,7 @@
     <div class="col-12 mb-4">
         <div class="card shadow-sm border-0 bg-light-primary">
             <div class="card-body">
-                <h4 class="fw-bold mb-1">¡Hola, {{ $user->name }}! 👋</h4>
+                <h4 class="fw-bold mb-1">¡Hola, {{ $user->name }}!</h4>
                 <p class="mb-0 text-muted">Bienvenido a tu panel de cliente. Aquí puedes gestionar tus pedidos y datos.</p>
             </div>
         </div>

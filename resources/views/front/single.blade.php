@@ -281,20 +281,10 @@
                                                                 <label for="star1" class="ti ti-star fs-3 text-muted cursor-pointer hover-warning peer-active-warning"></label>
                                                             </div>
                                                             <style>
-                                                                .stars-input input:checked ~ label,
-                                                                .stars-input label:hover,
-                                                                .stars-input label:hover ~ label {
-                                                                    color: #ffc107 !important; /* warning color */
-                                                                    content: "\eb5e"; /* filled star code if using tabler font directly, or just reliance on color fill if using svg based font usually checks class change. Since we use ti-icons, we rely on color mainly or changing class via JS. Let's start simple with color. */
-                                                                }
-                                                                /* Simple helper for filled state if just changing color isn't enough */
-                                                                .stars-input input:checked ~ label:before {
-                                                                    content: "\eb5e"; /* ti-star-filled */
-                                                                    color: #ffc107 !important;
-                                                                }
+                                                                .stars-input input:checked ~ label:before,
                                                                 .stars-input label:hover:before,
                                                                 .stars-input label:hover ~ label:before {
-                                                                    content: "\eb5e";
+                                                                    content: "\f6a6" !important;
                                                                     color: #ffc107 !important;
                                                                 }
                                                             </style>

@@ -11,7 +11,18 @@
         </div>
     <!-- Actions/Filters -->
     <div class="row mb-4">
-        <div class="col-12 text-md-end">
+        <div class="col-4 text-md-start d-flex align-items-center">
+            <div class="d-inline-flex align-items-center bg-white px-3 py-2 rounded shadow-sm border">
+                <div class="avtar avtar-xs bg-light-primary text-primary me-2">
+                    <i class="ti ti-calendar f-18"></i>
+                </div>
+                <div>
+                    <span class="d-block text-muted f-10 text-uppercase fw-bold" style="letter-spacing: 0.5px;">Periodo Filtrado</span>
+                    <span class="fw-bold text-dark">{{ $startDate->format('d/m/Y') }} - {{ $endDate->format('d/m/Y') }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-8 text-md-end">
             <form action="{{ route('admin.finance.index') }}" method="GET" class="d-flex flex-wrap align-items-center justify-content-md-end gap-2">
             
             <!-- Quick Filters -->
@@ -63,9 +74,16 @@
                     <div class="flex-grow-1 ms-3">
                         <h6 class="text-uppercase text-muted fw-bold mb-0 small">Ingresos Totales</h6>
                     </div>
+                    @if($revenueGrowth != 0)
+                        <div class="flex-shrink-0">
+                            <span class="badge {{ $revenueGrowth > 0 ? 'bg-light-success text-success' : 'bg-light-danger text-danger' }}">
+                                <i class="ti ti-arrow-{{ $revenueGrowth > 0 ? 'up' : 'down' }} me-1"></i>{{ number_format(abs($revenueGrowth), 1) }}%
+                            </span>
+                        </div>
+                    @endif
                 </div>
                 <h3 class="fw-bold mb-0">${{ number_format($totalIncome, 2, ',', '.') }}</h3>
-                <small class="text-muted">En el periodo seleccionado</small>
+                <small class="text-muted">vs periodo anterior</small>
             </div>
         </div>
     </div>
@@ -88,20 +106,20 @@
         </div>
     </div>
 
-    <!-- Products Sold -->
+    <!-- Retention Rate -->
     <div class="col-md-3">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
-                    <div class="flex-shrink-0 bg-light-warning p-2 rounded">
-                        <i class="ti ti-shirt text-warning fs-3"></i>
+                    <div class="flex-shrink-0 bg-light-info p-2 rounded">
+                        <i class="ti ti-user-check text-info fs-3"></i>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h6 class="text-uppercase text-muted fw-bold mb-0 small">Productos</h6>
+                        <h6 class="text-uppercase text-muted fw-bold mb-0 small">Retención</h6>
                     </div>
                 </div>
-                <h3 class="fw-bold mb-0">{{ number_format($totalProductsSold) }}</h3>
-                <small class="text-muted">Unidades vendidas</small>
+                <h3 class="fw-bold mb-0">{{ number_format($retentionRate, 1) }}%</h3>
+                <small class="text-muted">Clientes recurrentes</small>
             </div>
         </div>
     </div>
@@ -111,8 +129,8 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center mb-2">
-                    <div class="flex-shrink-0 bg-light-info p-2 rounded">
-                        <i class="ti ti-chart-pie text-info fs-3"></i>
+                    <div class="flex-shrink-0 bg-light-warning p-2 rounded">
+                        <i class="ti ti-chart-pie text-warning fs-3"></i>
                     </div>
                     <div class="flex-grow-1 ms-3">
                         <h6 class="text-uppercase text-muted fw-bold mb-0 small">Conversión</h6>
@@ -128,7 +146,7 @@
 <!-- Charts Section -->
 <div class="row mb-4">
     <!-- Sales Trend -->
-    <div class="col-lg-8 mb-4 mb-lg-0">
+    <div class="col-lg-8 mb-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title fw-bold mb-0">Tendencia de Ventas</h5>
@@ -142,7 +160,7 @@
     </div>
     
     <!-- Category Distribution -->
-    <div class="col-lg-4">
+    <div class="col-lg-4 mb-4">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title fw-bold mb-0">Ventas por Categoría</h5>
@@ -150,6 +168,34 @@
             <div class="card-body d-flex align-items-center justify-content-center">
                 <div style="height: 250px; width: 100%;">
                     <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales by City -->
+    <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title fw-bold mb-0">Ventas por Ciudad (Top 5)</h5>
+            </div>
+            <div class="card-body">
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="cityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Type Distribution -->
+    <div class="col-lg-6 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title fw-bold mb-0">Distribución por Tipo</h5>
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <div style="height: 250px; width: 100%;">
+                    <canvas id="typeChart"></canvas>
                 </div>
             </div>
         </div>
@@ -352,6 +398,61 @@
                     }
                 },
                 cutout: '65%',
+            }
+        });
+
+        // --- Sales by City Chart ---
+        var ctxCity = document.getElementById('cityChart').getContext('2d');
+        var cityLabels = {!! json_encode($salesByCity->pluck('shipping_city')) !!};
+        var cityValues = {!! json_encode($salesByCity->pluck('total')) !!};
+
+        new Chart(ctxCity, {
+            type: 'bar',
+            data: {
+                labels: cityLabels,
+                datasets: [{
+                    label: 'Ventas ($)',
+                    data: cityValues,
+                    backgroundColor: '#3ec9d6',
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, grid: { display: false } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- Order Type Chart ---
+        var ctxType = document.getElementById('typeChart').getContext('2d');
+        var typeLabels = {!! json_encode($salesByType->pluck('type')->map(fn($t) => ucfirst($t))) !!};
+        var typeValues = {!! json_encode($salesByType->pluck('total')) !!};
+
+        new Chart(ctxType, {
+            type: 'pie',
+            data: {
+                labels: typeLabels,
+                datasets: [{
+                    data: typeValues,
+                    backgroundColor: ['#7267EF', '#4680ff'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true, boxWidth: 8 }
+                    }
+                }
             }
         });
     });

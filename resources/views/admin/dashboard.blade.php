@@ -26,7 +26,15 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-muted">Ventas Totales</h6>
-                    <h4 class="mb-0">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti ti-currency-dollar text-success float-end opacity-50"></i></h4>
+                    <h4 class="mb-2">${{ number_format($totalSales, 2, ',', '.') }} <i class="ti ti-currency-dollar text-success float-end opacity-50"></i></h4>
+                    @if($monthlyGrowth != 0)
+                        <span class="badge {{ $monthlyGrowth > 0 ? 'bg-light-success text-success' : 'bg-light-danger text-danger' }} f-12">
+                            <i class="ti ti-arrow-{{ $monthlyGrowth > 0 ? 'up' : 'down' }} me-1"></i>{{ number_format(abs($monthlyGrowth), 1) }}%
+                            <span class="text-muted fw-normal ms-1">este mes</span>
+                        </span>
+                    @else
+                        <span class="text-muted f-12">Sin cambios este mes</span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -55,6 +63,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Recent Orders -->
         <div class="col-md-12 col-xl-8">
@@ -91,8 +100,21 @@
                                                  'cancelled' => 'x',
                                                  default => 'info-circle'
                                             };
+                                            $statusLabel = match($order->status) {
+                                                'quotation' => 'Cotización',
+                                                'pending_payment' => 'Pendiente Pago',
+                                                'paid' => 'Pagado',
+                                                'working', 'processing' => 'En Fabricación',
+                                                'ready_to_ship' => 'Listo para Envío',
+                                                'shipped' => 'Enviado',
+                                                'completed' => 'Completado',
+                                                'cancelled' => 'Cancelado',
+                                                'in_cart' => 'En Carrito',
+                                                'linked' => 'Enlazado',
+                                                default => ucwords(str_replace('_', ' ', $order->status))
+                                            };
                                         @endphp
-                                        <span class="d-block"><i class="ti ti-{{ $icon }} {{ $badgeClass }} f-10 m-r-5"></i> {{ ucfirst($order->status) }}</span>
+                                        <span class="d-block"><i class="ti ti-{{ $icon }} {{ $badgeClass }} f-10 m-r-5"></i> {{ $statusLabel }}</span>
                                     </td>
                                     <td class="text-end">${{ number_format($order->total_amount, 2) }}</td>
                                     <td class="text-end">
@@ -226,3 +248,4 @@
         </div>
     </div>
 @endsection
+

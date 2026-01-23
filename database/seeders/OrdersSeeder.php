@@ -33,30 +33,33 @@ class OrdersSeeder extends Seeder
         }
 
         foreach ($statuses as $status) {
-            // Create 2 orders for each status
-            Order::factory()
-                ->count(2)
-                ->create([
+            // Create 5 orders for each status with varied dates
+            for ($i = 0; $i < 5; $i++) {
+                $date = now()->subDays(rand(0, 90));
+
+                $order = Order::factory()->create([
                     'status' => $status,
                     'user_id' => $users->random()->id,
-                ])
-                ->each(function ($order) {
-                    // Create 1-3 items for each order
-                    $products = Product::inRandomOrder()->take(rand(1, 3))->get();
+                    'created_at' => $date,
+                    'updated_at' => $date,
+                ]);
 
-                    foreach ($products as $product) {
-                        OrderItem::factory()->create([
-                            'order_id' => $order->id,
-                            'product_id' => $product->id,
-                            'price' => $product->price,
-                            'quantity' => rand(1, 2),
-                        ]);
-                    }
+                // Create 1-3 items for each order
+                $products = Product::inRandomOrder()->take(rand(1, 3))->get();
 
-                    // Recalculate total
-                    $order->recalculateTotal();
-                    $order->save();
-                });
+                foreach ($products as $product) {
+                    OrderItem::factory()->create([
+                        'order_id' => $order->id,
+                        'product_id' => $product->id,
+                        'price' => $product->price,
+                        'quantity' => rand(1, 2),
+                    ]);
+                }
+
+                // Recalculate total
+                $order->recalculateTotal();
+                $order->save();
+            }
         }
 
         $this->command->info('Created 12 dummy orders with various statuses.');

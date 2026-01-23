@@ -92,8 +92,6 @@ Route::middleware(['auth', 'verified'])
     });
 
 // --- ROUTES FOR FRONT CONTROLLERS (For coverage and public use) ---
-Route::get('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'create'])->name('custom-order.create');
-Route::post('/pedido-personalizado', [\App\Http\Controllers\Front\CustomOrderController::class, 'store'])->name('custom-order.store');
 
 // Google Auth
 Route::get('auth/google', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');

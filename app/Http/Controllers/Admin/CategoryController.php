@@ -96,7 +96,7 @@ class CategoryController extends Controller
      */
     public function create(): View
     {
-        $categories = Category::whereNull('parent_id')->get();
+        $categories = Category::all();
 
         return view('admin.categories.create', compact('categories'));
     }

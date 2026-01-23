@@ -165,7 +165,7 @@
                                 <div class="order-items-container mb-4" style="max-height: 350px; overflow-y: auto;">
                                     @foreach ($cartItems as $item)
                                         @php
-                                            $imagePath = 'https://placehold.co/80x80?text=Sin+Imagen';
+                                            $imagePath = null;
                                             if ($item->product && $item->product->images->first()) {
                                                 $imagePath = asset('storage/' . $item->product->images->first()->image_path);
                                             } elseif (isset($item->attributes['image']) && $item->attributes['image']) {
@@ -179,12 +179,18 @@
                                                 <!-- Imagen del producto -->
                                                 <div class="flex-shrink-0">
                                                     <div class="position-relative">
-                                                        <img src="{{ $imagePath }}" 
-                                                             class="rounded" 
-                                                             width="80" 
-                                                             height="80"
-                                                             style="object-fit: cover;"
-                                                             alt="{{ $name }}">
+                                                        @if($imagePath && !isset($item->attributes['is_custom']))
+                                                            <img src="{{ $imagePath }}" 
+                                                                 class="rounded" 
+                                                                 width="80" 
+                                                                 height="80"
+                                                                 style="object-fit: cover;"
+                                                                 alt="{{ $name }}">
+                                                        @else
+                                                            <div class="rounded bg-light d-flex align-items-center justify-content-center border" style="width: 80px; height: 80px;">
+                                                                <i class="ti ti-star text-warning fs-1"></i>
+                                                            </div>
+                                                        @endif
                                                         <!-- Badge de cantidad -->
                                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
                                                             {{ $item->quantity }}

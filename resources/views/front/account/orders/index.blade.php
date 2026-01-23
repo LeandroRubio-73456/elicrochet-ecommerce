@@ -71,7 +71,7 @@
                             </td>
                             <td class="text-end pe-4">
                                 @if($order->status === \App\Models\Order::STATUS_LINKED && $order->parentItem)
-                                    <a href="{{ route('account.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver Orden Padre">
+                                    <a href="{{ route('account.orders.show', $order->parentItem->order_id) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver Orden Principal">
                                         <i class="ti ti-external-link"></i> Ver Orden #{{ $order->parentItem->order_id }}
                                     </a>
                                 @else

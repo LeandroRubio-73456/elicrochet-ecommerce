@@ -61,7 +61,7 @@ class FinancialTest extends TestCase
 
         // Verify content stream
         $content = $response->streamedContent();
-        $this->assertStringContainsString('Reporte de Ventas - EliCrochet', $content);
+        $this->assertStringContainsString('Reporte de Ventas Detallado - EliCrochet', $content);
         $this->assertStringContainsString('Export Customer', $content);
         $this->assertStringContainsString('123,45', $content); // Check number format
     }

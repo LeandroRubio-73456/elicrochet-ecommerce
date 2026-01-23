@@ -31,6 +31,19 @@ class DashboardController extends Controller
         $workingCount = ($statusCounts['working'] ?? 0) + ($statusCounts['ready_to_ship'] ?? 0);
         $paidCount = ($statusCounts['paid'] ?? 0) + ($statusCounts['shipped'] ?? 0) + ($statusCounts['completed'] ?? 0) + ($statusCounts['delivered'] ?? 0);
 
+        // 6. Growth (Current Month vs Previous)
+        $currentMonthSales = \App\Models\Order::whereIn('status', ['paid', 'completed', 'shipped', 'ready_to_ship'])
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total_amount');
+
+        $lastMonthSales = \App\Models\Order::whereIn('status', ['paid', 'completed', 'shipped', 'ready_to_ship'])
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->whereYear('created_at', now()->subMonth()->year)
+            ->sum('total_amount');
+
+        $monthlyGrowth = $lastMonthSales > 0 ? (($currentMonthSales - $lastMonthSales) / $lastMonthSales) * 100 : 0;
+
         return view('admin.dashboard', compact(
             'totalUsers',
             'totalOrders',
@@ -40,7 +53,8 @@ class DashboardController extends Controller
             'recentReviews',
             'pendingCount',
             'workingCount',
-            'paidCount'
+            'paidCount',
+            'monthlyGrowth'
         ));
     }
 }

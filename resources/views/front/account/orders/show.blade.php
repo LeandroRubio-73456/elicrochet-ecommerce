@@ -89,25 +89,22 @@
                                             </div>
                                         @else
                                             {{-- Custom Order Item (No Product) --}}
-                                            <div class="d-flex flex-column">
-                                                <span class="fw-bold text-primary">Pedido Personalizado</span>
-                                                <small class="text-muted">{{ Str::limit($item->custom_description ?? 'Servicio de Fabricación', 100) }}</small>
-                                                
-                                                @if(!empty($item->custom_specs))
-                                                    <div class="mt-2 text-muted f-13 small">
-                                                        <ul class="mb-0 ps-3">
-                                                        @foreach($item->custom_specs as $key => $val)
-                                                            <li><strong class="text-secondary">{{ ucfirst($key) }}:</strong> {{ $val }}</li>
-                                                        @endforeach
-                                                        </ul>
-                                                    </div>
-                                                @endif
-
-                                                @if($item->images)
-                                                    <div class="mt-2 text-primary f-12">
-                                                        <i class="ti ti-photo"></i> Imágenes adjuntas
-                                                    </div>
-                                                @endif
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded me-3 bg-light d-flex align-items-center justify-content-center border" style="width:50px; height:50px;">
+                                                    <i class="ti ti-star text-warning"></i>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <span class="fw-bold text-primary">Pedido Personalizado</span>
+                                                    <small class="text-muted">{{ Str::limit($item->custom_description ?? 'Servicio de Fabricación', 100) }}</small>
+                                                    
+                                                    @if(!empty($item->custom_specs))
+                                                        <div class="mt-1 text-muted f-12 small">
+                                                            @foreach($item->custom_specs as $key => $val)
+                                                                <span class="me-2"><strong class="text-secondary">{{ ucfirst($key) }}:</strong> {{ $val }}</span>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
                                         @endif
                                     </td>
@@ -177,17 +174,17 @@
                         'completed' => 'Completado',
                         'cancelled' => 'Cancelado',
                         'in_cart' => 'En Carrito',
-                        \App\Models\Order::STATUS_LINKED => 'Vinculado a Orden Principal #' . ($order->parentItem->order_id ?? '?'),
+                        \App\Models\Order::STATUS_LINKED => 'Enlazado a Orden Principal #' . ($order->parentItem->order_id ?? '?'),
                         default => $order->status
                     };
                     
                     $statusDesc = match($order->status) {
                         'quotation' => 'Estamos calculando el costo de tu pedido personalizado.',
                         'pending_payment' => 'Tu pedido ha sido creado/cotizado. Realiza el pago para continuar.',
-                        'paid' => 'Hemos recibido tu pago. Pronto iniciaremos el proceso.',
-                        'working' => 'Estamos trabajando en tu pedido (Corte y Confección).',
+                        'paid' => 'Hemos recibido tu pago. Tu pedido se atenderá dependiendo de los pedidos actuales, por favor sé paciente.',
+                        'working' => 'Estamos trabajando en tu pedido. Se demora entre 5 días.',
                         'ready_to_ship' => 'Tu pedido está listo y empacado.',
-                        'shipped' => 'Tu pedido ha sido enviado a la dirección proporcionada.',
+                        'shipped' => 'Tu pedido ha sido enviado. Se demora entre 1 día en llegar.',
                         'completed' => 'Has confirmado la recepción. ¡Gracias!',
                         'cancelled' => 'Este pedido ha sido cancelado.',
                         \App\Models\Order::STATUS_LINKED => 'Este pedido es parte de una orden principal. Revisa la orden #' . ($order->parentItem->order_id ?? '?') . ' para ver el estado del envío.',
