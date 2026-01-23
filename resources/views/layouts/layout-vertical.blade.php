@@ -92,12 +92,12 @@
             <ul class="list-unstyled">
                 <!-- Notifications Bell -->
                 <li class="dropdown pc-h-item">
-                    <a class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <button class="pc-head-link dropdown-toggle arrow-none me-0 btn btn-link" data-bs-toggle="dropdown" type="button" aria-haspopup="false" aria-expanded="false">
                         <i class="ti ti-bell"></i>
                         @if($totalNotifications > 0)
                             <span class="badge bg-danger pc-h-badge dots"><span class="sr-only"></span></span>
                         @endif
-                    </a>
+                    </button>
                     <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
                         <div class="dropdown-header d-flex align-items-center justify-content-between">
                             <h5 class="m-0">Notificaciones</h5>
