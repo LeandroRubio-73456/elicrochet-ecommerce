@@ -16,8 +16,12 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())
+            ->whereNot(function ($query) {
+                $query->whereIn('type', [Order::TYPE_STOCK, 'stock'])
+                    ->where('status', Order::STATUS_PENDING_PAYMENT);
+            })
             ->with(['items.product', 'parentItem.order'])
-            ->orderBy('id', 'desc') // Explicitly enforce ID desc
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('front.account.orders.index', compact('orders'));
@@ -30,6 +34,11 @@ class OrderController extends Controller
             abort(403);
         }
 
+        // Hide checkout draft parent orders from customer views
+        if (in_array($order->type, [Order::TYPE_STOCK, 'stock']) && $order->status === Order::STATUS_PENDING_PAYMENT) {
+            return redirect()->route('cart')->with('info', 'Tienes un checkout pendiente. Revisa tu carrito para continuar.');
+        }
+
         return view('front.account.orders.show', compact('order'));
     }
 
@@ -40,6 +49,13 @@ class OrderController extends Controller
     {
         if ($order->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        // If user tries to cancel a checkout draft parent order, just delete it.
+        if (in_array($order->type, [Order::TYPE_STOCK, 'stock']) && $order->status === Order::STATUS_PENDING_PAYMENT) {
+            $order->delete();
+
+            return redirect()->route('cart')->with('success', 'Checkout cancelado. Puedes volver a intentar cuando quieras.');
         }
 
         if ($order->canTransitionTo(Order::STATUS_CANCELLED)) {
@@ -165,14 +181,16 @@ class OrderController extends Controller
 
         // Notify Admin
         try {
-            $admin = \App\Models\User::where('role', 'admin')->first();
-            if ($admin) {
-                \Illuminate\Support\Facades\Log::info("Found admin for notification: {$admin->email}");
-                // Used to have sleep(11) here - removed for performance
-                \Illuminate\Support\Facades\Mail::to($admin->email)->queue(new \App\Mail\NewOrderAdminNotification($order));
-                \Illuminate\Support\Facades\Log::info("Admin notification queued for {$admin->email}");
+            $adminEmail = config('mail.admin_email');
+
+            if (! $adminEmail) {
+                $adminEmail = \App\Models\User::where('role', 'admin')->value('email');
+            }
+
+            if ($adminEmail) {
+                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\NewOrderAdminNotification($order));
             } else {
-                \Illuminate\Support\Facades\Log::warning('No admin user found to send notification.');
+                \Illuminate\Support\Facades\Log::warning('No admin email configured/found for NewOrderAdminNotification.');
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error sending NewOrderAdminNotification: '.$e->getMessage());
@@ -186,6 +204,10 @@ class OrderController extends Controller
     {
         if ($order->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        if ($order->type !== Order::TYPE_CUSTOM) {
+            return redirect()->back()->with('error', 'Solo los pedidos personalizados pueden agregarse al carrito desde aquí.');
         }
 
         if ($order->status !== Order::STATUS_PENDING_PAYMENT) {

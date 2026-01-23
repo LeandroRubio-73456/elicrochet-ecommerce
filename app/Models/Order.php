@@ -27,6 +27,18 @@ class Order extends Model
         'shipping_guide',
     ];
 
+    /**
+     * Order Types:
+     * - 'standard' (TYPE_STOCK): Regular products from inventory.
+     *   Also used as PARENT/CONTAINER orders during checkout to group multiple items.
+     * - 'catalog' (TYPE_CATALOG): Products without stock (made to order)
+     * - 'custom' (TYPE_CUSTOM): Fully customized orders (quotation required)
+     *
+     * Important: Orders with type='standard' and status='pending_payment' are checkout drafts
+     * and should not be displayed in customer dashboards as standalone orders.
+     * They are temporary containers created during the checkout process.
+     */
+
     // Types
     const TYPE_STOCK = 'standard';
 

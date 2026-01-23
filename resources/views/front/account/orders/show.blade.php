@@ -204,7 +204,7 @@
                     @endif
                 </div>
 
-                @if($order->status === 'pending_payment')
+                @if($order->status === 'pending_payment' && $order->type === \App\Models\Order::TYPE_CUSTOM)
                      <div class="d-grid mt-3">
                          <form action="{{ route('account.orders.add_to_cart', $order) }}" method="POST">
                              @csrf
