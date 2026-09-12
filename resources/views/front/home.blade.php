@@ -183,7 +183,8 @@
             <h2 class="newsletter-title">Mantente al día</h2>
             <p class="newsletter-text">Suscríbete para recibir novedades, ofertas exclusivas y tips de cuidado</p>
             <form class="newsletter-form">
-                <input type="email" required>
+                <label for="newsletter-email" class="visually-hidden">Correo electrónico</label>
+                <input type="email" id="newsletter-email" name="email" placeholder="Tu correo electrónico" required>
                 <button type="submit" class="btn-modern btn-primary">Suscribirse</button>
             </form>
         </div>

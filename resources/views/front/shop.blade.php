@@ -60,7 +60,8 @@
                 <form action="{{ isset($category) ? route('category.show', $category->slug) : route('shop') }}" method="GET" class="card border-0 shadow-sm">
                     <div class="card-body p-2">
                         <div class="input-group input-group-lg">
-                            <input type="text" name="search" class="form-control border-0 bg-transparent me-3" value="{{ request('search') }}" autocomplete="off">
+                            <label for="shop-search" class="visually-hidden">Buscar productos</label>
+                            <input type="text" id="shop-search" name="search" class="form-control border-0 bg-transparent me-3" value="{{ request('search') }}" autocomplete="off" placeholder="Buscar productos...">
                             <button class="btn btn-primary px-3 rounded-3" type="submit">
                                 <i class="ti ti-search bg-transparent"></i>
                             </button>
@@ -108,7 +109,8 @@
                         </span>
                     </div>
                     <div class="toolbar-actions">
-                        <select class="sort-select" name="sort" onchange="submitShopFilters(this.value)">
+                        <label for="shop-sort" class="visually-hidden">Ordenar por</label>
+                        <select id="shop-sort" class="sort-select" name="sort" onchange="submitShopFilters(this.value)">
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Más Recientes</option>
                             <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
                             <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>

@@ -42,12 +42,12 @@
                     <h6 class="dropdown-header">Rango de fechas</h6>
                     <input type="hidden" name="period" value="custom">
                     <div class="mb-2">
-                        <label class="form-label small">Desde</label>
-                        <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}">
+                        <label for="date_from" class="form-label small">Desde</label>
+                        <input type="date" id="date_from" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}">
                     </div>
                     <div class="mb-2">
-                        <label class="form-label small">Hasta</label>
-                        <input type="date" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}">
+                        <label for="date_to" class="form-label small">Hasta</label>
+                        <input type="date" id="date_to" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}">
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm w-100">Aplicar Filtro</button>
                 </div>

@@ -73,7 +73,7 @@
                             <label for="description" class="form-label fw-bold">Descripción
                                 <span class="text-danger">*</span>
                             </label>
-                            <textarea class="form-control" name="description" rows="3">{{ old('description') }}</textarea>
+                            <textarea id="description" class="form-control" name="description" rows="3">{{ old('description') }}</textarea>
                             <small class="text-muted">Describe los productos que pertenecen a esta categoría.</small>
                             @error('description')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
