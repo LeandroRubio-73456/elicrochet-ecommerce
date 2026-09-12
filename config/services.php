@@ -39,6 +39,9 @@ return [
         'client_id' => env('PAYPHONE_CLIENT_ID'),
         'client_secret' => env('PAYPHONE_CLIENT_SECRET'),
         'mode' => env('PAYPHONE_MODE', 'sandbox'),
+        // null = automático (simula solo si no hay token real configurado).
+        // true/false fuerza el modo sin importar si hay token.
+        'simulate' => env('PAYPHONE_SIMULATE'),
         'base_url' => env('PAYPHONE_MODE') == 'live'
            ? 'https://api.payphone.app/prod' // URL de producción
            : 'https://api.payphone.app/dev', // URL de pruebas

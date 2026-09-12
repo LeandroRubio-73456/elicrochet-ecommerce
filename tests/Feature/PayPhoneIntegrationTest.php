@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -48,7 +49,7 @@ class PayPhoneIntegrationTest extends TestCase
         ]);
 
         // Mock CartService to ensure the controller sees items
-        $mockCart = $this->mock(\App\Providers\CartService::class);
+        $mockCart = $this->mock(CartService::class);
         $mockCart->shouldReceive('getCart')->andReturn(collect([
             (object) [
                 'id' => $product->id,

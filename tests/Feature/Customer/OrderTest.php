@@ -27,8 +27,11 @@ class OrderTest extends TestCase
     /** @test */
     public function customer_can_list_their_orders()
     {
-        $order = Order::factory()->create(['user_id' => $this->user->id]);
-        $otherOrder = Order::factory()->create(); // Different user
+        // status distinto de pending_payment: una orden en pending_payment
+        // de tipo "stock" es un borrador de checkout y el índice la oculta
+        // a propósito (ver OrderController::index).
+        $order = Order::factory()->create(['user_id' => $this->user->id, 'status' => Order::STATUS_PAID]);
+        $otherOrder = Order::factory()->create(['status' => Order::STATUS_PAID]); // Different user
 
         $response = $this->actingAs($this->user)->get(route('account.orders.index'));
 
@@ -41,7 +44,9 @@ class OrderTest extends TestCase
     /** @test */
     public function customer_can_view_their_order()
     {
-        $order = Order::factory()->create(['user_id' => $this->user->id]);
+        // Igual que en el índice: pending_payment + stock es un borrador de
+        // checkout y OrderController::show redirige al carrito en ese caso.
+        $order = Order::factory()->create(['user_id' => $this->user->id, 'status' => Order::STATUS_PAID]);
 
         $response = $this->actingAs($this->user)->get(route('account.orders.show', $order));
 

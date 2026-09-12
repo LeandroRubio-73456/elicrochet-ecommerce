@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace App\Services;
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +39,7 @@ class CartService
 
         // Verificar stock con el total acumulado
         if ($totalQuantity > $product->stock) {
-            throw new \App\Exceptions\BusinessLogicException('Stock insuficiente. Ya tienes '.$currentQuantityInCart.' en el carrito y solo quedan '.$product->stock.' unidades disponibles en total.');
+            throw new BusinessLogicException('Stock insuficiente. Ya tienes '.$currentQuantityInCart.' en el carrito y solo quedan '.$product->stock.' unidades disponibles en total.');
         }
 
         if ($existingItem) {
@@ -63,7 +65,7 @@ class CartService
     }
 
     // Agregar pedido personalizado al carrito
-    public function addCustomOrder(\App\Models\Order $order)
+    public function addCustomOrder(Order $order)
     {
         if (! Auth::check()) {
             return false;
@@ -75,12 +77,12 @@ class CartService
             ->first();
 
         if ($existingItem) {
-            throw new \App\Exceptions\BusinessLogicException('Este pedido personalizado ya está en tu carrito.');
+            throw new BusinessLogicException('Este pedido personalizado ya está en tu carrito.');
         }
 
         // Update Order Status to IN_CART to prevent other actions
-        if ($order->status === \App\Models\Order::STATUS_PENDING_PAYMENT) {
-            $order->update(['status' => \App\Models\Order::STATUS_IN_CART]);
+        if ($order->status === Order::STATUS_PENDING_PAYMENT) {
+            $order->update(['status' => Order::STATUS_IN_CART]);
         }
 
         // Crear nuevo item
@@ -138,11 +140,11 @@ class CartService
         if ($item) {
             // Revert status if it's a custom order
             if ($item->custom_order_id) {
-                $order = \App\Models\Order::find($item->custom_order_id);
+                $order = Order::find($item->custom_order_id);
                 // Only revert to PENDING_PAYMENT if it was previously IN_CART or LINKED
                 // If it's cancelled, leave it cancelled.
-                if ($order && in_array($order->status, [\App\Models\Order::STATUS_IN_CART, \App\Models\Order::STATUS_LINKED])) {
-                    $order->update(['status' => \App\Models\Order::STATUS_PENDING_PAYMENT]);
+                if ($order && in_array($order->status, [Order::STATUS_IN_CART, Order::STATUS_LINKED])) {
+                    $order->update(['status' => Order::STATUS_PENDING_PAYMENT]);
                 }
             }
             $item->delete();
@@ -163,9 +165,9 @@ class CartService
         // Revert status for all custom orders in cart before deleting
         $cartItems = CartItem::where('user_id', Auth::id())->whereNotNull('custom_order_id')->get();
         foreach ($cartItems as $item) {
-            $order = \App\Models\Order::find($item->custom_order_id);
-            if ($order && in_array($order->status, [\App\Models\Order::STATUS_IN_CART, \App\Models\Order::STATUS_LINKED])) {
-                $order->update(['status' => \App\Models\Order::STATUS_PENDING_PAYMENT]);
+            $order = Order::find($item->custom_order_id);
+            if ($order && in_array($order->status, [Order::STATUS_IN_CART, Order::STATUS_LINKED])) {
+                $order->update(['status' => Order::STATUS_PENDING_PAYMENT]);
             }
         }
 

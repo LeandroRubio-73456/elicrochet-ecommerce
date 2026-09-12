@@ -9,7 +9,7 @@
 
 <!-- [Template CSS Files] -->
 <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}" id="main-style-link">
-<link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/style-preset.min.css') }}">
 <!-- DataTables Bootstrap 5 CSS -->
 <link rel="stylesheet" href="{{ asset('assets/css/plugins/dataTables.bootstrap5.min.css') }}">
 

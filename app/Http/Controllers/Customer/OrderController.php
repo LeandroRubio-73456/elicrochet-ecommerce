@@ -3,13 +3,20 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\StoreCustomOrderRequest;
+use App\Models\Category;
 use App\Models\Order;
-use App\Models\OrderItem;
-use Illuminate\Http\Request;
+use App\Services\CartService;
+use App\Services\CustomOrderService;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        protected CartService $cartService,
+        protected CustomOrderService $customOrderService,
+    ) {}
+
     /**
      * List user orders.
      */
@@ -86,7 +93,8 @@ class OrderController extends Controller
             abort(403);
         }
 
-        // Fix: Explicitly check for STATUS_SHIPPED to allow confirmation even if canTransitionTo fails (e.g. type mismatch)
+        // canTransitionTo no cubre el tipo 'catalog' con datos legacy, así
+        // que se permite confirmar directamente desde SHIPPED en cualquier caso.
         if ($order->status === Order::STATUS_SHIPPED || $order->canTransitionTo(Order::STATUS_COMPLETED)) {
             $order->status = Order::STATUS_COMPLETED;
             $order->save();
@@ -101,106 +109,45 @@ class OrderController extends Controller
 
     public function createCustom()
     {
-        $categories = \App\Models\Category::where('status', 'active')->get();
+        $categories = Category::where('status', 'active')->get();
 
         return view('front.account.orders.custom_create', compact('categories'));
     }
 
-    public function storeCustom(Request $request)
+    public function storeCustom(StoreCustomOrderRequest $request)
     {
-        // 0. Anti-spam check: Only one active quotation per user
-        $hasActiveQuotation = Order::where('user_id', Auth::id())
-            ->where('type', Order::TYPE_CUSTOM)
-            ->where('status', Order::STATUS_QUOTATION)
-            ->exists();
-
-        if ($hasActiveQuotation) {
+        if ($this->customOrderService->hasActiveQuotation(Auth::user())) {
             return back()->with('error', 'Ya tienes una solicitud de cotización en proceso. Por favor espera a que sea revisada antes de enviar otra.');
         }
 
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'required|string|max:1000',
-            'images.*' => 'image|max:2048',
-            'custom_specs' => 'array', // Validation logic below
-        ]);
+        $validated = $request->validated();
+        $category = Category::findOrFail($validated['category_id']);
 
-        $category = \App\Models\Category::findOrFail($request->category_id);
-
-        // 1. Dynamic Validation
-        $specErrors = $category->validateSpecs($request->custom_specs ?? []);
+        $specErrors = $category->validateSpecs($validated['custom_specs'] ?? []);
         if (! empty($specErrors)) {
             return back()->withErrors($specErrors)->withInput();
         }
 
-        $order = new Order;
-        $order->user_id = Auth::id();
-        $order->status = Order::STATUS_QUOTATION;
-        $order->type = Order::TYPE_CUSTOM;
-        $order->customer_name = Auth::user()->name;
-        $order->customer_email = Auth::user()->email;
-
-        // Use user's default shipping info
-        $order->shipping_address = Auth::user()->shipping_address;
-        $order->shipping_city = Auth::user()->shipping_city;
-        $order->shipping_zip = Auth::user()->shipping_zip;
-
-        $order->total_amount = 0; // TBD by Admin
-        $order->save();
-
-        // Create Item
-        $item = new OrderItem;
-        $item->order_id = $order->id;
-        $item->product_id = null; // Custom
-        // Store category info maybe in custom_description or fetch via relation if we had one.
-        // Ideally we should link custom order to category, but specs are enough context.
-        $item->custom_description = "Categoría: {$category->name}\n\n".$request->description;
-        $item->price = 0;
-        $item->quantity = 1;
-        $item->custom_specs = $request->custom_specs; // Save JSON
-
-        // Handle images
         $imagePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 $imagePaths[] = $file->store('custom_orders', 'public');
             }
         }
-        $item->images = $imagePaths;
 
-        $item->images = $imagePaths;
-
-        $item->save();
-
-        // Send Email
-        try {
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->queue(new \App\Mail\CustomOrderReceived($order));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error queuing CustomOrderReceived email: '.$e->getMessage());
-        }
-
-        // Notify Admin
-        try {
-            $adminEmail = config('mail.admin_email');
-
-            if (! $adminEmail) {
-                $adminEmail = \App\Models\User::where('role', 'admin')->value('email');
-            }
-
-            if ($adminEmail) {
-                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\NewOrderAdminNotification($order));
-            } else {
-                \Illuminate\Support\Facades\Log::warning('No admin email configured/found for NewOrderAdminNotification.');
-            }
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error sending NewOrderAdminNotification: '.$e->getMessage());
-        }
+        $this->customOrderService->create(
+            Auth::user(),
+            $category,
+            $validated['description'],
+            $validated['custom_specs'] ?? [],
+            $imagePaths
+        );
 
         return redirect()->route('account.orders.index')
             ->with('success', 'Solicitud enviada. Te enviaremos una cotización pronto.');
     }
 
-    public function addCustomToCart(Order $order, \App\Providers\CartService $cartService)
+    public function addCustomToCart(Order $order)
     {
         if ($order->user_id !== Auth::id()) {
             abort(403);
@@ -215,7 +162,7 @@ class OrderController extends Controller
         }
 
         try {
-            $cartService->addCustomOrder($order);
+            $this->cartService->addCustomOrder($order);
 
             return redirect()->route('cart')->with('success', 'Pedido personalizado agregado al carrito.');
         } catch (\Exception $e) {

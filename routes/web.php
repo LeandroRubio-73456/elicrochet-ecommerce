@@ -32,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout'); // Método index original (home->checkout)
     Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/callback', [CheckoutController::class, 'callback'])->name('checkout.callback');
+    Route::get('/checkout/simulate', [CheckoutController::class, 'simulateGateway'])->name('checkout.simulate');
     Route::get('/checkout/cancel', function () {
         // Delete any pending parent orders for this user to avoid confusion
         if (Auth::check()) {

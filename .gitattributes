@@ -9,3 +9,7 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# Plantilla de administración de terceros: no cuenta como código propio
+# en las estadísticas de lenguajes del repositorio.
+/public/assets/** linguist-vendored

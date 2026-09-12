@@ -2,28 +2,23 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
-use App\Models\Address;
+use App\Http\Requests\Front\StoreCheckoutRequest;
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Providers\CartService;
-use App\Services\PayPhoneService; // <--- Import Service
+use App\Models\User;
+use App\Services\CartService;
+use App\Services\CheckoutService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
-    protected $cartService;
-
-    protected $payPhoneService; // <--- Service Property
-
-    // Inyectamos el servicio igual que en el CartController
-    public function __construct(CartService $cartService, PayPhoneService $payPhoneService)
-    {
-        $this->cartService = $cartService;
-        $this->payPhoneService = $payPhoneService; // <--- DI
-    }
+    public function __construct(
+        protected CartService $cartService,
+        protected CheckoutService $checkoutService,
+    ) {}
 
     public function index(Request $request)
     {
@@ -42,22 +37,14 @@ class CheckoutController extends Controller
             return redirect()->route('cart');
         }
 
-        // Validate Status of Custom Orders
-        foreach ($cartItems as $cItem) {
-            if ($cItem->custom_order_id) {
-                $cOrder = \App\Models\Order::find($cItem->custom_order_id);
-                if (! $cOrder || $cOrder->status === 'cancelled') {
-                    $this->cartService->removeFromCart($cItem->product_id ?? $cItem->custom_order_id);
-
-                    return redirect()->route('cart')->with('error', 'Se detectó un pedido cancelado en tu carrito y fue eliminado.');
-                }
-            }
+        if ($redirect = $this->removeInvalidCustomOrders($cartItems, 'Se detectó un pedido cancelado en tu carrito y fue eliminado.')) {
+            return $redirect;
         }
 
         return view('front.checkout', compact('cartItems', 'total', 'user'));
     }
 
-    private function handleExistingOrderCheckout($request, $user)
+    private function handleExistingOrderCheckout(Request $request, User $user)
     {
         Log::info("Checkout payment retry requested. Order ID: {$request->order}, User ID: {$user->id}");
 
@@ -94,82 +81,53 @@ class CheckoutController extends Controller
             return redirect()->route('account.orders.show', $order->id)->with('error', 'Orden no válida para pago.');
         }
 
-        try {
-            Log::info("payExisting: Preparing PayPhone request for Order {$order->id}");
-
-            // Call PayPhone Service
-            $response = $this->payPhoneService->prepare(
-                (int) ($order->total_amount * 100),
-                (string) $order->id.'-'.time()
-            );
-
-            Log::info("PayPhone link generated for Existing Order ID: {$order->id}");
-
-            return redirect()->away($response['payWithCard']);
-
-        } catch (\Exception $e) {
-            $errorMsg = 'Error: '.$e->getMessage();
-            Log::error('PayExisting Exception: '.$e->getMessage());
-
-            return back()->with('error', $errorMsg);
-        }
+        return $this->redirectToPayment($order, backOnError: true);
     }
 
-    public function store(Request $request)
+    public function store(StoreCheckoutRequest $request)
     {
         $user = $request->user();
-
-        // 1. Validar inputs
-        $validated = $this->validateShipping($request);
-
-        // 2. Obtener items desde el SERVICIO
+        $validated = $request->validated();
         $cartItems = $this->cartService->getCart();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart')->with('error', 'El carrito está vacío en la sesión.');
         }
 
-        // Validate Status of Custom Orders in Cart
-        foreach ($cartItems as $cItem) {
-            if ($cItem->custom_order_id) {
-                $cOrder = \App\Models\Order::find($cItem->custom_order_id);
-                if (! $cOrder || $cOrder->status === 'cancelled') {
-                    $this->cartService->removeFromCart($cItem->product_id ?? $cItem->custom_order_id);
-
-                    return redirect()->route('cart')->with('error', 'Un pedido personalizado en tu carrito ya no es válido o fue cancelado. Se ha eliminado automáticamente.');
-                }
-            }
+        if ($redirect = $this->removeInvalidCustomOrders($cartItems, 'Un pedido personalizado en tu carrito ya no es válido o fue cancelado. Se ha eliminado automáticamente.')) {
+            return $redirect;
         }
 
         try {
-            // Use DB::transaction closure to handle nesting correctly
-            $order = DB::transaction(function () use ($user, $validated, $cartItems) {
-                // 2.a Sync Address with User Profile
-                $address = $this->syncUserAddress($user, $validated);
-
-                // --- FUSION LOGIC START ---
-                // 1. Resolve Master Order or Create New
-                [$order] = $this->resolveOrderForCheckout($user, $address, $validated);
-
-                // 2. Process Cart Items
-                $this->processCartItems($order, $cartItems);
-
-                // 3. Recalculate Final Total
-                $this->finalizeOrderTotal($order);
-
-                Log::info("Order processed successfully (Fusion or Creation). ID: {$order->id}");
-
-                return $order;
-            });
-
-            // 3. Llamada a PayPhone (fuera de la transacción de DB)
-            return $this->initiatePayPhone($order);
-
+            $order = $this->checkoutService->createOrderFromCart($user, $validated, $cartItems);
         } catch (\Exception $e) {
             Log::error('Checkout Exception: '.$e->getMessage());
 
             return redirect()->route('checkout')->with('error', 'Error: '.$e->getMessage());
         }
+
+        return $this->redirectToPayment($order);
+    }
+
+    /**
+     * Pantalla de pago simulada: reemplaza el redirect externo a PayPhone
+     * cuando no hay credenciales reales de comercio configuradas.
+     */
+    public function simulateGateway(Request $request)
+    {
+        $transactionId = (string) $request->query('transactionId', '');
+        $amountCents = (int) $request->query('amount', 0);
+        $fakePaymentId = random_int(100000, 999999);
+
+        $orderId = explode('-', $transactionId)[0] ?? null;
+        $order = $orderId ? Order::find($orderId) : null;
+
+        return view('front.checkout_simulate', [
+            'transactionId' => $transactionId,
+            'fakePaymentId' => $fakePaymentId,
+            'amount' => $amountCents / 100,
+            'order' => $order,
+        ]);
     }
 
     /**
@@ -177,7 +135,6 @@ class CheckoutController extends Controller
      */
     public function callback(Request $request)
     {
-        $payphoneId = $request->query('id');
         $rawOrderId = $request->query('clientTransactionId', '');
 
         if (empty($rawOrderId)) {
@@ -186,334 +143,73 @@ class CheckoutController extends Controller
             return redirect()->route('cart')->with('error', 'No se recibió la referencia de la orden.');
         }
 
-        $orderIdParts = explode('-', $rawOrderId);
-        $orderId = $orderIdParts[0];
+        $payphoneId = $request->query('id');
+        $orderId = explode('-', $rawOrderId)[0];
 
         Log::info("PayPhone Callback received. PayPhone ID: {$payphoneId}, Raw Order ID: {$rawOrderId}, Real Order ID: {$orderId}");
         Log::info('Full Callback Request: ', $request->all());
 
-        $error = 'No se recibió el ID de pago.';
-
-        if ($payphoneId) {
-            try {
-                // Call PayPhone Service
-                $result = $this->payPhoneService->confirm((int) $payphoneId, (string) $rawOrderId);
-                Log::info('PayPhone Confirm Response (V1): '.json_encode($result));
-
-                if (isset($result['transactionStatus']) && $result['transactionStatus'] === 'Approved') {
-                    return $this->processSuccessfulTransaction($orderId, $payphoneId);
-                }
-
-                $status = $result['transactionStatus'] ?? 'Unknown';
-                Log::warning("Transaction not approved. Status: {$status}");
-                $error = "Pago no aprobado. Estado: {$status}";
-
-            } catch (\Exception $e) {
-                Log::error('Callback Exception: '.$e->getMessage());
-                $error = 'Error al confirmar: '.$e->getMessage();
-            }
+        if (! $payphoneId) {
+            return redirect()->route('cart')->with('error', 'No se recibió el ID de pago.');
         }
 
-        return redirect()->route('cart')->with('error', $error);
-    }
-
-    private function validateShipping(Request $request)
-    {
-        return $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_lastname' => 'required|string|max:255',
-            'customer_cedula' => 'required|string|max:13',
-            'customer_email' => 'required|email',
-            'customer_phone' => 'required|string|max:20',
-            'shipping_address' => 'required|string',
-            'shipping_city' => 'required|string',
-            'shipping_province' => 'required|string',
-            'shipping_reference' => 'nullable|string',
-            'shipping_zip' => 'required|string',
-        ]);
-    }
-
-    private function initiatePayPhone(Order $order)
-    {
         try {
-            $response = $this->payPhoneService->prepare(
-                (int) ($order->total_amount * 100),
-                (string) $order->id.'-'.time()
+            $order = $this->checkoutService->confirmPayment(
+                (int) $payphoneId,
+                (string) $rawOrderId,
+                $request->query('simulated_status'),
+                $orderId
             );
 
-            Log::info("PayPhone link generated for Order ID: {$order->id}");
+            return view('front.checkout-success', compact('order'));
+        } catch (BusinessLogicException $e) {
+            return redirect()->route('cart')->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Callback Exception: '.$e->getMessage());
 
-            return redirect()->away($response['payWithCard']);
+            return redirect()->route('cart')->with('error', 'Error al confirmar: '.$e->getMessage());
+        }
+    }
 
+    /**
+     * Prepara el link de pago (real o simulado) y redirige al usuario.
+     * $backOnError decide si, ante un fallo, se vuelve a la página anterior
+     * (pago de una orden ya existente) o al checkout (flujo de carrito).
+     */
+    private function redirectToPayment(Order $order, bool $backOnError = false)
+    {
+        try {
+            return redirect()->away($this->checkoutService->initiatePayment($order));
         } catch (\Exception $e) {
             Log::error("PayPhone Error for Order ID {$order->id}: ".$e->getMessage());
 
-            return redirect()->route('checkout')->with('error', 'Error al generar link de pago: '.$e->getMessage());
+            return $backOnError
+                ? back()->with('error', 'Error: '.$e->getMessage())
+                : redirect()->route('checkout')->with('error', 'Error al generar link de pago: '.$e->getMessage());
         }
     }
 
-    private function syncUserAddress($user, $validated)
-    {
-        $address = $user->addresses()->updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'street' => $validated['shipping_address'],
-                'city' => $validated['shipping_city'],
-                'province' => $validated['shipping_province'],
-                'reference' => $validated['shipping_reference'] ?? null,
-                'postal_code' => $validated['shipping_zip'],
-                'phone' => $validated['customer_phone'],
-                'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
-                'customer_email' => $validated['customer_email'],
-                // Legacy redundant fields
-                'address' => $validated['shipping_address'],
-                'details' => $validated['shipping_reference'] ?? null,
-            ]
-        );
-
-        // Also update legacy user columns
-        $user->update([
-            'phone' => $validated['customer_phone'],
-            'cedula' => $validated['customer_cedula'] ?? $user->cedula, // Update only if provided
-        ]);
-
-        return $address;
-    }
-
-    private function resolveOrderForCheckout($user, $address, $validated)
-    {
-        // 0. Clean up old abandoned parent orders (>1 hour old) to prevent accumulation
-        Order::where('user_id', $user->id)
-            ->whereIn('type', [Order::TYPE_STOCK, 'stock'])
-            ->where('status', Order::STATUS_PENDING_PAYMENT)
-            ->where('created_at', '<', now()->subHour())
-            ->delete();
-
-        // 1. Check for an existing PENDING order for this user (Reuse Strategy)
-        // We look for a recent 'stock' type order pending payment to avoid creating duplicates on retry.
-        $existingOrder = Order::where('user_id', $user->id)
-            ->where('status', Order::STATUS_PENDING_PAYMENT)
-            ->whereIn('type', [Order::TYPE_STOCK, 'stock']) // Master orders are TYPE_STOCK (legacy: 'stock')
-            ->latest()
-            ->first();
-
-        if ($existingOrder) {
-            // Update the existing order with latest contact/address info
-            $existingOrder->update([
-                'address_id' => $address->id,
-                'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
-                'customer_email' => $validated['customer_email'],
-                'customer_phone' => $validated['customer_phone'],
-                'shipping_address' => $validated['shipping_address'],
-                'shipping_city' => $validated['shipping_city'],
-                'shipping_province' => $validated['shipping_province'],
-                'shipping_zip' => $validated['shipping_zip'],
-            ]);
-
-            // CLEAR previous items so we can re-populate with current Cart state
-            // This ensures if the user changed the cart, the order reflects it.
-            // Custom Orders linked to this are NOT deleted (they are separate entities),
-            // but the 'OrderItem' linking them is deleted here.
-            $existingOrder->items()->delete();
-
-            // Recalculate Shipping
-            $shippingCost = $this->calculateShippingCost($validated['shipping_city']);
-            $existingOrder->update(['shipping_cost' => $shippingCost]);
-
-            Log::info("Reusing existing Pending Order ID: {$existingOrder->id}");
-
-            return [$existingOrder, null];
-        }
-
-        // 2. Create NEW Master Order if none exists
-        $order = Order::create([
-            'user_id' => $user->id,
-            'address_id' => $address->id,
-            'status' => Order::STATUS_PENDING_PAYMENT,
-            'customer_name' => $validated['customer_name'].' '.$validated['customer_lastname'],
-            'customer_email' => $validated['customer_email'],
-            'customer_phone' => $validated['customer_phone'],
-            'shipping_address' => $validated['shipping_address'],
-            'shipping_city' => $validated['shipping_city'],
-            'shipping_province' => $validated['shipping_province'],
-            'shipping_zip' => $validated['shipping_zip'],
-            'total_amount' => 0,
-            'shipping_cost' => $this->calculateShippingCost($validated['shipping_city']),
-            'type' => Order::TYPE_STOCK,
-        ]);
-
-        return [$order];
-    }
-
-    private function processCartItems($order, $cartItems)
+    /**
+     * Si algún item del carrito referencia un pedido personalizado que ya
+     * no existe o fue cancelado, lo quita del carrito y devuelve el
+     * redirect correspondiente. Devuelve null si el carrito está bien.
+     */
+    private function removeInvalidCustomOrders(Collection $cartItems, string $message)
     {
         foreach ($cartItems as $cartItem) {
-            if ($cartItem->custom_order_id) {
-                $this->processCustomOrderItem($order, $cartItem);
-
+            if (! $cartItem->custom_order_id) {
                 continue;
             }
 
-            // Standard Stock Items
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $cartItem->product_id,
-                'custom_order_id' => null,
-                'quantity' => $cartItem->quantity,
-                'price' => $cartItem->price,
-            ]);
-        }
-    }
+            $customOrder = Order::find($cartItem->custom_order_id);
 
-    private function processCustomOrderItem($order, $cartItem)
-    {
-        $customOrder = Order::find($cartItem->custom_order_id);
+            if (! $customOrder || $customOrder->status === 'cancelled') {
+                $this->cartService->removeFromCart($cartItem->product_id ?? $cartItem->custom_order_id);
 
-        if ($customOrder) {
-            // Get the main item from the custom order to copy details
-            $customItem = $customOrder->items()->whereNull('product_id')->first();
-
-            // Link the Custom Order to the new Master Order
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => null,
-                'custom_order_id' => $customOrder->id, // LINK: Parent -> Child
-                'custom_description' => $customItem ? $customItem->custom_description : 'Pedido Personalizado #'.$customOrder->id,
-                'price' => $cartItem->price,
-                'quantity' => 1,
-                'images' => $customItem ? $customItem->images : [],
-                'custom_specs' => $customItem ? $customItem->custom_specs : [],
-            ]);
-
-            // Do NOT mark the custom order as LINKED before payment is approved.
-            // Keep it in_cart while the user is checking out, so cancelling payment doesn't leave orphaned LINKED orders.
-            if ($customOrder->status === Order::STATUS_PENDING_PAYMENT) {
-                $customOrder->update(['status' => Order::STATUS_IN_CART]);
+                return redirect()->route('cart')->with('error', $message);
             }
         }
-    }
 
-    private function processSuccessfulTransaction($orderId, $payphoneId)
-    {
-        try {
-            return DB::transaction(function () use ($orderId, $payphoneId) {
-                // Note: Removed lockForUpdate() to compatible with SQLite testing
-                $order = Order::with('items')->find($orderId);
-
-                $this->validateProcessingOrder($order);
-
-                $order->update([
-                    'status' => 'in_review',
-                    'payphone_transaction_id' => $payphoneId,
-                    'payphone_status' => 'Approved',
-                ]);
-
-                $this->handleCustomOrderLinking($order);
-                $this->decrementOrderStock($order);
-
-                $order->update(['status' => Order::STATUS_PAID]);
-
-                $this->clearUserCart($order);
-
-                // Send Emails (outside transaction ideally, but fine here)
-                $this->sendOrderEmails($order);
-
-                return view('front.checkout-success', compact('order'));
-            });
-
-        } catch (\Exception $e) {
-            Log::error("Transaction Error processing Order {$orderId}: ".$e->getMessage());
-
-            return redirect()->route('cart')->with('error', 'Error procesando el pedido: '.$e->getMessage());
-        }
-    }
-
-    private function validateProcessingOrder($order)
-    {
-        if (! $order) {
-            throw new \App\Exceptions\BusinessLogicException('Orden no encontrada durante el procesamiento (Race Condition check).');
-        }
-
-        if ($order->status === Order::STATUS_PAID) {
-            throw new \App\Exceptions\BusinessLogicException('Esta orden ya fue procesada anteriormente.');
-        }
-    }
-
-    private function handleCustomOrderLinking(Order $order)
-    {
-        foreach ($order->items as $item) {
-            if ($item->custom_order_id) {
-                $customOrder = Order::find($item->custom_order_id);
-                if ($customOrder && $customOrder->status !== Order::STATUS_LINKED) {
-                    $customOrder->update(['status' => Order::STATUS_LINKED]);
-                }
-            }
-        }
-    }
-
-    private function decrementOrderStock(Order $order)
-    {
-        foreach ($order->items as $item) {
-            if ($item->product_id) {
-                $product = \App\Models\Product::find($item->product_id);
-                if ($product) {
-                    if ($product->stock < $item->quantity) {
-                        throw new \App\Exceptions\BusinessLogicException("Stock insuficiente para el producto '{$product->name}'. La compra ha sido revertida.");
-                    }
-                    $product->decrement('stock', $item->quantity);
-
-                    // Automáticamente pasar a borrador si el stock llega a 0
-                    if ($product->refresh()->stock <= 0) {
-                        $product->update(['status' => 'draft']);
-                        Log::info("Producto ID {$product->id} marcado como borrador por falta de stock.");
-                    }
-                }
-            }
-        }
-    }
-
-    private function clearUserCart(Order $order)
-    {
-        if ($order->user) {
-            $order->user->cartItems()->delete();
-        }
-    }
-
-    private function sendOrderEmails($order)
-    {
-        try {
-            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidNotification($order));
-        } catch (\Exception $e) {
-            Log::error('Error sending OrderPaid email: '.$e->getMessage());
-        }
-
-        try {
-            $adminEmail = config('mail.admin_email');
-            if ($adminEmail) {
-                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\NewOrderAdminNotification($order));
-            }
-        } catch (\Exception $e) {
-            Log::error('Error sending NewOrderAdminNotification (Paid): '.$e->getMessage());
-        }
-    }
-
-    private function finalizeOrderTotal(Order $order)
-    {
-        $total = $order->recalculateTotal();
-        $order->total_amount = $total;
-        $order->save();
-    }
-
-    private function calculateShippingCost($city)
-    {
-        // Normalize city string for comparison
-        $normalizedCity = strtolower(trim($city));
-
-        // Logic: Quito = $3, Others = $5
-        if ($normalizedCity === 'quito') {
-            return 3.00;
-        }
-
-        return 5.00;
+        return null;
     }
 }
