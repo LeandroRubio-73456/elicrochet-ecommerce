@@ -38,7 +38,7 @@ Solución de comercio electrónico desarrollada para EliCrochet, una microempres
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
 </p>
 
-- Laravel 12 / PHP 8.2+
+- Laravel 12 / PHP 8.4+
 - MySQL o SQLite (SQLite es el motor por defecto para desarrollo local sin Docker)
 - Blade + Bootstrap 5
 - Pest/PHPUnit (pruebas automatizadas), Laravel Pint (estilo de código)
@@ -58,7 +58,7 @@ Solución de comercio electrónico desarrollada para EliCrochet, una microempres
 
 ## Requisitos
 
-- PHP 8.2 o superior.
+- PHP 8.4 o superior.
 - Composer 2.
 - Node.js 20 o superior y npm.
 - MySQL 8 o SQLite.
