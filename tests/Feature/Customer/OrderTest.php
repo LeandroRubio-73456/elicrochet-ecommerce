@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Customer;
 
+use App\Mail\CustomOrderReceived;
+use App\Mail\NewOrderAdminNotification;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
@@ -161,8 +163,8 @@ class OrderTest extends TestCase
         $this->assertCount(1, $order->items);
         $this->assertNotNull($order->items->first()->images);
 
-        Mail::assertQueued(\App\Mail\CustomOrderReceived::class);
-        Mail::assertQueued(\App\Mail\NewOrderAdminNotification::class);
+        Mail::assertQueued(CustomOrderReceived::class);
+        Mail::assertQueued(NewOrderAdminNotification::class);
     }
 
     /** @test */

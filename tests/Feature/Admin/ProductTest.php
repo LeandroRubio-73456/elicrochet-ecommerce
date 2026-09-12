@@ -155,7 +155,7 @@ class ProductTest extends TestCase
 
     public function test_admin_can_filter_by_category()
     {
-        $category = \App\Models\Category::factory()->create(['name' => 'Fibre']);
+        $category = Category::factory()->create(['name' => 'Fibre']);
         Product::factory()->create(['category_id' => $category->id]);
         Product::factory()->create(); // Another category
 

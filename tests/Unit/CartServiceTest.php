@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\BusinessLogicException;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\CartService;
@@ -61,7 +63,7 @@ class CartServiceTest extends TestCase
         $this->actingAs($this->user);
         $product = Product::factory()->create(['price' => 100, 'stock' => 5]);
 
-        $this->expectException(\App\Exceptions\BusinessLogicException::class);
+        $this->expectException(BusinessLogicException::class);
 
         $this->cartService->addToCart($product, 6);
     }
@@ -110,11 +112,11 @@ class CartServiceTest extends TestCase
     public function it_can_add_custom_order_to_cart()
     {
         $this->actingAs($this->user);
-        $order = \App\Models\Order::factory()->create([
+        $order = Order::factory()->create([
             'user_id' => $this->user->id,
-            'status' => \App\Models\Order::STATUS_PENDING_PAYMENT,
+            'status' => Order::STATUS_PENDING_PAYMENT,
             'total_amount' => 50.00,
-            'type' => \App\Models\Order::TYPE_CUSTOM,
+            'type' => Order::TYPE_CUSTOM,
         ]);
 
         $result = $this->cartService->addCustomOrder($order);
@@ -126,21 +128,21 @@ class CartServiceTest extends TestCase
             'price' => 50.00,
         ]);
 
-        $this->assertEquals(\App\Models\Order::STATUS_IN_CART, $order->fresh()->status);
+        $this->assertEquals(Order::STATUS_IN_CART, $order->fresh()->status);
     }
 
     /** @test */
     public function it_prevents_adding_duplicate_custom_order()
     {
         $this->actingAs($this->user);
-        $order = \App\Models\Order::factory()->create([
+        $order = Order::factory()->create([
             'user_id' => $this->user->id,
-            'type' => \App\Models\Order::TYPE_CUSTOM,
+            'type' => Order::TYPE_CUSTOM,
         ]);
 
         $this->cartService->addCustomOrder($order);
 
-        $this->expectException(\App\Exceptions\BusinessLogicException::class);
+        $this->expectException(BusinessLogicException::class);
         $this->cartService->addCustomOrder($order);
     }
 
@@ -148,17 +150,17 @@ class CartServiceTest extends TestCase
     public function it_reverts_order_status_when_removing_from_cart()
     {
         $this->actingAs($this->user);
-        $order = \App\Models\Order::factory()->create([
+        $order = Order::factory()->create([
             'user_id' => $this->user->id,
-            'status' => \App\Models\Order::STATUS_PENDING_PAYMENT,
-            'type' => \App\Models\Order::TYPE_CUSTOM,
+            'status' => Order::STATUS_PENDING_PAYMENT,
+            'type' => Order::TYPE_CUSTOM,
         ]);
 
         $this->cartService->addCustomOrder($order);
-        $this->assertEquals(\App\Models\Order::STATUS_IN_CART, $order->fresh()->status);
+        $this->assertEquals(Order::STATUS_IN_CART, $order->fresh()->status);
 
         $this->cartService->removeFromCart($order->id);
 
-        $this->assertEquals(\App\Models\Order::STATUS_PENDING_PAYMENT, $order->fresh()->status);
+        $this->assertEquals(Order::STATUS_PENDING_PAYMENT, $order->fresh()->status);
     }
 }

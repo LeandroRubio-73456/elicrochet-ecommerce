@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\View\Composers\AdminNotificationComposer;
+use App\Http\View\Composers\UserNotificationComposer;
+use App\Models\CartItem;
+use App\Models\Review;
+use App\Observers\ReviewObserver;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,14 +30,14 @@ class AppServiceProvider extends ServiceProvider
 
         // Force HTTPS in Production only
         if (app()->isProduction()) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            URL::forceScheme('https');
         }
 
-        \App\Models\Review::observe(\App\Observers\ReviewObserver::class);
+        Review::observe(ReviewObserver::class);
 
         view()->composer('*', function ($view) {
             if (request()->user()) {
-                $cartCount = \App\Models\CartItem::where('user_id', request()->user()->id)->sum('quantity');
+                $cartCount = CartItem::where('user_id', request()->user()->id)->sum('quantity');
                 $view->with('cartCount', $cartCount);
             } else {
                 $view->with('cartCount', 0);
@@ -39,9 +45,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Admin Notifications
-        view()->composer(['layouts.layout-vertical', 'admin.*'], \App\Http\View\Composers\AdminNotificationComposer::class);
+        view()->composer(['layouts.layout-vertical', 'admin.*'], AdminNotificationComposer::class);
 
         // User Notifications
-        view()->composer(['layouts.front-layout', 'front.partials.navbar'], \App\Http\View\Composers\UserNotificationComposer::class);
+        view()->composer(['layouts.front-layout', 'front.partials.navbar'], UserNotificationComposer::class);
     }
 }

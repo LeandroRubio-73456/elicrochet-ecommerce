@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -13,12 +15,12 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = \App\Models\User::query();
+            $query = User::query();
 
             $this->applyFilters($query, $request);
 
             // 4. Paginación
-            $totalRecords = \App\Models\User::count();
+            $totalRecords = User::count();
             $filteredRecords = $query->count();
             $start = $request->input('start', 0);
             $length = $request->input('length', 10);
@@ -57,11 +59,11 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
             'role' => ['required', 'in:admin,customer'],
         ]);
 
-        \App\Models\User::create([
+        User::create([
             'name' => $validated['name'],
             'lastname' => $validated['lastname'],
             'email' => $validated['email'],
@@ -85,7 +87,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         return view('admin.users.edit', compact('user'));
     }
@@ -95,14 +97,14 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'role' => ['required', 'in:admin,customer'],
-            'password' => ['nullable', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+            'password' => ['nullable', 'confirmed', Password::defaults()],
         ]);
 
         $user->name = $validated['name'];
@@ -124,7 +126,7 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         // Prevent deleting self
         if ($user->id === auth()->id()) {

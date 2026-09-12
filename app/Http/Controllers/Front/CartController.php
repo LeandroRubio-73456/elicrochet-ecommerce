@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\CartService;
@@ -35,11 +36,11 @@ class CartController extends Controller
             $freshProduct = Product::lockForUpdate()->find($product->id);
 
             if (! $freshProduct) {
-                throw new \App\Exceptions\BusinessLogicException('Producto no encontrado.');
+                throw new BusinessLogicException('Producto no encontrado.');
             }
 
             if ($freshProduct->stock < $request->input('quantity', 1)) {
-                throw new \App\Exceptions\BusinessLogicException("Stock insuficiente (Actual: {$freshProduct->stock}). Por favor intenta con menos cantidad.");
+                throw new BusinessLogicException("Stock insuficiente (Actual: {$freshProduct->stock}). Por favor intenta con menos cantidad.");
             }
 
             $this->cartService->addToCart(
@@ -56,7 +57,7 @@ class CartController extends Controller
             return redirect()->route('cart')
                 ->with('success', '¡'.$freshProduct->name.' agregado al carrito!');
 
-        } catch (\App\Exceptions\BusinessLogicException $e) {
+        } catch (BusinessLogicException $e) {
             DB::rollBack();
 
             return back()->with('error', $e->getMessage());

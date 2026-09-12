@@ -1,5 +1,7 @@
 <?php
 
+use App\Storage\DBStorage;
+
 return [
     'format_numbers' => true,
     'decimals' => 2,
@@ -7,7 +9,7 @@ return [
     'thousands_sep' => ',',
 
     // Use DBStorage for persistence
-    'storage' => \App\Storage\DBStorage::class,
+    'storage' => DBStorage::class,
     'use_database' => true,
 
     // Config de BD

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -24,7 +25,7 @@ class CheckoutRaceConditionTest extends TestCase
         $user = User::factory()->create();
 
         // Need a category for the product
-        $category = \App\Models\Category::create([
+        $category = Category::create([
             'name' => 'Test Cat',
             'slug' => 'test-cat',
         ]);

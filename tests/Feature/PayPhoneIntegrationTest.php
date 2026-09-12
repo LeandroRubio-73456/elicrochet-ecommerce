@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\CartService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class PayPhoneIntegrationTest extends TestCase
@@ -20,7 +22,7 @@ class PayPhoneIntegrationTest extends TestCase
         // Mock ENV variables for PayPhone
         config(['services.payphone.token' => 'test-token']);
         // Mock Mail to prevent view rendering issues
-        \Illuminate\Support\Facades\Mail::fake();
+        Mail::fake();
     }
 
     /** @test */
@@ -91,7 +93,7 @@ class PayPhoneIntegrationTest extends TestCase
         // 1. Arrange: Create an order in pending_payment status
         $user = User::factory()->create();
         $this->actingAs($user); // Ensure logged in
-        $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
+        $address = Address::factory()->create(['user_id' => $user->id]);
         $product = Product::factory()->create(['price' => 50, 'stock' => 10]);
 
         $order = Order::create([
@@ -152,7 +154,7 @@ class PayPhoneIntegrationTest extends TestCase
         // 1. Arrange
         $user = User::factory()->create();
         $this->actingAs($user); // Ensure user is logged in
-        $address = \App\Models\Address::factory()->create(['user_id' => $user->id]);
+        $address = Address::factory()->create(['user_id' => $user->id]);
         $order = Order::create([
             'user_id' => $user->id,
             'status' => 'pending_payment',

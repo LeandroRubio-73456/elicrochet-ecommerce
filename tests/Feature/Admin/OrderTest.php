@@ -2,7 +2,10 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Mail\OrderShippedNotification;
+use App\Mail\PriceAssignedNotification;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -105,7 +108,7 @@ class OrderTest extends TestCase
             'total_amount' => 100, // Required validation
         ]);
 
-        Mail::assertSent(\App\Mail\PriceAssignedNotification::class);
+        Mail::assertSent(PriceAssignedNotification::class);
     }
 
     /** @test */
@@ -118,13 +121,13 @@ class OrderTest extends TestCase
             'status' => 'shipped',
         ]);
 
-        Mail::assertSent(\App\Mail\OrderShippedNotification::class);
+        Mail::assertSent(OrderShippedNotification::class);
     }
 
     /** @test */
     public function restores_stock_when_order_is_cancelled()
     {
-        $product = \App\Models\Product::factory()->create(['stock' => 10]);
+        $product = Product::factory()->create(['stock' => 10]);
         $order = Order::factory()->create(['status' => 'paid']);
         $order->items()->create([
             'product_id' => $product->id,

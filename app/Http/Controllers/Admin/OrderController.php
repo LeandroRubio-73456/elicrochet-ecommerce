@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderShippedNotification;
+use App\Mail\PriceAssignedNotification;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
@@ -114,7 +120,7 @@ class OrderController extends Controller
             // Since we cannot return a redirect from validation here easily without throwing or refactoring significantly,
             // we will validate this before this method call or throw validation exception.
             // For now, let's just throw validation exception which Laravel handles.
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'total_amount' => 'El monto debe ser mayor a 0 para solicitar el pago.',
             ]);
         }
@@ -131,15 +137,15 @@ class OrderController extends Controller
         try {
             // Quotation -> Pending Payment
             if ($request->status === Order::STATUS_PENDING_PAYMENT && $order->status !== Order::STATUS_PENDING_PAYMENT) {
-                \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\PriceAssignedNotification($order));
+                Mail::to($email)->send(new PriceAssignedNotification($order));
             }
 
             // -> Shipped
             if ($request->status === Order::STATUS_SHIPPED && $order->status !== Order::STATUS_SHIPPED) {
-                \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\OrderShippedNotification($order));
+                Mail::to($email)->send(new OrderShippedNotification($order));
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Error sending order notification email: '.$e->getMessage());
+            Log::error('Error sending order notification email: '.$e->getMessage());
         }
     }
 
@@ -155,7 +161,7 @@ class OrderController extends Controller
         if (in_array($order->status, $deductedStatuses)) {
             foreach ($order->items as $item) {
                 if ($item->product_id) {
-                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    $product = Product::lockForUpdate()->find($item->product_id);
                     if ($product) {
                         $product->increment('stock', $item->quantity);
                     }
