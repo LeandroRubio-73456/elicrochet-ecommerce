@@ -77,7 +77,7 @@ Route::middleware(['auth', 'verified']) // Idealmente middleware('role:admin')
         Route::resource('products', ProductController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('users', UserController::class);
-        Route::resource('orders', OrderController::class);
+        Route::resource('orders', OrderController::class)->only(['index', 'show', 'update']);
         Route::get('/orders/{order}/label', [OrderController::class, 'generateLabel'])->name('orders.label');
 
         // Eliminar imagen producto
