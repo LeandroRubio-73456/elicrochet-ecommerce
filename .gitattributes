@@ -13,3 +13,4 @@ CHANGELOG.md export-ignore
 # Plantilla de administración de terceros: no cuenta como código propio
 # en las estadísticas de lenguajes del repositorio.
 /public/assets/** linguist-vendored
+deploy/entrypoint.sh text eol=lf
