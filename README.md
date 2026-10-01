@@ -19,6 +19,10 @@
 </p>
 
 <p align="center">
+  <strong>Demo:</strong> <a href="https://elicrochet-demo.onrender.com">elicrochet-demo.onrender.com</a> · cuentas en <a href="#datos-de-demostración">Datos de demostración</a>
+</p>
+
+<p align="center">
   <a href="https://github.com/LeandroRubio-73456/elicrochet-ecommerce/actions/workflows/ci.yml"><img src="https://github.com/LeandroRubio-73456/elicrochet-ecommerce/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce"><img src="https://sonarcloud.io/api/project_badges/measure?project=LeandroRubio-73456_elicrochet-ecommerce&metric=alert_status" alt="Quality Gate"></a>
   <a href="https://sonarcloud.io/summary/new_code?id=LeandroRubio-73456_elicrochet-ecommerce"><img src="https://sonarcloud.io/api/project_badges/measure?project=LeandroRubio-73456_elicrochet-ecommerce&metric=coverage" alt="Cobertura"></a>
@@ -83,6 +87,8 @@ composer run dev
 Instalación con Docker / Laravel Sail, configuración de PayPhone y correo, y solución de problemas: [docs/instalacion.md](docs/instalacion.md).
 
 ### Datos de demostración
+
+Estas cuentas también funcionan en la demo en línea. Ahí los datos se reinician en cada arranque y los pagos usan la pasarela simulada.
 
 ```text
 Administrador: admin@elicrochet.com / password
