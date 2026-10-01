@@ -87,8 +87,9 @@ class CheckoutService
     private function processApprovedPayment(string $orderId, int $payphoneId): Order
     {
         return DB::transaction(function () use ($orderId, $payphoneId) {
-            // Nota: sin lockForUpdate() para que los tests con SQLite funcionen igual.
-            $order = Order::with('items')->find($orderId);
+            // Bloquea la orden: si la confirmación del pago llega dos veces a la vez,
+            // la segunda espera y validateProcessingOrder() la rechaza como ya pagada.
+            $order = Order::with('items')->lockForUpdate()->find($orderId);
 
             $this->validateProcessingOrder($order);
 
@@ -278,7 +279,9 @@ class CheckoutService
                 continue;
             }
 
-            $product = Product::find($item->product_id);
+            // Bloquea el producto hasta el final de la transacción para que dos
+            // pagos simultáneos no puedan vender la misma última unidad.
+            $product = Product::lockForUpdate()->find($item->product_id);
 
             if (! $product) {
                 continue;
